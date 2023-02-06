@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@+id/nav_home">
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.xiao.embeddedcar.FragmentUI.HomeFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/nav_connect"
+        android:name="com.xiao.embeddedcar.FragmentUI.ConnectFragment"
+        android:label="@string/menu_connect"
+        tools:layout="@layout/fragment_connect" />
+
+
+    <fragment
+        android:id="@+id/nav_control"
+        android:name="com.xiao.embeddedcar.FragmentUI.ControlFragment"
+        android:label="@string/menu_control"
+        tools:layout="@layout/fragment_control" />
+
+    <fragment
+        android:id="@+id/nav_other"
+        android:name="com.xiao.embeddedcar.FragmentUI.OtherFragment"
+        android:label="@string/menu_other"
+        tools:layout="@layout/fragment_other" />
+
+    <fragment
+        android:id="@+id/nav_module"
+        android:name="com.xiao.embeddedcar.FragmentUI.ModuleFragment"
+        android:label="@string/menu_module"
+        tools:layout="@layout/fragment_module" />
+
+    <fragment
+        android:id="@+id/nav_analyse"
+        android:name="com.xiao.embeddedcar.FragmentUI.AnalyseFragment"
+        android:label="图片分析"
+        tools:layout="@layout/fragment_analyse" />
+
+    <fragment
+        android:id="@+id/nav_config"
+        android:name="com.xiao.embeddedcar.FragmentUI.ConfigFragment"
+        android:label="配置选项"
+        tools:layout="@layout/fragment_config" />
+</navigation>

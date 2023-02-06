@@ -1,0 +1,57 @@
+<resources>
+    <string name="app_name">Embeddedcar</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">百科荣创嵌入式智能小车</string>
+    <string name="nav_header_subtitle">南通职业大学嵌入式团队</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <!--    侧边栏说明-->
+    <string name="menu_home">主页</string>
+    <string name="menu_connect">设备连接</string>
+    <string name="menu_control">通讯控制</string>
+    <string name="menu_other">其他控制</string>
+    <string name="menu_module">模块测试</string>
+    <string name="menu_analyse">图片分析</string>
+    <string name="menu_config">配置选项</string>
+    <string name="logo_name">百科荣创logo</string>
+
+    <!--    设置-->
+    <string name="main_status">接收实训平台状态</string>
+    <string name="follow_status">接收移动机器人状态</string>
+    <string name="main_control">控制实训平台</string>
+    <string name="follow_control">控制移动机器人</string>
+    <string name="clear_coded_disc">清除码盘</string>
+    <string name="set_ConnectTransport_mark">重置半自动mark值</string>
+    <string name="auto_Android_control">全自动方案</string>
+
+    <!--    登录页面-->
+    <string name="device_id">设备ID</string>
+    <string name="login_name">用户名</string>
+    <string name="device_text">BKRC-001</string>
+    <string name="login_text">BKRC-2021</string>
+    <string name="login_psd">不超过16个字符,可直接点击登录!</string>
+    <string name="password">密 码</string>
+    <string name="no_pic">no_pic</string>
+
+    <!--    主页控制数据-->
+    <string name="mp_data">100</string>
+    <string name="line_data">50</string>
+    <string name="angle_data">90</string>
+    <string name="mp_disc">码盘:</string>
+    <string name="line_disc">前进速度:</string>
+    <string name="angle_disc">转弯速度:</string>
+
+    <string name="refresh">刷新</string>
+    <string name="full_auto">自动驾驶</string>
+    <string name="edit_password">BKRC20210520</string>
+    <string name="no_choose">未选择</string>
+
+    <!--    layout - item_car-->
+    <string name="voicetext">播报的文本:</string>
+    <string name="voiceText">百科荣创（北京）科技发展有限公司</string>
+
+    <!--    layout - item_digital-->
+    <string name="digital_title">显示数据行:</string>
+</resources>

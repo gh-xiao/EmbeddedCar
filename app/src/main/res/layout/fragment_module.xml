@@ -1,0 +1,123 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_module"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FragmentUI.ModuleFragment">
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.2">
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="1">
+
+            <Button
+                android:id="@+id/traffic_light_mod_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="红绿灯识别" />
+
+            <Button
+                android:id="@+id/plate_ocr_mod_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="车牌识别" />
+
+            <Button
+                android:id="@+id/shape_mod_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="形状识别" />
+
+            <Button
+                android:id="@+id/traffic_sign_mod_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="交通标志物识别" />
+
+            <Button
+                android:id="@+id/QR_mod_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="二维码识别" />
+
+            <Button
+                android:id="@+id/cutter_bitmap_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="保存当前图片" />
+        </GridLayout>
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/module_info"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_margin="5dp"
+        android:background="@drawable/bg_selete_all"
+        android:gravity="center_horizontal"
+        android:padding="5dp"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toStartOf="@+id/scrollView"
+        app:layout_constraintWidth_percent="0.4" />
+
+    <ImageView
+        android:id="@+id/module_img"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/bg_selete_all"
+        android:contentDescription="What your detect"
+        android:padding="5dp"
+        app:layout_constraintEnd_toStartOf="@+id/module_info"
+        app:layout_constraintHeight_percent="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/module_info"
+        app:layout_constraintWidth_percent="0.375" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/how_detect_btn"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:checked="true"
+        android:layoutDirection="rtl"
+        android:text="默认检测"
+        android:thumb="@drawable/switch_thumb"
+        app:layout_constraintEnd_toEndOf="@+id/module_img"
+        app:layout_constraintHeight_percent="0.125"
+        app:layout_constraintStart_toStartOf="@+id/module_img"
+        app:layout_constraintTop_toBottomOf="@+id/module_img"
+        app:switchPadding="15dp"
+        app:track="@drawable/switch_track_selector" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/get_img_btn"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:checked="false"
+        android:layoutDirection="rtl"
+        android:text="关闭实时图片传入"
+        android:thumb="@drawable/switch_thumb"
+        app:layout_constraintEnd_toEndOf="@+id/how_detect_btn"
+        app:layout_constraintHeight_percent="0.125"
+        app:layout_constraintStart_toStartOf="@+id/how_detect_btn"
+        app:layout_constraintTop_toBottomOf="@+id/how_detect_btn"
+        app:switchPadding="15dp"
+        app:track="@drawable/switch_track_selector" />
+
+    <Button
+        android:id="@+id/choose_detectPic_btn"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="选择检测图片"
+        app:layout_constraintEnd_toEndOf="@+id/get_img_btn"
+        app:layout_constraintHeight_percent="0.125"
+        app:layout_constraintStart_toStartOf="@+id/get_img_btn"
+        app:layout_constraintTop_toBottomOf="@+id/get_img_btn" />
+</androidx.constraintlayout.widget.ConstraintLayout>

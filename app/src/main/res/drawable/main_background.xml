@@ -1,0 +1,15 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <gradient
+        android:angle="135"
+        android:centerColor="#009688"
+        android:endColor="#00695C"
+        android:startColor="#45affe"
+        android:type="linear" />
+</shape>
+
+    <!--    android:angle="135"-->
+    <!--    android:centerColor="#009688"-->
+    <!--    android:endColor="#00695C"-->
+    <!--    android:startColor="#4DB6AC"-->
+    <!--    type : linear 直线 sweep 圆形 radial 扩撒-->

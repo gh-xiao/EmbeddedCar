@@ -1,0 +1,97 @@
+//应用 应用程序模块
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    //指定使用的构建工具版本
+//    buildToolsVersion '33.0.1'
+    //指定使用项目的编译版本
+    compileSdk 33
+    namespace 'com.xiao.embeddedcar'
+    defaultConfig {
+        //包名
+        applicationId "com.xiao.embeddedcar"
+        //指定项目最低兼容的Android版本 - 21(Android5.0)
+        minSdk 21
+        //表示在Android13.0(33)版本上已经进行过充分的测试
+        //noinspection ExpiredTargetSdkVersion - 表示忽略Google提示的建议
+        targetSdk 33
+        //项目版本号
+        versionCode 1
+        //版本名
+        versionName "alpha2.0.2"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        //设置支持的so库架构(开发者可以根据需要，选择一个或多个平台的so)
+        ndk {
+            moduleName "serial_port"
+            ldLibs "log", "z", "m"
+//            abiFilters "armeabi"
+            abiFilters "armeabi-v7a", "arm64-v8a"
+        }
+    }
+    buildTypes {
+        release {
+            //是否进行代码混淆
+            minifyEnabled false
+            //指定混淆规则文件
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    buildFeatures {
+        viewBinding true
+    }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+    ndkVersion '21.1.6352462'
+}
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.4.2'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
+    implementation 'androidx.navigation:navigation-fragment:2.5.1'
+    implementation 'androidx.navigation:navigation-ui:2.5.1'
+    implementation 'androidx.core:core:1.9.0'
+    implementation 'com.google.android.material:material:1.6.1'
+    implementation 'com.android.volley:volley:1.2.1'//谷歌通讯库(暂未使用)
+
+    testImplementation 'junit:junit:4.13.2'//用以声明测试用例库
+
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+
+    //远程依赖声明
+    //微信二维码识别以及基本的openCV库
+    implementation 'com.github.jenly1314.WeChatQRCode:opencv:1.2.0'
+    implementation 'com.github.jenly1314.WeChatQRCode:opencv-armv64:1.2.0'
+    implementation 'com.github.jenly1314.WeChatQRCode:wechat-qrcode:1.2.0'
+    //
+    implementation 'org.tensorflow:tensorflow-lite:2.4.0'
+    implementation 'org.tensorflow:tensorflow-lite-gpu:2.4.0'
+    //图片选择器
+    implementation 'androidx.activity:activity:1.6.1'
+    implementation 'io.github.lucksiege:pictureselector:v3.10.7'
+    //pictureSelector插件
+    implementation 'com.github.bumptech.glide:glide:4.14.2'
+    //数字选择器 https://github.com/gzu-liyujiang/AndroidPicker/blob/master/API.md
+    implementation 'com.github.gzu-liyujiang.AndroidPicker:WheelPicker:4.1.11'
+
+    //本地依赖声明：将本地的jar包、目录添加依赖关系，添加到项目的构建路径当中
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+
+    implementation files('libs/usbSerialForAndroid-debug.aar')
+
+    //导入自制BaiduOCR识别项目文件
+    implementation files('libs/BaiDuOCR-Mod-debug.aar')
+    //导入自制Yolov5-tflite-TSDetector识别项目文件
+    implementation files('libs/Yolov5-tflite-TSDetector.aar')
+}
