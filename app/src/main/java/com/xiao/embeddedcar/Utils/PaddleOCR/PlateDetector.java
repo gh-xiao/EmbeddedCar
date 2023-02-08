@@ -452,7 +452,7 @@ public class PlateDetector {
                         /* num4 和num6比较准确 */
 //                        String baiduOCR_str = doOcr(threshold_bitmap, "eng");
                         TrafficLight.saveBitmap("车牌.jpg", threshold_bitmap);
-                        String baiduOCR_str = TestInferOcrTask.getInstance().detector(threshold_bitmap);
+                        String baiduOCR_str = TestInferOcrTask.getInstance().detector(threshold_bitmap).toString();
                         Log.i(TAG, "*****这里是车牌号*****" + baiduOCR_str);
                         if (baiduOCR_str != null) {
                             if (baiduOCR_str.length() >= 6 && baiduOCR_str.length() <= 10) {
@@ -521,7 +521,7 @@ public class PlateDetector {
      * @param plateResult 车牌识别结果
      * @return 过滤后的车牌
      */
-    public String completion(String plateResult) {
+    public static String completion(String plateResult) {
         StringBuilder sb = new StringBuilder();
         for (char ch : plateResult.toCharArray()) {
             /* 如果为数字或字母则添加进sb中 */
@@ -538,7 +538,7 @@ public class PlateDetector {
     /**
      * 车牌数据替换,减少错误率
      */
-    private StringBuilder plateReplace(StringBuilder platNumber) {
+    private static StringBuilder plateReplace(StringBuilder platNumber) {
 
         if (platNumber.charAt(1) >= 'A' && platNumber.charAt(1) <= 'Z')
             charToNum(platNumber, 1);//第1、2、3、5位本应该为数字,如果出现识别为字符就将其转换为数字
@@ -563,7 +563,7 @@ public class PlateDetector {
      * 车牌中的数字转换为字符
      * 车牌:H833E8    位置：i=(0)、（4）
      */
-    private StringBuilder numToChar(StringBuilder platNumber, int i) {
+    private static StringBuilder numToChar(StringBuilder platNumber, int i) {
         char a = platNumber.charAt(i);
         switch (a) {
             case '0':
@@ -603,7 +603,7 @@ public class PlateDetector {
      * 车牌中字符转换为数字
      * 车牌:H833E8    位置：i=(1 2 3)、（5）
      */
-    private StringBuilder charToNum(StringBuilder platNumber, int i) {
+    private static StringBuilder charToNum(StringBuilder platNumber, int i) {
         char a = platNumber.charAt(i);
         switch (a) {
             case 'A':

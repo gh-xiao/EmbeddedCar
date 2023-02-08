@@ -1,5 +1,7 @@
 package com.xiao.embeddedcar.DataProcessingModule;
 
+import static com.xiao.embeddedcar.Utils.PaddleOCR.PlateDetector.completion;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -8,12 +10,18 @@ import android.os.Message;
 import android.util.Log;
 
 import com.bkrcl.control_car_video.camerautil.CameraCommandUtil;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import com.xiao.baiduocr.OCRResult;
 import com.xiao.baiduocr.TestInferOcrTask;
 import com.xiao.embeddedcar.Activity.MainActivity;
 import com.xiao.embeddedcar.Utils.CameraUtil.XcApplication;
 import com.xiao.embeddedcar.Utils.NetworkAndUIUtil.SerialPort;
 import com.xiao.embeddedcar.Utils.NetworkAndUIUtil.USBToSerialUtil;
+import com.xiao.embeddedcar.Utils.PaddleOCR.DetectPlateColor;
 import com.xiao.embeddedcar.Utils.PaddleOCR.PlateDetector;
+import com.xiao.embeddedcar.Utils.PublicMethods.TFTAutoCutter;
 import com.xiao.embeddedcar.Utils.QRcode.GetCode;
 import com.xiao.embeddedcar.Utils.QRcode.QRBitmapCutter;
 import com.xiao.embeddedcar.Utils.QRcode.WeChatQRCodeDetector;
@@ -21,6 +29,7 @@ import com.xiao.embeddedcar.Utils.Shape.ShapeDetector;
 import com.xiao.embeddedcar.Utils.TrafficLight.ColorProcess;
 import com.xiao.embeddedcar.Utils.TrafficLight.TrafficLight;
 import com.xiao.embeddedcar.Utils.TrafficLight.TrafficLight_fix;
+import com.xiao.embeddedcar.Utils.TrafficSigns.TSResult;
 import com.xiao.embeddedcar.ViewModel.MainViewModel;
 
 import org.opencv.android.Utils;
@@ -33,11 +42,14 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Type;
 import java.net.Socket;
 import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
-import java.util.Locale;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.TreeMap;
 
 /**
  * Socket数据处理类
@@ -127,6 +139,11 @@ public class ConnectTransport {
                 bOutputStream.close();
             }
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            TestInferOcrTask.getInstance().destroy();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -1709,24 +1726,6 @@ public class ConnectTransport {
     }
 
     /**
-     * 过滤与补全
-     *
-     * @param str 车牌识别结果
-     * @return 过滤后的车牌
-     */
-    private String completion(String str) {
-        StringBuilder sb = new StringBuilder();
-        for (char ch : str.toCharArray()) {
-            //如果为数字或字母则添加进sb中
-            if (Character.isDigit(ch) || Character.isUpperCase(ch) || Character.isLowerCase(ch))
-                sb.append(ch);
-        }
-        //不满6个数则补全到6
-        while (sb.toString().length() < 6) sb.append(0);
-        return sb.toString().toUpperCase(Locale.ROOT);
-    }
-
-    /**
      * 判断是否为正常的车牌号
      *
      * @param s 车牌号
@@ -1854,7 +1853,7 @@ public class ConnectTransport {
                 plate = DetectPlate(plateDetector.getRectBitmap());
                 /* 保存图片 */
                 TrafficLight.saveBitmap("裁剪后的车牌.jpg", plateDetector.getRectBitmap());
-                plate = plateDetector.completion(plate);
+                plate = completion(plate);
 //                System.out.println("车牌种类: " + plateType + "\n车牌号: " + plate);
                 Log.i(TAG, "车牌种类: " + plateType + "\n车牌号: " + plate);
             }
@@ -1885,7 +1884,57 @@ public class ConnectTransport {
      * 车牌识别 - 颜色选择
      */
     public synchronized void plate_DetectByColor() {
+        //重新识别车牌号的次数
+        int fre = 1;
+        plate = null;
+        YanChi(2000);
+        do {
+            /* 裁剪TFT区域 */
+            Bitmap detect = TFTAutoCutter.TFTCutter(stream);
+            /* 获得序列化的结果 */
+            String serialize = DetectPlate(detect);
+            /* 反序列化 */
+            Type typeMap = new TypeToken<List<OCRResult>>() {}.getType();
+            Gson gson = new GsonBuilder().enableComplexMapKeySerialization().setPrettyPrinting().create();
+            /* 获得结果 */
+            List<OCRResult> results = gson.fromJson(serialize, typeMap);
+            if (results.size() > 0) for (OCRResult result : results) {
+                /* 色彩判断 */
+                String detectColor = DetectPlateColor.getColor(detect, result);
+                String needColor = mainViewModel.getPlate_color().getValue() != null ? mainViewModel.getPlate_color().getValue() : "green";
+                if (needColor.equals(detectColor)) {
+                    /* 最终结果 */
+                    plate = result.getLabelName();
+                    /* 过滤与补全 */
+                    plate = completion(plate);
+                    sendUIMassage(1, plate);
+                    break;
+                }
+            }
+            if (results.size() <= 0 || plate == null) {
+                sendUIMassage(1, "第" + fre + "次识别车牌失败!");
+                for (int J = 0; J < 3; J++) {
+                    YanChi(100);
+                    TFT_LCD(0x0B, 0x10, 0x02, 0x00, 0x00);
+                }
+                sendUIMassage(1, "翻页中...");
+                YanChi(6000);
+                continue;
+            }
+        } while (plate == null && fre++ < 5);
 
+        //发送车牌给TFT
+        YanChi(2000);
+//        for (int J = 0; J < 5; J++) {
+//            YanChi(500);
+//            TFT_LCD(0x0B, 0x20, plate.charAt(0), plate.charAt(1), plate.charAt(2));
+//        }
+//        System.out.println("第一次发送成功");
+//        YanChi(1500);
+//        for (int J = 0; J < 5; J++)
+//            TFT_LCD(0x0B, 0x21, plate.charAt(3), plate.charAt(4), plate.charAt(5));
+//        System.out.println("第二次发送成功");
+        YanChi(500);
     }
 
     /**
@@ -1908,52 +1957,76 @@ public class ConnectTransport {
      * TODO 交通标志物识别
      */
     public void trafficSign_mod() {
-        YanChi(3500);
-        try {
-            String result = "";
-            Bitmap bitmap;
-            //车牌识别后进行翻页
-            for (int J = 0; J < 3; J++) {
-                YanChi(500);
-                TFT_LCD(0x0B, 0x10, 0x02, 0x00, 0x00);
+        //重新识别次数
+        int fre = 1;
+        //所有识别结果
+        TreeMap<String, Integer> total = new TreeMap<>();
+        Type typeMap = new TypeToken<List<TSResult>>() {}.getType();
+        //最终结果
+        String finalResult = null;
+        YanChi(2000);
+        //TODO 更改为使用List存储结果,并按时间进行统计取得最终结果
+        do {
+            total.clear();
+            for (int i = 0; i < 10; i++) {
+                /* 裁剪TFT区域 */
+                Bitmap detect = TFTAutoCutter.TFTCutter(stream);
+                /* 获得序列化的结果 */
+                String serialize = MainActivity.getYolov5_tflite_tsDetector().processImage(detect);
+                /* 反序列化 */
+                Gson gson = new GsonBuilder().enableComplexMapKeySerialization().setPrettyPrinting().create();
+                List<TSResult> results = gson.fromJson(serialize, typeMap);
+                /* 获得统计结果 */
+                if (results.size() > 0) {
+                    for (TSResult result : results)
+                        if (!total.containsKey(result.getTitle())) total.put(result.getTitle(), 0);
+                        else total.put(result.getTitle(), total.get(result.getTitle()) + 1);
+                }
             }
-            System.out.println("TFT_A翻页成功");
-            YanChi(6000);
-            for (int i = 1; i <= 6; i++) {
-                Bitmap tmp = stream;
-                bitmap = Bitmap.createBitmap(tmp,
-                        (tmp.getWidth() / 100) * 25,
-                        (tmp.getHeight() / 100) * 50,
-                        (tmp.getWidth() / 100) * 35,
-                        (tmp.getHeight() / 100) * 60);
-
-                result = MainActivity.getYolov5_tflite_tsDetector().processImage(bitmap);
+            /* 结果获取失败处理 */
+            if (total.size() <= 0) {
+                sendUIMassage(1, "第" + fre + "次识别标志物失败!");
+                for (int J = 0; J < 3; J++) {
+                    YanChi(100);
+                    TFT_LCD(0x0B, 0x10, 0x02, 0x00, 0x00);
+                }
+                sendUIMassage(1, "翻页中...");
+                YanChi(6000);
+                continue;
             }
-
-            switch (result) {
-                case "go_straight":
-                    getTrafficFlag = 0x01;
-                    break;
-                case "turn_left":
-                    getTrafficFlag = 0x02;
-                    break;
-                case "turn_around":
-                    getTrafficFlag = 0x04;
-                    break;
-                case "no_straight":
-                    getTrafficFlag = 0x05;
-                    break;
-                case "no_turn":
-                    getTrafficFlag = 0x06;
-                    break;
-                case "turn_right":
-                default:
-                    getTrafficFlag = 0x03;
-                    break;
+            /* 找出出现次数最多的结果 */
+            Integer maxvalue = 0;
+            for (Map.Entry<String, Integer> entry : total.entrySet()) {
+                if (entry.getValue() > maxvalue) {
+                    finalResult = entry.getKey();
+                    maxvalue = entry.getValue();
+                }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
+            /* 出现次数不足,重置结果 */
+            if (maxvalue <= 5) finalResult = null;
+        } while (finalResult == null && fre++ < 5);
+        if (finalResult == null) finalResult = "ERROR";
+        sendUIMassage(1, "交通标志物识别结果: " + finalResult);
+        switch (finalResult) {
+            case "go_straight":
+                getTrafficFlag = 0x01;
+                break;
+            case "turn_left":
+                getTrafficFlag = 0x02;
+                break;
+            case "turn_around":
+                getTrafficFlag = 0x04;
+                break;
+            case "no_straight":
+                getTrafficFlag = 0x05;
+                break;
+            case "no_turn":
+                getTrafficFlag = 0x06;
+                break;
+            case "turn_right":
+            default:
+                getTrafficFlag = 0x03;
+                break;
         }
     }
 

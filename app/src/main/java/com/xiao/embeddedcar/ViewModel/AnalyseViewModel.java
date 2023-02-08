@@ -9,12 +9,12 @@ import org.opencv.core.Mat;
 
 public class AnalyseViewModel extends ViewModel {
 
-    private final MutableLiveData<Integer> HMin = new MutableLiveData<>(0);
-    private final MutableLiveData<Integer> HMax = new MutableLiveData<>(20);
-    private final MutableLiveData<Integer> SMin = new MutableLiveData<>(225);
-    private final MutableLiveData<Integer> SMax = new MutableLiveData<>(255);
-    private final MutableLiveData<Integer> VMin = new MutableLiveData<>(110);
-    private final MutableLiveData<Integer> VMax = new MutableLiveData<>(255);
+    private final MutableLiveData<Integer> HMin = new MutableLiveData<>();
+    private final MutableLiveData<Integer> HMax = new MutableLiveData<>();
+    private final MutableLiveData<Integer> SMin = new MutableLiveData<>();
+    private final MutableLiveData<Integer> SMax = new MutableLiveData<>();
+    private final MutableLiveData<Integer> VMin = new MutableLiveData<>();
+    private final MutableLiveData<Integer> VMax = new MutableLiveData<>();
     private final MutableLiveData<Bitmap> detectBitmap = new MutableLiveData<>();
     private final MutableLiveData<Mat> hsvMat = new MutableLiveData<>();
     private final MutableLiveData<Mat> morphologyExMat = new MutableLiveData<>();

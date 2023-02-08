@@ -20,7 +20,7 @@ android {
         //项目版本号
         versionCode 1
         //版本名
-        versionName "alpha2.0.2"
+        versionName "alpha2.0.5"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         //设置支持的so库架构(开发者可以根据需要，选择一个或多个平台的so)
         ndk {
@@ -84,6 +84,8 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.14.2'
     //数字选择器 https://github.com/gzu-liyujiang/AndroidPicker/blob/master/API.md
     implementation 'com.github.gzu-liyujiang.AndroidPicker:WheelPicker:4.1.11'
+    //Gson
+    implementation 'com.google.code.gson:gson:2.10.1'
 
     //本地依赖声明：将本地的jar包、目录添加依赖关系，添加到项目的构建路径当中
     implementation fileTree(include: ['*.jar'], dir: 'libs')

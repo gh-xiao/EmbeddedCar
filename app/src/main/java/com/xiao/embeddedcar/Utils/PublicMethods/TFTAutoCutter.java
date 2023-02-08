@@ -22,10 +22,25 @@ public class TFTAutoCutter {
 
     private static final String TAG = TFTAutoCutter.class.getSimpleName();
     //裁剪参数
-//    private static final int[] CutterPara = {0, 180, 0, 255, 75, 255, 100};
-    private static final int[] CutterPara = {0, 180, 0, 179, 46, 255, 86};
+    private static final int[] OriginPara = {0, 0, 180, 46, 175, 115, 255};
+    //    private static final int[] CutterPara = {0, 180, 0, 255, 75, 255, 100};
+    //    private static final int[] CutterPara = {0, 180, 0, 179, 46, 255, 86};
+    //    public static final int[] CutterPara = {0, 180, 0, 175, 46, 255, 115};
+    private static int[] CutterPara = {0, 0, 180, 46, 175, 115, 255};
     //轮廓统计
     private static final List<MatOfPoint> contours = new ArrayList<>();
+
+    public static int[] getOriginPara() {
+        return OriginPara;
+    }
+
+    public static int[] getCutterPara() {
+        return CutterPara;
+    }
+
+    public static void setCutterPara(int[] parameter) {
+        CutterPara = parameter;
+    }
 
     /**
      * 裁剪与定位TFT屏幕
@@ -42,10 +57,12 @@ public class TFTAutoCutter {
         Mat hsvMat = new Mat();
         Imgproc.cvtColor(mat, hsvMat, Imgproc.COLOR_RGB2HSV);
         /* 将图像根据指定参数转换为黑白mat对象,在选定范围内的像素转换为白色 */
-        Core.inRange(hsvMat, new Scalar(CutterPara[2], CutterPara[4], CutterPara[6]), new Scalar(CutterPara[1], CutterPara[3], CutterPara[5]), hsvMat);
+        Core.inRange(hsvMat, new Scalar(CutterPara[1], CutterPara[3], CutterPara[5]), new Scalar(CutterPara[2], CutterPara[4], CutterPara[6]), hsvMat);
         /* 确定运算核，类似于卷积核 */
         Mat kernel = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3, 3));
         /* 开运算(除去白色噪点) */
+        Imgproc.morphologyEx(hsvMat, hsvMat, Imgproc.MORPH_OPEN, kernel);
+        /* 膨胀操作(扩大白色联通区域) */
         Imgproc.morphologyEx(hsvMat, hsvMat, Imgproc.MORPH_DILATE, kernel);
 
         contours.clear();

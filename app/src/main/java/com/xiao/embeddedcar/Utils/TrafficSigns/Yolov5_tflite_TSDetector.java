@@ -7,13 +7,15 @@ import android.graphics.RectF;
 import android.os.SystemClock;
 import android.util.Log;
 
+import com.google.gson.Gson;
+
 import org.tensorflow.lite.examples.detection.env.Logger;
 import org.tensorflow.lite.examples.detection.tflite.Classifier;
 import org.tensorflow.lite.examples.detection.tflite.DetectorFactory;
 import org.tensorflow.lite.examples.detection.tflite.YoloV5Classifier;
 
 import java.io.IOException;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -84,6 +86,12 @@ public class Yolov5_tflite_TSDetector {
         return true;
     }
 
+    /**
+     * 检测图片
+     *
+     * @param inputBitmap -
+     * @return Gson字符串
+     */
     public String processImage(Bitmap inputBitmap) {
         if (inputBitmap == null) return "ERROR";
         //416*416
@@ -119,38 +127,34 @@ public class Yolov5_tflite_TSDetector {
         /* 检测时间 */
         Log.i("Time Spent: ", lastProcessingTimeMs + "ms");
         /* 设置默认最低置信度阈值 */
-//        float minimumConfidence = MINIMUM_CONFIDENCE_TF_OD_API;
-//
-//        switch (MODE) {
-//            case TF_OD_API:
-//                minimumConfidence = MINIMUM_CONFIDENCE_TF_OD_API;
-//                break;
-//        }
+        float minimumConfidence = MINIMUM_CONFIDENCE_TF_OD_API;
+
+        switch (MODE) {
+            case TF_OD_API:
+                minimumConfidence = MINIMUM_CONFIDENCE_TF_OD_API;
+                break;
+        }
 
         /* 筛选通过最低置信度阈值的识别结果 */
         final List<Classifier.Recognition> mappedRecognitions = new LinkedList<>();
 
         for (final Classifier.Recognition result : results) {
             final RectF location = result.getLocation();
-            if (location != null && result.getConfidence() >= MINIMUM_CONFIDENCE_TF_OD_API) {
-
+            if (location != null && result.getConfidence() >= minimumConfidence) {
                 result.setLocation(location);
                 /* 将通过最低置信度的结果添加到新List */
                 mappedRecognitions.add(result);
-
                 //识别结果
-                Log.e("result.title:", result.getTitle());
+                Log.e("result: ", result.getTitle() + result.getConfidence());
             }
         }
-        //最终结果
-        if (mappedRecognitions.size() != 0) {
-            /* 排列出最高置信度的结果 */
-            Collections.sort(mappedRecognitions, (o1, o2) -> (int) (o1.getConfidence() - o2.getConfidence()));
-            Log.e("SUCCESS", String.valueOf(mappedRecognitions.get(0).getConfidence()));
-            return mappedRecognitions.get(0).getTitle();
-        } else {
-            Log.e("ERROR", "识别错误");
-            return "turn_right";
+        //转换成Gson
+        List<TSResult> tsResults = new ArrayList<>();
+        if (mappedRecognitions.size() > 0) {
+            for (Classifier.Recognition recognition : mappedRecognitions)
+                tsResults.add(new TSResult(recognition.getTitle(), recognition.getConfidence()));
         }
+        Gson gson = new Gson();
+        return gson.toJson(tsResults);
     }
 }

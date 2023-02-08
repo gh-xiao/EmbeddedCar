@@ -16,8 +16,9 @@ public class MainViewModel extends ViewModel {
     private final MutableLiveData<String> shape_color = new MutableLiveData<>("红色");
     //图形统计 - 形状类别
     private final MutableLiveData<String> shape_type = new MutableLiveData<>("总计");
-    //TODO HSV色彩选择...
-    //TODO 车牌种类选择...
+    //车牌种类
+    private final MutableLiveData<String> plate_color = new MutableLiveData<>("green");
+
     //TODO 识别(Yolo...)置信度设置...
 
     public MutableLiveData<Boolean> getChief_state_flag() {
@@ -38,5 +39,9 @@ public class MainViewModel extends ViewModel {
 
     public MutableLiveData<String> getShape_type() {
         return shape_type;
+    }
+
+    public MutableLiveData<String> getPlate_color() {
+        return plate_color;
     }
 }

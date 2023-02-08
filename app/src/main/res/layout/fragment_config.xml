@@ -1,8 +1,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     tools:context=".FragmentUI.ConfigFragment">
 
     <LinearLayout
@@ -33,14 +33,34 @@
             android:textStyle="bold" />
     </LinearLayout>
 
-    <Button
-        android:id="@+id/QR_color_choose_btn"
+    <RadioGroup
+        android:id="@+id/QR_color_choose_RG"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="选择颜色"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="@+id/line_qr"
         app:layout_constraintStart_toEndOf="@+id/line_qr"
-        app:layout_constraintTop_toTopOf="@+id/line_qr" />
+        app:layout_constraintTop_toTopOf="@+id/line_qr">
+
+        <RadioButton
+            android:id="@+id/rb_QR_red"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="红色" />
+
+        <RadioButton
+            android:id="@+id/rb_QR_green"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="绿色" />
+
+        <RadioButton
+            android:id="@+id/rb_QR_blue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="蓝色" />
+
+    </RadioGroup>
 
     <LinearLayout
         android:id="@+id/line_shape"
@@ -125,14 +145,85 @@
             android:textStyle="bold" />
     </LinearLayout>
 
-    <Button
+    <RadioGroup
         android:id="@+id/trafficLight_choose_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:text="选择设备"
         app:layout_constraintBottom_toBottomOf="@+id/line_trafficLight"
         app:layout_constraintStart_toEndOf="@+id/line_trafficLight"
-        app:layout_constraintTop_toTopOf="@+id/line_trafficLight" />
+        app:layout_constraintTop_toTopOf="@+id/line_trafficLight">
+
+        <RadioButton
+            android:id="@+id/rb_tl_a"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="A灯" />
+
+        <RadioButton
+            android:id="@+id/rb_tl_b"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="B灯" />
+    </RadioGroup>
+
+    <LinearLayout
+        android:id="@+id/line_plateColor_detect"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="15dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/line_trafficLight"
+        app:layout_constraintWidth_percent="0.5">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="车牌颜色检测:"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_plateColor"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <RadioGroup
+        android:id="@+id/plateColor_choose_RG"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="@+id/line_plateColor_detect"
+        app:layout_constraintStart_toEndOf="@+id/line_plateColor_detect"
+        app:layout_constraintTop_toTopOf="@+id/line_plateColor_detect">
+
+        <RadioButton
+            android:id="@+id/rb_plate_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="任意" />
+
+        <RadioButton
+            android:id="@+id/rb_plate_blue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="蓝色" />
+
+        <RadioButton
+            android:id="@+id/rb_plate_green"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="新能源" />
+
+    </RadioGroup>
 
     <TextView
         android:id="@+id/tv_version"

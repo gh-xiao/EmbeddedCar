@@ -45,6 +45,8 @@ public class AnalyseFragment extends Fragment {
      * 控件动作初始化
      */
     private void init() {
+        /* HSV参数设置 */
+        RestoreHSV();
         /* 图片列表设置 */
         AnalyseAdapter analyseAdapter = new AnalyseAdapter(getContext());
         binding.lvList.setAdapter(analyseAdapter);
@@ -221,6 +223,12 @@ public class AnalyseFragment extends Fragment {
             if (detectBitmap == null) return;
             binding.imgShow.setImageBitmap(TFTAutoCutter.TFTCutter(detectBitmap));
         });
+        /* 导入参数到裁剪 */
+        binding.importBtn.setOnClickListener(v -> importHSV());
+        /* 导出裁剪参数 */
+        binding.exportBtn.setOnClickListener(v -> exportHSV());
+        /* 还原HSV参数 */
+        binding.restoreBtn.setOnClickListener(v -> RestoreHSV());
         /* 数字滚轮设置 */
         initPicker();
     }
@@ -420,5 +428,45 @@ public class AnalyseFragment extends Fragment {
 
             }
         });
+    }
+
+    /**
+     * 重置HSV参数
+     */
+    private void RestoreHSV() {
+        int[] para = TFTAutoCutter.getOriginPara();
+        analyseViewModel.getHMin().setValue(para[1]);
+        analyseViewModel.getHMax().setValue(para[2]);
+        analyseViewModel.getSMin().setValue(para[3]);
+        analyseViewModel.getSMax().setValue(para[4]);
+        analyseViewModel.getVMin().setValue(para[5]);
+        analyseViewModel.getVMax().setValue(para[6]);
+    }
+
+    /**
+     * 导入参数到裁剪
+     */
+    private void importHSV() {
+        int[] HSVPara = new int[7];
+        HSVPara[1] = analyseViewModel.getHMin().getValue() != null ? analyseViewModel.getHMin().getValue() : 0;
+        HSVPara[2] = analyseViewModel.getHMax().getValue() != null ? analyseViewModel.getHMax().getValue() : 0;
+        HSVPara[3] = analyseViewModel.getSMin().getValue() != null ? analyseViewModel.getSMin().getValue() : 0;
+        HSVPara[4] = analyseViewModel.getSMax().getValue() != null ? analyseViewModel.getSMax().getValue() : 0;
+        HSVPara[5] = analyseViewModel.getVMin().getValue() != null ? analyseViewModel.getVMin().getValue() : 0;
+        HSVPara[6] = analyseViewModel.getVMax().getValue() != null ? analyseViewModel.getVMax().getValue() : 0;
+        TFTAutoCutter.setCutterPara(HSVPara);
+    }
+
+    /**
+     * 导出裁剪参数
+     */
+    private void exportHSV() {
+        int[] para = TFTAutoCutter.getCutterPara();
+        analyseViewModel.getHMin().setValue(para[1]);
+        analyseViewModel.getHMax().setValue(para[2]);
+        analyseViewModel.getSMin().setValue(para[3]);
+        analyseViewModel.getSMax().setValue(para[4]);
+        analyseViewModel.getVMin().setValue(para[5]);
+        analyseViewModel.getVMax().setValue(para[6]);
     }
 }

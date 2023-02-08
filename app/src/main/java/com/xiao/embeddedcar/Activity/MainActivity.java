@@ -180,6 +180,23 @@ public class MainActivity extends AppCompatActivity {
             case R.id.Android_Control:
                 moduleViewModel.module(0xB4);
                 break;
+            case R.id.half_Control:
+                //对话框构造器
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                // 设置Title的内容
+                builder.setIcon(R.mipmap.rc_logo);
+                builder.setTitle("温馨提示");
+                // 设置Content(内容)来显示一个信息
+                builder.setMessage("请确认是否开始自动驾驶！");
+                // 设置一个PositiveButton(确认按钮)
+                builder.setPositiveButton("开始", (dialog, which) -> {
+                    new Thread(() -> ConnectTransport.getInstance().half_Android()).start();
+                    ToastUtil.getInstance().ShowToast("开始自动驾驶，请检查车辆周围环境！");
+                });
+                // 设置一个NegativeButton
+                builder.setNegativeButton("取消", (dialog, which) -> dialog.dismiss());
+                builder.show();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -218,7 +235,6 @@ public class MainActivity extends AppCompatActivity {
         ConnectTransport.getInstance().destroy();
         CameraConnectUtil.getInstance().destroy();
         USBToSerialUtil.getInstance().onDestroy();
-        TestInferOcrTask.getInstance().destroy();
     }
 
     /**

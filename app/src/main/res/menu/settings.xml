@@ -5,8 +5,7 @@
     <item
         android:id="@+id/car_status"
         android:title="@string/follow_status"
-        app:showAsAction="never"
-        />
+        app:showAsAction="never" />
     <item
         android:id="@+id/car_control"
         android:title="@string/follow_control"
@@ -24,4 +23,10 @@
         android:id="@+id/Android_Control"
         android:title="@string/auto_Android_control"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/half_Control"
+        android:icon="@drawable/half_control"
+        android:title="@string/auto_half_control"
+        app:showAsAction="ifRoom" />
 </menu>

@@ -28,6 +28,7 @@ import com.xiao.embeddedcar.Utils.NetworkAndUIUtil.ToastUtil;
 import com.xiao.embeddedcar.Utils.NetworkAndUIUtil.WiFiStateUtil;
 import com.xiao.embeddedcar.ViewModel.ConnectViewModel;
 import com.xiao.embeddedcar.ViewModel.HomeViewModel;
+import com.xiao.embeddedcar.ViewModel.ModuleViewModel;
 import com.xiao.embeddedcar.databinding.FragmentHomeBinding;
 
 public class HomeFragment extends Fragment {
@@ -35,6 +36,7 @@ public class HomeFragment extends Fragment {
     private FragmentHomeBinding binding;
     private HomeViewModel homeViewModel;
     private ConnectViewModel connectViewModel;
+    private ModuleViewModel moduleViewModel;
     private int sp_n = 50;
     private int angle = 90;
     private int mp_n = 100;
@@ -47,6 +49,7 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         homeViewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
         connectViewModel = new ViewModelProvider(requireActivity()).get(ConnectViewModel.class);
+        moduleViewModel = new ViewModelProvider(requireActivity()).get(ModuleViewModel.class);
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         //控件动作初始化
@@ -242,6 +245,10 @@ public class HomeFragment extends Fragment {
         //速度(转弯)
         homeViewModel.getAngle().observe(getViewLifecycleOwner(), i -> {
             if (i != null) angle = i;
+        });
+        //
+        moduleViewModel.getModuleInfoTV().observe(getViewLifecycleOwner(), s -> {
+            if (s != null) binding.Debug.append(s + "\n");
         });
     }
 

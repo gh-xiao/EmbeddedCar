@@ -12,6 +12,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.xiao.embeddedcar.R;
 import com.xiao.embeddedcar.Utils.QRcode.QRBitmapCutter;
 import com.xiao.embeddedcar.ViewModel.MainViewModel;
 import com.xiao.embeddedcar.databinding.FragmentConfigBinding;
@@ -36,24 +37,16 @@ public class ConfigFragment extends Fragment {
      * 控件动作初始化
      */
     private void init() {
-        binding.QRColorChooseBtn.setOnClickListener(v -> {
-            AlertDialog.Builder qr_color_choose_builder = new AlertDialog.Builder(requireActivity());
-            qr_color_choose_builder.setTitle("二维码检测颜色选择");
-            qr_color_choose_builder.setSingleChoiceItems(new String[]{"红色", "绿色", "蓝色"}, -1, (dialog, which) -> {
-                switch (which) {
-                    case 0:
-                        mainViewModel.getQR_color().setValue(QRBitmapCutter.QRColor.RED);
-                        break;
-                    case 1:
-                        mainViewModel.getQR_color().setValue(QRBitmapCutter.QRColor.GREEN);
-                        break;
-                    case 2:
-                        mainViewModel.getQR_color().setValue(QRBitmapCutter.QRColor.BLUE);
-                        break;
-                }
-            });
-            qr_color_choose_builder.create().show();
+        /* 二维码颜色选择 */
+        binding.QRColorChooseRG.setOnCheckedChangeListener((group, id) -> {
+            if (id == R.id.rb_QR_red)
+                mainViewModel.getQR_color().setValue(QRBitmapCutter.QRColor.RED);
+            if (id == R.id.rb_QR_green)
+                mainViewModel.getQR_color().setValue(QRBitmapCutter.QRColor.GREEN);
+            if (id == R.id.rb_QR_blue)
+                mainViewModel.getQR_color().setValue(QRBitmapCutter.QRColor.BLUE);
         });
+        /* 图形颜色选择 */
         binding.shapeColorChooseBtn.setOnClickListener(v -> {
             AlertDialog.Builder shape_color_choose_builder = new AlertDialog.Builder(requireActivity());
             shape_color_choose_builder.setTitle("图形检测颜色选择");
@@ -61,6 +54,7 @@ public class ConfigFragment extends Fragment {
             shape_color_choose_builder.setSingleChoiceItems(item, -1, (dialog, which) -> mainViewModel.getShape_color().setValue(item[which]));
             shape_color_choose_builder.create().show();
         });
+        /* 图形类型选择 */
         binding.shapeTypeChooseBtn.setOnClickListener(v -> {
             AlertDialog.Builder shape_type_choose_builder = new AlertDialog.Builder(requireActivity());
             shape_type_choose_builder.setTitle("图形检测类型选择");
@@ -68,11 +62,16 @@ public class ConfigFragment extends Fragment {
             shape_type_choose_builder.setSingleChoiceItems(item, -1, (dialog, which) -> mainViewModel.getShape_type().setValue(item[which]));
             shape_type_choose_builder.create().show();
         });
-        binding.trafficLightChooseBtn.setOnClickListener(v -> {
-            AlertDialog.Builder shape_type_choose_builder = new AlertDialog.Builder(requireActivity());
-            shape_type_choose_builder.setTitle("红绿灯信息发送选择");
-            shape_type_choose_builder.setSingleChoiceItems(new String[]{"A灯", "B灯"}, -1, (dialog, which) -> mainViewModel.getSend_trafficLight().setValue(which == 0 ? 1 : 2));
-            shape_type_choose_builder.create().show();
+        /* 红绿灯信息发送选择 */
+        binding.trafficLightChooseBtn.setOnCheckedChangeListener((group, id) -> mainViewModel.getSend_trafficLight().setValue(id == R.id.rb_tl_a ? 1 : 2));
+        /* 车牌检测颜色选择 */
+        binding.plateColorChooseRG.setOnCheckedChangeListener((group, id) -> {
+            if (id == R.id.rb_plate_all)
+                mainViewModel.getPlate_color().setValue("all");
+            if (id == R.id.rb_plate_green)
+                mainViewModel.getPlate_color().setValue("green");
+            if (id == R.id.rb_plate_blue)
+                mainViewModel.getPlate_color().setValue("blue");
         });
         binding.tvVersion.setText(getVersionName());
     }
@@ -86,18 +85,41 @@ public class ConfigFragment extends Fragment {
             switch (qrColor) {
                 case RED:
                     binding.tvQrColor.setText("红色");
-                    return;
+                    binding.QRColorChooseRG.check(R.id.rb_QR_red);
+                    break;
                 case GREEN:
                     binding.tvQrColor.setText("绿色");
-                    return;
+                    binding.QRColorChooseRG.check(R.id.rb_QR_green);
+                    break;
                 case BLUE:
                     binding.tvQrColor.setText("蓝色");
+                    binding.QRColorChooseRG.check(R.id.rb_QR_blue);
+                    break;
             }
         });
         mainViewModel.getShape_color().observe(getViewLifecycleOwner(), s -> binding.tvShapeColor.setText(s));
         mainViewModel.getShape_type().observe(getViewLifecycleOwner(), s -> binding.tvShapeType.setText(s));
         mainViewModel.getSend_trafficLight().observe(getViewLifecycleOwner(), i -> {
-            if (i != null) binding.tvTrafficLight.setText(i == 1 ? "A灯" : "B灯");
+            if (i != null) {
+                binding.tvTrafficLight.setText(i == 1 ? "A灯" : "B灯");
+                binding.trafficLightChooseBtn.check(i == 1 ? R.id.rb_tl_a : R.id.rb_tl_b);
+            }
+        });
+        mainViewModel.getPlate_color().observe(getViewLifecycleOwner(), s -> {
+            switch (s) {
+                case "all":
+                    binding.tvPlateColor.setText("任意");
+                    binding.plateColorChooseRG.check(R.id.rb_plate_all);
+                    break;
+                case "green":
+                    binding.tvPlateColor.setText("新能源");
+                    binding.plateColorChooseRG.check(R.id.rb_plate_green);
+                    break;
+                case "blue":
+                    binding.tvPlateColor.setText("蓝色");
+                    binding.plateColorChooseRG.check(R.id.rb_plate_blue);
+                    break;
+            }
         });
     }
 

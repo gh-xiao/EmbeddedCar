@@ -58,6 +58,7 @@
             android:layout_weight="1"
             android:checked="true"
             android:layoutDirection="rtl"
+            android:padding="5sp"
             android:text="常规"
             android:textSize="12sp"
             android:thumb="@drawable/switch_thumb"
@@ -81,6 +82,31 @@
             android:layout_weight="1"
             android:text="TFT智能裁剪"
             android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/restore_btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="还原HSV参数"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/import_btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="导入到裁剪"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/export_btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="导出裁剪参数"
+            android:textSize="12sp" />
+
 
     </LinearLayout>
 
@@ -114,8 +140,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            app:wheel_itemTextColor="@color/white"
-            />
+            app:wheel_itemTextColor="@color/white" />
 
     </LinearLayout>
 

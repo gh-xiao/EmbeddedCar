@@ -6,13 +6,20 @@ import android.os.Handler;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import com.xiao.baiduocr.OCRResult;
 import com.xiao.embeddedcar.Activity.MainActivity;
 import com.xiao.embeddedcar.DataProcessingModule.ConnectTransport;
 import com.xiao.embeddedcar.Utils.CameraUtil.XcApplication;
+import com.xiao.embeddedcar.Utils.PaddleOCR.DetectPlateColor;
 import com.xiao.embeddedcar.Utils.PublicMethods.BitmapProcess;
 import com.xiao.embeddedcar.Utils.PublicMethods.TFTAutoCutter;
 
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Type;
+import java.util.List;
 import java.util.Objects;
 
 public class ModuleViewModel extends ViewModel {
@@ -83,15 +90,38 @@ public class ModuleViewModel extends ViewModel {
                     return;
                 //车牌
                 case 2:
-                    new Thread(() -> ct.sendUIMassage(1, ct.DetectPlate(TFTAutoCutter.TFTCutter(detect)))).start();
+                    new Thread(() -> {
+                        /* 裁剪 */
+                        Bitmap bitmap = TFTAutoCutter.TFTCutter(detect);
+                        /* 获得序列化的结果 */
+                        String serialize = ct.DetectPlate(bitmap);
+                        /* 反序列化 */
+                        Type typeMap = new TypeToken<List<OCRResult>>() {}.getType();
+                        Gson gson = new GsonBuilder().enableComplexMapKeySerialization().setPrettyPrinting().create();
+                        List<OCRResult> results = gson.fromJson(serialize, typeMap);
+                        if (results.size() > 0) {
+                            for (OCRResult result : results) {
+                                /* 色彩判断 */
+                                String color = DetectPlateColor.getColor(bitmap, result);
+                                if ("green".equals(color))
+                                    ct.sendUIMassage(1, "新能源车牌: " + result.getLabelName());
+                                if ("blue".equals(color))
+                                    ct.sendUIMassage(1, "蓝底车牌: " + result.getLabelName());
+                            }
+                        } else ct.sendUIMassage(1, "No result!");
+                    }).start();
                     return;
                 //形状
                 case 3:
-                    new Thread(() -> ct.Shape(detect)).start();
+                    new Thread(() -> ct.Shape(TFTAutoCutter.TFTCutter(detect))).start();
                     break;
                 //交通标志物
                 case 4:
-                    new Thread(() -> ct.sendUIMassage(1, MainActivity.getYolov5_tflite_tsDetector().processImage(detect))).start();
+                    new Thread(() -> {
+                        Bitmap b = TFTAutoCutter.TFTCutter(detect);
+                        ct.sendUIMassage(2, b);
+                        ct.sendUIMassage(1, MainActivity.getYolov5_tflite_tsDetector().processImage(b));
+                    }).start();
                     break;
                 //二维码
                 case 5:
