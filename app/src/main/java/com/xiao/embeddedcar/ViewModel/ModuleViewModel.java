@@ -1,26 +1,29 @@
 package com.xiao.embeddedcar.ViewModel;
 
+import static com.xiao.embeddedcar.Utils.CameraUtil.XcApplication.cachedThreadPool;
+import static com.xiao.embeddedcar.Utils.PaddleOCR.PlateDetector.completion;
+
 import android.graphics.Bitmap;
 import android.os.Handler;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.baidu.ai.edge.core.ocr.OcrResultModel;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.xiao.baiduocr.OCRResult;
 import com.xiao.embeddedcar.Activity.MainActivity;
 import com.xiao.embeddedcar.DataProcessingModule.ConnectTransport;
-import com.xiao.embeddedcar.Utils.CameraUtil.XcApplication;
 import com.xiao.embeddedcar.Utils.PaddleOCR.DetectPlateColor;
 import com.xiao.embeddedcar.Utils.PublicMethods.BitmapProcess;
 import com.xiao.embeddedcar.Utils.PublicMethods.TFTAutoCutter;
 
+import org.tensorflow.lite.examples.detection.tflite.Classifier;
+
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Type;
 import java.util.List;
-import java.util.Objects;
 
 public class ModuleViewModel extends ViewModel {
     /* 视图ViewModel */
@@ -36,6 +39,8 @@ public class ModuleViewModel extends ViewModel {
     private final MutableLiveData<Boolean> getImgMode = new MutableLiveData<>(false);
     //待检测图片
     private final MutableLiveData<Bitmap> detectPicture = new MutableLiveData<>();
+    //车牌种类
+    private final MutableLiveData<String> plate_color = new MutableLiveData<>("green");
 
     /* getter */
     public MutableLiveData<Bitmap> getModuleImgShow() {
@@ -58,6 +63,10 @@ public class ModuleViewModel extends ViewModel {
         return detectPicture;
     }
 
+    public MutableLiveData<String> getPlate_color() {
+        return plate_color;
+    }
+
     /**
      * 获取模块回传信息Handler
      */
@@ -71,7 +80,7 @@ public class ModuleViewModel extends ViewModel {
      * 消息回传解析线程启动
      */
     public void getThreadReturnMsg() {
-        XcApplication.cachedThreadPool.execute(() -> ConnectTransport.getInstance().setReMsgHandler(getModuleInfoHandle));
+        cachedThreadPool.execute(() -> ConnectTransport.getInstance().setReMsgHandler(getModuleInfoHandle));
     }
 
     /**
@@ -86,92 +95,123 @@ public class ModuleViewModel extends ViewModel {
             if (detect != null) switch (i) {
                 //红绿灯
                 case 1:
-                    new Thread(() -> ct.trafficLight(detect)).start();
-                    return;
+                    cachedThreadPool.execute(() -> ct.trafficLight(detect));
+                    break;
                 //车牌
                 case 2:
-                    new Thread(() -> {
+                    cachedThreadPool.execute(() -> {
                         /* 裁剪 */
                         Bitmap bitmap = TFTAutoCutter.TFTCutter(detect);
                         /* 获得序列化的结果 */
                         String serialize = ct.DetectPlate(bitmap);
                         /* 反序列化 */
-                        Type typeMap = new TypeToken<List<OCRResult>>() {}.getType();
+                        Type typeMap = new TypeToken<List<OcrResultModel>>() {}.getType();
                         Gson gson = new GsonBuilder().enableComplexMapKeySerialization().setPrettyPrinting().create();
-                        List<OCRResult> results = gson.fromJson(serialize, typeMap);
-                        if (results.size() > 0) {
-                            for (OCRResult result : results) {
-                                /* 色彩判断 */
-                                String color = DetectPlateColor.getColor(bitmap, result);
-                                if ("green".equals(color))
-                                    ct.sendUIMassage(1, "新能源车牌: " + result.getLabelName());
-                                if ("blue".equals(color))
-                                    ct.sendUIMassage(1, "蓝底车牌: " + result.getLabelName());
+                        /* 反序列化结果 */
+                        List<OcrResultModel> results = gson.fromJson(serialize, typeMap);
+                        /* 最终结果 */
+                        String finalResult;
+                        if (results.size() > 0) for (OcrResultModel result : results) {
+                            /* 色彩判断 */
+                            String color = DetectPlateColor.getColor(bitmap, result);
+                            if ("green".equals(color))
+                                ct.sendUIMassage(1, "新能源车牌: " + result.getLabel());
+                            if ("blue".equals(color))
+                                ct.sendUIMassage(1, "蓝底车牌: " + result.getLabel());
+                            if (plate_color.getValue() != null && plate_color.getValue().equals(color)) {
+                                finalResult = result.getLabel();
+                                finalResult = completion(finalResult);
+                                ct.sendUIMassage(1, "当前所需车牌: ■■■" + finalResult + "■■■");
                             }
-                        } else ct.sendUIMassage(1, "No result!");
-                    }).start();
-                    return;
+                        }
+                        else ct.sendUIMassage(1, "No result!");
+                    });
+                    break;
                 //形状
                 case 3:
-                    new Thread(() -> ct.Shape(TFTAutoCutter.TFTCutter(detect))).start();
+                    cachedThreadPool.execute(() -> ct.Shape(TFTAutoCutter.TFTCutter(detect)));
                     break;
                 //交通标志物
                 case 4:
-                    new Thread(() -> {
+                    cachedThreadPool.execute(() -> {
                         Bitmap b = TFTAutoCutter.TFTCutter(detect);
                         ct.sendUIMassage(2, b);
-                        ct.sendUIMassage(1, MainActivity.getYolov5_tflite_tsDetector().processImage(b));
-                    }).start();
+                        String TSResult = MainActivity.getTS_Detector().processImage(b);
+                        /* 反序列化 */
+                        Type typeMap = new TypeToken<List<Classifier.Recognition>>() {}.getType();
+                        Gson gson = new GsonBuilder().enableComplexMapKeySerialization().setPrettyPrinting().create();
+                        /* 反序列化结果 */
+                        List<Classifier.Recognition> TSResults = gson.fromJson(TSResult, typeMap);
+                        /* 最终结果 */
+                        if (TSResults.size() > 0) for (Classifier.Recognition result : TSResults)
+                            ct.sendUIMassage(1, result.getTitle() + ": " + result.getConfidence());
+                        else ct.sendUIMassage(1, "No result!");
+                    });
+                    break;
+                //车种识别
+                case 5:
+                    cachedThreadPool.execute(() -> {
+                        Bitmap b = TFTAutoCutter.TFTCutter(detect);
+                        ct.sendUIMassage(2, b);
+                        String VIDResult = MainActivity.getVID_Detector().processImage(b);
+                        /* 反序列化 */
+                        Type typeMap = new TypeToken<List<Classifier.Recognition>>() {}.getType();
+                        Gson gson = new GsonBuilder().enableComplexMapKeySerialization().setPrettyPrinting().create();
+                        /* 反序列化结果 */
+                        List<Classifier.Recognition> VIDResults = gson.fromJson(VIDResult, typeMap);
+                        /* 最终结果 */
+                        if (VIDResults.size() > 0) for (Classifier.Recognition result : VIDResults)
+                            ct.sendUIMassage(1, result.getTitle() + ": " + result.getConfidence());
+                        else ct.sendUIMassage(1, "No result!");
+                    });
                     break;
                 //二维码
-                case 5:
-                    new Thread(() -> ct.WeChatQR(detect)).start();
+                case 6:
+                    cachedThreadPool.execute(() -> ct.WeChatQR(detect));
                     break;
                 //图片保存
-                case 6:
-                    new Thread(() -> ct.sendUIMassage(1, BitmapProcess.saveBitmap("MFP", detect))).start();
+                case 7:
+                    cachedThreadPool.execute(() -> ct.sendUIMassage(1, BitmapProcess.saveBitmap("MFP", moduleImgShow.getValue())));
                     break;
                 //全安卓控制4
                 case 0xB4:
-                    new Thread(ct::Q4).start();
+                    cachedThreadPool.execute(ct::Q4);
                     break;
             }
             else moduleInfoTV.setValue("传入图片为空!");
         } else {
-            if (ct.getStream() != null) switch (i) {
+            if (ct != null && ct.getStream() != null) switch (i) {
                 //红绿灯
                 case 1:
-                    Objects.requireNonNull(ct);
-                    new Thread(ct::trafficLight_mod).start();
+                    cachedThreadPool.execute(ct::trafficLight_mod);
                     break;
                 //车牌
                 case 2:
-                    Objects.requireNonNull(ct);
-                    new Thread(ct::plate_DetectByColor).start();
+                    cachedThreadPool.execute(ct::plate_DetectByColor);
                     break;
                 //形状
                 case 3:
-                    Objects.requireNonNull(ct);
-                    new Thread(ct::Shape_mod).start();
+                    cachedThreadPool.execute(ct::Shape_mod);
                     break;
                 //交通标志物
                 case 4:
-                    Objects.requireNonNull(ct);
-                    new Thread(ct::trafficSign_mod).start();
+                    cachedThreadPool.execute(ct::trafficSign_mod);
+                    break;
+                //车种识别
+                case 5:
+                    cachedThreadPool.execute(ct::VID);
                     break;
                 //二维码
-                case 5:
-                    Objects.requireNonNull(ct);
-                    new Thread(ct::WeChatQR_mod).start();
+                case 6:
+                    cachedThreadPool.execute(ct::WeChatQR_mod);
                     break;
                 //图片保存
-                case 6:
-                    new Thread(() -> ct.sendUIMassage(1, BitmapProcess.saveBitmap("Driver", ct.getStream()))).start();
+                case 7:
+                    cachedThreadPool.execute(() -> ct.sendUIMassage(1, BitmapProcess.saveBitmap("Driver", ct.getStream())));
                     break;
                 //全安卓控制4
                 case 0xB4:
-                    Objects.requireNonNull(ct);
-                    new Thread(ct::Q4).start();
+                    cachedThreadPool.execute(ct::Q4);
                     break;
             }
             else moduleInfoTV.setValue("摄像头未发送图片!");

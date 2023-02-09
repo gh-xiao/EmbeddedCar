@@ -20,7 +20,7 @@ android {
         //项目版本号
         versionCode 1
         //版本名
-        versionName "alpha2.0.5"
+        versionName "2.1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         //设置支持的so库架构(开发者可以根据需要，选择一个或多个平台的so)
         ndk {
@@ -95,5 +95,5 @@ dependencies {
     //导入自制BaiduOCR识别项目文件
     implementation files('libs/BaiDuOCR-Mod-debug.aar')
     //导入自制Yolov5-tflite-TSDetector识别项目文件
-    implementation files('libs/Yolov5-tflite-TSDetector.aar')
+    implementation files('libs/Yolov5-tflite-Detector.aar')
 }

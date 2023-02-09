@@ -43,16 +43,17 @@
                 android:text="交通标志物识别" />
 
             <Button
+                android:id="@+id/VID_mod_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="车种识别" />
+
+            <Button
                 android:id="@+id/QR_mod_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="二维码识别" />
 
-            <Button
-                android:id="@+id/cutter_bitmap_btn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="保存当前图片" />
         </GridLayout>
     </ScrollView>
 
@@ -90,7 +91,7 @@
         android:text="默认检测"
         android:thumb="@drawable/switch_thumb"
         app:layout_constraintEnd_toEndOf="@+id/module_img"
-        app:layout_constraintHeight_percent="0.125"
+        app:layout_constraintHeight_percent="0.12"
         app:layout_constraintStart_toStartOf="@+id/module_img"
         app:layout_constraintTop_toBottomOf="@+id/module_img"
         app:switchPadding="15dp"
@@ -105,7 +106,7 @@
         android:text="关闭实时图片传入"
         android:thumb="@drawable/switch_thumb"
         app:layout_constraintEnd_toEndOf="@+id/how_detect_btn"
-        app:layout_constraintHeight_percent="0.125"
+        app:layout_constraintHeight_percent="0.12"
         app:layout_constraintStart_toStartOf="@+id/how_detect_btn"
         app:layout_constraintTop_toBottomOf="@+id/how_detect_btn"
         app:switchPadding="15dp"
@@ -117,7 +118,17 @@
         android:layout_height="0dp"
         android:text="选择检测图片"
         app:layout_constraintEnd_toEndOf="@+id/get_img_btn"
-        app:layout_constraintHeight_percent="0.125"
+        app:layout_constraintHeight_percent="0.12"
         app:layout_constraintStart_toStartOf="@+id/get_img_btn"
         app:layout_constraintTop_toBottomOf="@+id/get_img_btn" />
+
+    <Button
+        android:id="@+id/cutter_bitmap_btn"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintEnd_toEndOf="@+id/choose_detectPic_btn"
+        app:layout_constraintHeight_percent="0.12"
+        app:layout_constraintStart_toStartOf="@+id/choose_detectPic_btn"
+        app:layout_constraintTop_toBottomOf="@+id/choose_detectPic_btn"
+        tools:ignore="SpeakableTextPresentCheck" />
 </androidx.constraintlayout.widget.ConstraintLayout>

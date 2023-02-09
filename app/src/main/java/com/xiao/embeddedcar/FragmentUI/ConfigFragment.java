@@ -15,15 +15,18 @@ import androidx.lifecycle.ViewModelProvider;
 import com.xiao.embeddedcar.R;
 import com.xiao.embeddedcar.Utils.QRcode.QRBitmapCutter;
 import com.xiao.embeddedcar.ViewModel.MainViewModel;
+import com.xiao.embeddedcar.ViewModel.ModuleViewModel;
 import com.xiao.embeddedcar.databinding.FragmentConfigBinding;
 
 public class ConfigFragment extends Fragment {
     private FragmentConfigBinding binding;
     private MainViewModel mainViewModel;
+    private ModuleViewModel moduleViewModel;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mainViewModel = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
+        moduleViewModel = new ViewModelProvider(requireActivity()).get(ModuleViewModel.class);
         binding = FragmentConfigBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         //控件动作初始化
@@ -66,12 +69,27 @@ public class ConfigFragment extends Fragment {
         binding.trafficLightChooseBtn.setOnCheckedChangeListener((group, id) -> mainViewModel.getSend_trafficLight().setValue(id == R.id.rb_tl_a ? 1 : 2));
         /* 车牌检测颜色选择 */
         binding.plateColorChooseRG.setOnCheckedChangeListener((group, id) -> {
-            if (id == R.id.rb_plate_all)
+            if (id == R.id.rb_plate_all) {
                 mainViewModel.getPlate_color().setValue("all");
-            if (id == R.id.rb_plate_green)
+                moduleViewModel.getPlate_color().setValue("all");
+            }
+            if (id == R.id.rb_plate_green) {
                 mainViewModel.getPlate_color().setValue("green");
-            if (id == R.id.rb_plate_blue)
+                moduleViewModel.getPlate_color().setValue("green");
+            }
+            if (id == R.id.rb_plate_blue) {
                 mainViewModel.getPlate_color().setValue("blue");
+                moduleViewModel.getPlate_color().setValue("blue");
+            }
+        });
+        /* 车型选择 */
+        binding.carModelChooseBtn.setOnClickListener(v -> {
+            AlertDialog.Builder car_model_choose_builder = new AlertDialog.Builder(requireActivity());
+            car_model_choose_builder.setTitle("指定检测车型");
+            String[] item = {"bike", "motor", "car", "truck", "van", "bus"};
+            String[] showItem = {"单车", "摩托", "汽车", "卡车"};
+            car_model_choose_builder.setSingleChoiceItems(showItem, -1, (dialog, which) -> mainViewModel.getCar_model().setValue(item[which]));
+            car_model_choose_builder.create().show();
         });
         binding.tvVersion.setText(getVersionName());
     }
@@ -119,6 +137,23 @@ public class ConfigFragment extends Fragment {
                     binding.tvPlateColor.setText("蓝色");
                     binding.plateColorChooseRG.check(R.id.rb_plate_blue);
                     break;
+            }
+        });
+        mainViewModel.getCar_model().observe(getViewLifecycleOwner(), s -> {
+            switch (s) {
+                case "bike":
+                    binding.tvCarModel.setText("单车");
+                    break;
+                case "motor":
+                    binding.tvCarModel.setText("摩托");
+                    break;
+                case "car":
+                    binding.tvCarModel.setText("汽车");
+                    break;
+                case "truck":
+                    binding.tvCarModel.setText("卡车");
+                    break;
+
             }
         });
     }

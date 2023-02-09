@@ -9,11 +9,11 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import com.baidu.ai.edge.core.ocr.OcrResultModel;
 import com.bkrcl.control_car_video.camerautil.CameraCommandUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.xiao.baiduocr.OCRResult;
 import com.xiao.baiduocr.TestInferOcrTask;
 import com.xiao.embeddedcar.Activity.MainActivity;
 import com.xiao.embeddedcar.Utils.CameraUtil.XcApplication;
@@ -29,12 +29,12 @@ import com.xiao.embeddedcar.Utils.Shape.ShapeDetector;
 import com.xiao.embeddedcar.Utils.TrafficLight.ColorProcess;
 import com.xiao.embeddedcar.Utils.TrafficLight.TrafficLight;
 import com.xiao.embeddedcar.Utils.TrafficLight.TrafficLight_fix;
-import com.xiao.embeddedcar.Utils.TrafficSigns.TSResult;
 import com.xiao.embeddedcar.ViewModel.MainViewModel;
 
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
 import org.opencv.objdetect.QRCodeDetector;
+import org.tensorflow.lite.examples.detection.tflite.Classifier;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -54,6 +54,7 @@ import java.util.TreeMap;
 /**
  * Socket数据处理类
  */
+@SuppressWarnings("unused")
 public class ConnectTransport {
     //目标类的简写名称
     private final String TAG = ConnectTransport.class.getSimpleName();
@@ -84,18 +85,19 @@ public class ConnectTransport {
     private final CameraCommandUtil cameraCommandUtil = new CameraCommandUtil();
     //从http获取到的图片
     private Bitmap stream;
-    //识别的车牌号
-    private String plate;
-    //交通标志物识别编号
-    private static short getTrafficFlag = 0x03;
-    //二维码识别结果
-    private String qrResult;
-    //图形识别结果
-    private int shapeResult = 0;
     //主从车控制判断
     public short TYPE = 0xAA;//170
     //从车与其他道具交互类型指令
     public short TYPE1 = 0x02;
+    /* ================================================== */
+    //二维码识别结果
+    private String qrResult;
+    //图形识别结果
+    private int shapeResult = 0;
+    //识别的车牌号
+    private String plate;
+    //交通标志物识别编号
+    private static short getTrafficFlag = 0x03;
 
     public Bitmap getStream() {
         return stream;
@@ -866,9 +868,6 @@ public class ConnectTransport {
 
     /* ================================================== */
 
-    /**
-     * 半安卓控制方案
-     */
     //半安卓控制的处理模块值
     private static int mark = 1;
     //半安卓控制主车行进路线的字段
@@ -892,6 +891,9 @@ public class ConnectTransport {
         ConnectTransport.carGoto = carGoto;
     }
 
+    /**
+     * 半安卓控制方案
+     */
     public void half_Android() {
         switch (mark) {
             //开始半自动
@@ -1637,6 +1639,11 @@ public class ConnectTransport {
         sendUIMassage(1, "----------形状识别完成----------");
     }
 
+    /**
+     * 形状识别模块 - 功能性单独测试
+     *
+     * @param detect 待检测的bitmap
+     */
     public synchronized void Shape(Bitmap detect) {
         sendUIMassage(1, "----------形状识别开始----------");
         ShapeDetector task = new ShapeDetector();
@@ -1699,6 +1706,11 @@ public class ConnectTransport {
         sendUIMassage(1, "最终结果: ■■■" + qrResult + "■■■");
     }
 
+    /**
+     * WeChat二维码扫描 - 功能性单独测试
+     *
+     * @param inputBitmap 待检测的bitmap
+     */
     public synchronized void WeChatQR(Bitmap inputBitmap) {
         sendUIMassage(1, "开始识别二维码!");
         Bitmap detect = QRBitmapCutter.QRCutter(inputBitmap);
@@ -1894,23 +1906,25 @@ public class ConnectTransport {
             /* 获得序列化的结果 */
             String serialize = DetectPlate(detect);
             /* 反序列化 */
-            Type typeMap = new TypeToken<List<OCRResult>>() {}.getType();
+            Type typeMap = new TypeToken<List<OcrResultModel>>() {}.getType();
             Gson gson = new GsonBuilder().enableComplexMapKeySerialization().setPrettyPrinting().create();
             /* 获得结果 */
-            List<OCRResult> results = gson.fromJson(serialize, typeMap);
-            if (results.size() > 0) for (OCRResult result : results) {
+            List<OcrResultModel> results = gson.fromJson(serialize, typeMap);
+            /* 如果OCR成功 */
+            if (results.size() > 0) for (OcrResultModel result : results) {
                 /* 色彩判断 */
                 String detectColor = DetectPlateColor.getColor(detect, result);
                 String needColor = mainViewModel.getPlate_color().getValue() != null ? mainViewModel.getPlate_color().getValue() : "green";
                 if (needColor.equals(detectColor)) {
                     /* 最终结果 */
-                    plate = result.getLabelName();
+                    plate = result.getLabel();
                     /* 过滤与补全 */
                     plate = completion(plate);
                     sendUIMassage(1, plate);
                     break;
                 }
             }
+            /* 如果OCR失败 */
             if (results.size() <= 0 || plate == null) {
                 sendUIMassage(1, "第" + fre + "次识别车牌失败!");
                 for (int J = 0; J < 3; J++) {
@@ -1919,7 +1933,6 @@ public class ConnectTransport {
                 }
                 sendUIMassage(1, "翻页中...");
                 YanChi(6000);
-                continue;
             }
         } while (plate == null && fre++ < 5);
 
@@ -1946,22 +1959,73 @@ public class ConnectTransport {
 
     /* ================================================== */
 
-    /*TODO
-     * 解密
-     * {}
+    /**
+     * 车型识别模块
      */
+    public synchronized void VID() {
+        //重新识别次数
+        int fre = 1;
+        //所有识别结果
+        TreeMap<String, Integer> total = new TreeMap<>();
+        Type typeMap = new TypeToken<List<Classifier.Recognition>>() {}.getType();
+        //指定所需车型
+        String need = mainViewModel.getCar_model().getValue();
+        if (need != null && need.equals("truck")) need += "/van";
+        //识别结果
+        String finalResult = mainViewModel.getCar_model().getValue();
+        //是否包含指定结果
+        boolean has = false;
+        YanChi(2000);
+        //TODO 更改为使用List存储结果,并按时间进行统计取得最终结果
+        do {
+            total.clear();
+            for (int i = 0; i < 10; i++) {
+                /* 裁剪TFT区域 */
+                Bitmap detect = TFTAutoCutter.TFTCutter(stream);
+                /* 获得序列化的结果 */
+                String serialize = MainActivity.getVID_Detector().processImage(detect);
+                /* 反序列化 */
+                Gson gson = new GsonBuilder().enableComplexMapKeySerialization().setPrettyPrinting().create();
+                List<Classifier.Recognition> results = gson.fromJson(serialize, typeMap);
+                /* 获得统计结果 */
+                if (results.size() > 0) for (Classifier.Recognition result : results) {
+                    /* 将识别结果添加到TreeMap */
+                    if (!total.containsKey(result.getTitle())) total.put(result.getTitle(), 0);
+                    else total.put(result.getTitle(), total.get(result.getTitle()) + 1);
+                    /* 包含结果 */
+                    if (result.getTitle().equals(need)) {
+                        has = true;
+                        finalResult = result.getTitle();
+                    }
+                }
+            }
+            /* 结果获取失败处理 */
+            if (total.size() <= 0 || !has) {
+                sendUIMassage(1, "第" + fre + "次识别车型失败!");
+                for (int J = 0; J < 3; J++) {
+                    YanChi(100);
+                    TFT_LCD(0x0B, 0x10, 0x02, 0x00, 0x00);
+                }
+                sendUIMassage(1, "翻页中...");
+                YanChi(6000);
+                continue;
+            }
+            sendUIMassage(1, "查找到指定车型: " + finalResult + "\n结果出现次数: " + total.get(finalResult));
+        } while (!has && fre++ < 5);
+        sendUIMassage(1, "车型识别结果: " + (has ? "成功" : "失败"));
+    }
 
     /* ================================================== */
 
     /**
      * TODO 交通标志物识别
      */
-    public void trafficSign_mod() {
+    public synchronized void trafficSign_mod() {
         //重新识别次数
         int fre = 1;
         //所有识别结果
         TreeMap<String, Integer> total = new TreeMap<>();
-        Type typeMap = new TypeToken<List<TSResult>>() {}.getType();
+        Type typeMap = new TypeToken<List<Classifier.Recognition>>() {}.getType();
         //最终结果
         String finalResult = null;
         YanChi(2000);
@@ -1972,15 +2036,14 @@ public class ConnectTransport {
                 /* 裁剪TFT区域 */
                 Bitmap detect = TFTAutoCutter.TFTCutter(stream);
                 /* 获得序列化的结果 */
-                String serialize = MainActivity.getYolov5_tflite_tsDetector().processImage(detect);
+                String serialize = MainActivity.getTS_Detector().processImage(detect);
                 /* 反序列化 */
                 Gson gson = new GsonBuilder().enableComplexMapKeySerialization().setPrettyPrinting().create();
-                List<TSResult> results = gson.fromJson(serialize, typeMap);
+                List<Classifier.Recognition> results = gson.fromJson(serialize, typeMap);
                 /* 获得统计结果 */
-                if (results.size() > 0) {
-                    for (TSResult result : results)
-                        if (!total.containsKey(result.getTitle())) total.put(result.getTitle(), 0);
-                        else total.put(result.getTitle(), total.get(result.getTitle()) + 1);
+                if (results.size() > 0) for (Classifier.Recognition result : results) {
+                    if (!total.containsKey(result.getTitle())) total.put(result.getTitle(), 0);
+                    else total.put(result.getTitle(), total.get(result.getTitle()) + 1);
                 }
             }
             /* 结果获取失败处理 */
@@ -1997,13 +2060,14 @@ public class ConnectTransport {
             /* 找出出现次数最多的结果 */
             Integer maxvalue = 0;
             for (Map.Entry<String, Integer> entry : total.entrySet()) {
-                if (entry.getValue() > maxvalue) {
+                if (entry.getValue() > maxvalue && entry.getValue() < 15) {
                     finalResult = entry.getKey();
                     maxvalue = entry.getValue();
                 }
             }
-            /* 出现次数不足,重置结果 */
-            if (maxvalue <= 5) finalResult = null;
+            /* 出现次数不足/出现次数过多,重置结果 */
+            sendUIMassage(1, "交通标志物识别结果: " + finalResult + "\n识别结果出现次数: " + maxvalue);
+            if (maxvalue <= 5 || maxvalue >= 16) finalResult = null;
         } while (finalResult == null && fre++ < 5);
         if (finalResult == null) finalResult = "ERROR";
         sendUIMassage(1, "交通标志物识别结果: " + finalResult);
@@ -2029,6 +2093,13 @@ public class ConnectTransport {
                 break;
         }
     }
+
+    /* ================================================== */
+
+    /*TODO
+     * 解密
+     * {}
+     */
 
     /* 以下全安卓控制主车读卡循迹未必完全有效,仅作为备用手段使用 */
 

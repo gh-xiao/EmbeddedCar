@@ -42,7 +42,8 @@ import com.xiao.embeddedcar.Utils.NetworkAndUIUtil.USBToSerialUtil;
 import com.xiao.embeddedcar.Utils.NetworkAndUIUtil.WiFiStateUtil;
 import com.xiao.embeddedcar.Utils.PublicMethods.BitmapProcess;
 import com.xiao.embeddedcar.Utils.QRcode.WeChatQRCodeDetector;
-import com.xiao.embeddedcar.Utils.TrafficSigns.Yolov5_tflite_TSDetector;
+import com.xiao.embeddedcar.Utils.TrafficSigns.YoloV5_tfLite_TSDetector;
+import com.xiao.embeddedcar.Utils.VID.YoloV5_tfLite_VIDDetector;
 import com.xiao.embeddedcar.ViewModel.ConnectViewModel;
 import com.xiao.embeddedcar.ViewModel.HomeViewModel;
 import com.xiao.embeddedcar.ViewModel.MainViewModel;
@@ -70,13 +71,19 @@ public class MainActivity extends AppCompatActivity {
     private static LoginInfo loginInfo = new LoginInfo();
     //主从状态
     public static boolean chief_status_flag = true;
-    //Yolo_tflite检测模型对象
-    private static final Yolov5_tflite_TSDetector yolov5_tflite_tsDetector = new Yolov5_tflite_TSDetector();
+    //Yolo_tfLite检测模型对象
+    private static final YoloV5_tfLite_TSDetector TS_Detector = new YoloV5_tfLite_TSDetector();
+    //Yolo_tfLite检测模型对象
+    private static final YoloV5_tfLite_VIDDetector VID_Detector = new YoloV5_tfLite_VIDDetector();
     //显示初始化对象状态的消息
     private final StringBuilder initMsg = new StringBuilder();
 
-    public static Yolov5_tflite_TSDetector getYolov5_tflite_tsDetector() {
-        return yolov5_tflite_tsDetector;
+    public static YoloV5_tfLite_TSDetector getTS_Detector() {
+        return TS_Detector;
+    }
+
+    public static YoloV5_tfLite_VIDDetector getVID_Detector() {
+        return VID_Detector;
     }
 
     public static LoginInfo getLoginInfo() {
@@ -389,9 +396,10 @@ public class MainActivity extends AppCompatActivity {
             WeChatQRCodeDetector.init(this);
             /* 百度OCR模型初始化 */
             initMsg.append(TestInferOcrTask.getInstance().init(this) ? "车牌识别模型初始化成功\n" : "车牌识别模型初始化失败\n");
-            /* Yolov5s-tflite-trafficSign模型初始化 */
+            /* YoloV5s-tfLite模型初始化 */
             /* TODO 在此更改模型加载参数 */
-            initMsg.append(yolov5_tflite_tsDetector.LoadModel("CPU", 4, this.getAssets()) ? "交通标志物识别模型创建成功" : "交通标志物识别模型创建失败");
+            initMsg.append(TS_Detector.LoadModel("CPU", 4, this.getAssets()) ? "交通标志物识别模型创建成功\n" : "交通标志物识别模型创建失败\n");
+            initMsg.append(VID_Detector.LoadModel("CPU", 4, this.getAssets()) ? "车种识别模型创建成功" : "车种识别模型创建失败");
         } catch (Exception e) {
             e.printStackTrace();
         }

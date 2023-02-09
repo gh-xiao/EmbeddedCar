@@ -3,7 +3,7 @@ package com.xiao.embeddedcar.Utils.PaddleOCR;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 
-import com.xiao.baiduocr.OCRResult;
+import com.baidu.ai.edge.core.ocr.OcrResultModel;
 
 import org.opencv.android.Utils;
 import org.opencv.core.Core;
@@ -13,10 +13,7 @@ import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
 public class DetectPlateColor {
-
-    private static final String TAG = DetectPlateColor.class.getSimpleName();
-
-    public static String getColor(Bitmap inputBitmap, OCRResult result) {
+    public static String getColor(Bitmap inputBitmap, OcrResultModel result) {
         /* 获取左上角最小的点 */
         int MIN_X = Integer.MAX_VALUE;
         int MIN_Y = Integer.MAX_VALUE;
@@ -94,6 +91,4 @@ public class DetectPlateColor {
 
         return green >= blue ? "green" : "blue";
     }
-
-
 }

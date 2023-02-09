@@ -234,4 +234,41 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent" />
 
+    <LinearLayout
+        android:id="@+id/line_carModels"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="15dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/line_plateColor_detect"
+        app:layout_constraintWidth_percent="0.5">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="指定检测车型:"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_car_model"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/car_model_choose_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="选择车型"
+        app:layout_constraintBottom_toBottomOf="@+id/line_carModels"
+        app:layout_constraintStart_toEndOf="@+id/line_carModels"
+        app:layout_constraintTop_toTopOf="@+id/line_carModels" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

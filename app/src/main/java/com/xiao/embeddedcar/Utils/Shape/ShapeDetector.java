@@ -168,6 +168,14 @@ public class ShapeDetector {
         /* 轮廓数量统计 */
         int contoursCounts = contours.size();
         /* 绘制轮廓,用于绘制找到的图像轮廓 */
+        /*
+        函数参数详解:
+        第一个参数image表示目标图像
+        第二个参数contours表示输⼊的轮廓组，每⼀组轮廓由点vector构成
+        第三个参数contourIdx指明画第⼏个轮廓，如果该参数为负值，则画全部轮廓
+        第四个参数color为轮廓的颜色
+        第五个参数thickness为轮廓的线宽，如果为负值或CV_FILLED表⽰填充轮廓内部
+        */
         Imgproc.drawContours(mat, contours, -1, new Scalar(0, 255, 0), 4);
 
         /* 形状统计 */

@@ -18,6 +18,8 @@ public class MainViewModel extends ViewModel {
     private final MutableLiveData<String> shape_type = new MutableLiveData<>("总计");
     //车牌种类
     private final MutableLiveData<String> plate_color = new MutableLiveData<>("green");
+    //车型所需种类
+    private final MutableLiveData<String> car_model = new MutableLiveData<>("bike");
 
     //TODO 识别(Yolo...)置信度设置...
 
@@ -43,5 +45,9 @@ public class MainViewModel extends ViewModel {
 
     public MutableLiveData<String> getPlate_color() {
         return plate_color;
+    }
+
+    public MutableLiveData<String> getCar_model() {
+        return car_model;
     }
 }

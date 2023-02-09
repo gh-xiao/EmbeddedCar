@@ -65,8 +65,9 @@ public class ModuleFragment extends Fragment {
         binding.plateOcrModBtn.setOnClickListener(v -> moduleViewModel.module(2));
         binding.shapeModBtn.setOnClickListener(v -> moduleViewModel.module(3));
         binding.trafficSignModBtn.setOnClickListener(v -> moduleViewModel.module(4));
-        binding.QRModBtn.setOnClickListener(v -> moduleViewModel.module(5));
-        binding.cutterBitmapBtn.setOnClickListener(v -> moduleViewModel.module(6));
+        binding.VIDModBtn.setOnClickListener(v -> moduleViewModel.module(5));
+        binding.QRModBtn.setOnClickListener(v -> moduleViewModel.module(6));
+        binding.cutterBitmapBtn.setOnClickListener(v -> moduleViewModel.module(7));
         binding.howDetectBtn.setOnCheckedChangeListener((buttonView, b) -> moduleViewModel.getDetectMode().setValue(b));
         binding.getImgBtn.setOnCheckedChangeListener((buttonView, b) -> moduleViewModel.getGetImgMode().setValue(b));
         binding.chooseDetectPicBtn.setOnClickListener(v -> {
@@ -106,8 +107,10 @@ public class ModuleFragment extends Fragment {
         moduleViewModel.getModuleInfoTV().observe(getViewLifecycleOwner(), s -> {
             if (s != null) binding.moduleInfo.append(s + "\n");
         });
-        moduleViewModel.getDetectMode().observe(getViewLifecycleOwner(), b -> binding.howDetectBtn.setText(b ? "默认检测" : "使用自定义图片"));
-
+        moduleViewModel.getDetectMode().observe(getViewLifecycleOwner(), b -> {
+            binding.howDetectBtn.setText(b ? "默认检测" : "使用自定义图片");
+            binding.cutterBitmapBtn.setText(b ? "保存摄像头图片" : "保存当前自定义图片");
+        });
         moduleViewModel.getGetImgMode().observe(getViewLifecycleOwner(), b -> {
             if (b) {
                 binding.getImgBtn.setText("开启实时图片传入");
@@ -117,11 +120,9 @@ public class ModuleFragment extends Fragment {
             } else {
                 binding.getImgBtn.setText("关闭实时图片传入");
                 homeViewModel.getShowImg().removeObservers(getViewLifecycleOwner());
-                binding.moduleImg.setImageBitmap(null);
+                moduleViewModel.getDetectPicture().setValue(null);
             }
         });
-        moduleViewModel.getDetectPicture().observe(getViewLifecycleOwner(), b -> {
-            if (b != null) binding.moduleImg.setImageBitmap(b);
-        });
+        moduleViewModel.getDetectPicture().observe(getViewLifecycleOwner(), b -> binding.moduleImg.setImageBitmap(b));
     }
 }

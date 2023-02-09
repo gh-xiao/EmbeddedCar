@@ -26,7 +26,8 @@ public class TFTAutoCutter {
     //    private static final int[] CutterPara = {0, 180, 0, 255, 75, 255, 100};
     //    private static final int[] CutterPara = {0, 180, 0, 179, 46, 255, 86};
     //    public static final int[] CutterPara = {0, 180, 0, 175, 46, 255, 115};
-    private static int[] CutterPara = {0, 0, 180, 46, 175, 115, 255};
+    //    private static int[] CutterPara = {0, 0, 180, 46, 175, 115, 255};
+    private static int[] CutterPara = {0, 0, 180, 10, 255, 200, 255};
     //轮廓统计
     private static final List<MatOfPoint> contours = new ArrayList<>();
 
