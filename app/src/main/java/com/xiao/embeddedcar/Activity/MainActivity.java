@@ -21,8 +21,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.PermissionChecker;
-import androidx.core.view.WindowCompat;
-import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -78,10 +76,20 @@ public class MainActivity extends AppCompatActivity {
     //显示初始化对象状态的消息
     private final StringBuilder initMsg = new StringBuilder();
 
+    /**
+     * 获取交通标志物检测对象
+     *
+     * @return YoloV5_tfLite_TSDetector
+     */
     public static YoloV5_tfLite_TSDetector getTS_Detector() {
         return TS_Detector;
     }
 
+    /**
+     * 获取车型识别检测对象
+     *
+     * @return YoloV5_tfLite_VIDDetector
+     */
     public static YoloV5_tfLite_VIDDetector getVID_Detector() {
         return VID_Detector;
     }
@@ -226,7 +234,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        WindowInsetsControllerCompat window = WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
+//        WindowInsetsControllerCompat window = WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
 //        if (!hasFocus)
 //            window.show(WindowInsetsCompat.Type.navigationBars() | WindowInsetsCompat.Type.statusBars() | WindowInsetsCompat.Type.captionBar());
 //        else

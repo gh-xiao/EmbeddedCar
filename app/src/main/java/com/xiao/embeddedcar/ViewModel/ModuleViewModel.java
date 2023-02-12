@@ -148,7 +148,7 @@ public class ModuleViewModel extends ViewModel {
                         else ct.sendUIMassage(1, "No result!");
                     });
                     break;
-                //车种识别
+                //车型识别
                 case 5:
                     cachedThreadPool.execute(() -> {
                         Bitmap b = TFTAutoCutter.TFTCutter(detect);
@@ -177,6 +177,8 @@ public class ModuleViewModel extends ViewModel {
                 case 0xB4:
                     cachedThreadPool.execute(ct::Q4);
                     break;
+                case 0xFF:
+                    break;
             }
             else moduleInfoTV.setValue("传入图片为空!");
         } else {
@@ -185,7 +187,7 @@ public class ModuleViewModel extends ViewModel {
                 case 1:
                     cachedThreadPool.execute(ct::trafficLight_mod);
                     break;
-                //车牌
+                //车牌(色彩)
                 case 2:
                     cachedThreadPool.execute(ct::plate_DetectByColor);
                     break;
@@ -197,9 +199,9 @@ public class ModuleViewModel extends ViewModel {
                 case 4:
                     cachedThreadPool.execute(ct::trafficSign_mod);
                     break;
-                //车种识别
+                //车牌(车型)
                 case 5:
-                    cachedThreadPool.execute(ct::VID);
+                    cachedThreadPool.execute(ct::plate_DetectByVID);
                     break;
                 //二维码
                 case 6:
@@ -212,6 +214,8 @@ public class ModuleViewModel extends ViewModel {
                 //全安卓控制4
                 case 0xB4:
                     cachedThreadPool.execute(ct::Q4);
+                    break;
+                case 0xFF:
                     break;
             }
             else moduleInfoTV.setValue("摄像头未发送图片!");

@@ -138,6 +138,5 @@ public final class WeChatQRCodeDetector {
     public static List<String> detectAndDecode(Mat img, List<Mat> points) {
         return sWeChatQRCode.detectAndDecode(img, points);
     }
-
-
+    
 }

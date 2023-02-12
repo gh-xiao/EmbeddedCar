@@ -12,6 +12,9 @@ import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.util.Log;
 
+import org.opencv.android.Utils;
+import org.opencv.core.Mat;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -21,7 +24,7 @@ import java.util.Date;
 import java.util.Locale;
 
 public class BitmapProcess {
-
+    // 指定我们想要存储文件的地址
     public static final String TargetPath = Environment.getExternalStorageDirectory() + "/" + Environment.DIRECTORY_DCIM + "/Tess/";
     private static final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss", Locale.CHINA);
     @SuppressLint("StaticFieldLeak")
@@ -42,11 +45,40 @@ public class BitmapProcess {
         this.mContext = context.getApplicationContext();
     }
 
+    /**
+     * 全局使用的图片保存方法
+     *
+     * @param name 图片名
+     * @param mat  需要保存的mat
+     * @return 是否保存成功
+     */
+    @SuppressWarnings("UnusedReturnValue")
+    public static String saveBitmap(String name, Mat mat) {
+        if (mat == null) return "错误,没有图片!";
+        Bitmap bm = Bitmap.createBitmap(mat.width(), mat.height(), Bitmap.Config.ARGB_8888);
+        Utils.matToBitmap(mat, bm);
+        return saveBitmap(name, bm);
+    }
+
+    /**
+     * 全局使用的图片保存方法
+     *
+     * @param name 图片名
+     * @param bm   需要保存的Bitmap
+     * @return 是否保存成功
+     */
     public static String saveBitmap(String name, Bitmap bm) {
         if (bm == null) return "错误,没有图片!";
         return Build.VERSION.SDK_INT < 29 ? saveImageOld(name, bm) : mInstance.saveImageNew(name, bm);
     }
 
+    /**
+     * 旧版本Android保存图片方法
+     *
+     * @param name 图片名
+     * @param bm   等待保存的Bitmap
+     * @return 是否保存成功
+     */
     private static String saveImageOld(String name, Bitmap bm) {
         Log.d("Save Bitmap", "Ready to save picture");
         StringBuilder append = new StringBuilder().append("Save Path = ");
@@ -79,7 +111,7 @@ public class BitmapProcess {
      *
      * @param name 图片名
      * @param bm   等待保存的Bitmap
-     * @return result
+     * @return 是否保存成功
      */
     private String saveImageNew(String name, Bitmap bm) {
         Log.d("Save Bitmap", "Ready to save picture");

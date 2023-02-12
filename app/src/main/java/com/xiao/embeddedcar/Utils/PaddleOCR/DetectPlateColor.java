@@ -13,6 +13,7 @@ import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
 public class DetectPlateColor {
+
     public static String getColor(Bitmap inputBitmap, OcrResultModel result) {
         /* 获取左上角最小的点 */
         int MIN_X = Integer.MAX_VALUE;
@@ -88,7 +89,6 @@ public class DetectPlateColor {
 //        Log.i(TAG, "Green: " + green + "\n" + "Blue" + blue);
 
         if (green < 100 && blue < 100) return "No Plate";
-
         return green >= blue ? "green" : "blue";
     }
 }

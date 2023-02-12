@@ -18,10 +18,14 @@ public class MainViewModel extends ViewModel {
     private final MutableLiveData<String> shape_type = new MutableLiveData<>("总计");
     //车牌种类
     private final MutableLiveData<String> plate_color = new MutableLiveData<>("green");
+    //车型检测种类
+    private final MutableLiveData<String> detect_car_model = new MutableLiveData<>("bike");
     //车型所需种类
-    private final MutableLiveData<String> car_model = new MutableLiveData<>("bike");
-
-    //TODO 识别(Yolo...)置信度设置...
+    private final MutableLiveData<String> car_model = new MutableLiveData<>("truck");
+    //交通标志物识别最低置信度
+    private final MutableLiveData<Float> traffic_sign_minimumConfidence = new MutableLiveData<>(0.5f);
+    //车型识别最低置信度
+    private final MutableLiveData<Float> VID_minimumConfidence = new MutableLiveData<>(0.3f);
 
     public MutableLiveData<Boolean> getChief_state_flag() {
         return chief_state_flag;
@@ -47,7 +51,21 @@ public class MainViewModel extends ViewModel {
         return plate_color;
     }
 
+    public MutableLiveData<String> getDetect_car_model() {
+        return detect_car_model;
+    }
+
     public MutableLiveData<String> getCar_model() {
         return car_model;
+    }
+
+    /* 设置交通标志物识别默认最低置信度阈值 */
+    public MutableLiveData<Float> getTraffic_sign_minimumConfidence() {
+        return traffic_sign_minimumConfidence;
+    }
+
+    /* 设置车型识别默认最低置信度阈值 */
+    public MutableLiveData<Float> getVID_minimumConfidence() {
+        return VID_minimumConfidence;
     }
 }

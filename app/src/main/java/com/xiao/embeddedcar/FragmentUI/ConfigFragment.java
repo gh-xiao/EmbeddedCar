@@ -1,10 +1,12 @@
 package com.xiao.embeddedcar.FragmentUI;
 
+import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SeekBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,8 +14,12 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.github.gzuliyujiang.wheelview.contract.OnWheelChangedListener;
+import com.github.gzuliyujiang.wheelview.widget.WheelView;
 import com.xiao.embeddedcar.R;
 import com.xiao.embeddedcar.Utils.QRcode.QRBitmapCutter;
+import com.xiao.embeddedcar.Utils.TrafficSigns.YoloV5_tfLite_TSDetector;
+import com.xiao.embeddedcar.Utils.VID.YoloV5_tfLite_VIDDetector;
 import com.xiao.embeddedcar.ViewModel.MainViewModel;
 import com.xiao.embeddedcar.ViewModel.ModuleViewModel;
 import com.xiao.embeddedcar.databinding.FragmentConfigBinding;
@@ -31,6 +37,8 @@ public class ConfigFragment extends Fragment {
         View root = binding.getRoot();
         //控件动作初始化
         init();
+        //数字滚轮初始化
+        initPicker();
         //设置观察者
         observerDataStateUpdateAction();
         return root;
@@ -39,6 +47,7 @@ public class ConfigFragment extends Fragment {
     /**
      * 控件动作初始化
      */
+    @SuppressLint("SetTextI18n")
     private void init() {
         /* 二维码颜色选择 */
         binding.QRColorChooseRG.setOnCheckedChangeListener((group, id) -> {
@@ -82,16 +91,119 @@ public class ConfigFragment extends Fragment {
                 moduleViewModel.getPlate_color().setValue("blue");
             }
         });
-        /* 车型选择 */
-        binding.carModelChooseBtn.setOnClickListener(v -> {
+        /* 车型检测选择 */
+        binding.detectCarModelChooseBtn.setOnClickListener(v -> {
             AlertDialog.Builder car_model_choose_builder = new AlertDialog.Builder(requireActivity());
             car_model_choose_builder.setTitle("指定检测车型");
             String[] item = {"bike", "motor", "car", "truck", "van", "bus"};
-            String[] showItem = {"单车", "摩托", "汽车", "卡车"};
+            String[] showItem = {"自行车", "摩托", "汽车", "卡车/面包车"};
+            car_model_choose_builder.setSingleChoiceItems(showItem, -1, (dialog, which) -> mainViewModel.getDetect_car_model().setValue(item[which]));
+            car_model_choose_builder.create().show();
+        });
+        /* 车型识别选择 */
+        binding.carModelChooseBtn.setOnClickListener(v -> {
+            AlertDialog.Builder car_model_choose_builder = new AlertDialog.Builder(requireActivity());
+            car_model_choose_builder.setTitle("指定识别车型");
+            String[] item = {"bike", "motor", "car", "truck", "van", "bus"};
+            String[] showItem = {"自行车", "摩托", "汽车", "卡车/面包车"};
             car_model_choose_builder.setSingleChoiceItems(showItem, -1, (dialog, which) -> mainViewModel.getCar_model().setValue(item[which]));
             car_model_choose_builder.create().show();
         });
-        binding.tvVersion.setText(getVersionName());
+        /* 交通标志物识别最低置信度 */
+        binding.sbTSMin.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                mainViewModel.getTraffic_sign_minimumConfidence().setValue(progress / 100f);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+        /* 车型识别最低置信度 */
+        binding.sbVIDMin.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                mainViewModel.getVID_minimumConfidence().setValue(progress / 100f);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+        /* 重置置信度 */
+        binding.resetTSBtn.setOnClickListener(v -> mainViewModel.getTraffic_sign_minimumConfidence().setValue(YoloV5_tfLite_TSDetector.MINIMUM_CONFIDENCE_TF_OD_API));
+        binding.resetVIDBtn.setOnClickListener(v -> mainViewModel.getVID_minimumConfidence().setValue(YoloV5_tfLite_VIDDetector.MINIMUM_CONFIDENCE_TF_OD_API));
+        binding.tvVersion.setText("当前软件版本: " + getVersionName());
+    }
+
+    /**
+     * 数字滚轮初始化
+     */
+    private void initPicker() {
+        binding.TSMinData.setRange(0, 100, 1);
+        binding.TSMinData.setTextSize(0);
+        binding.TSMinData.setCyclicEnabled(true);
+        binding.TSMinData.setIndicatorEnabled(false);
+        binding.TSMinData.setOnWheelChangedListener(new OnWheelChangedListener() {
+            @Override
+            public void onWheelScrolled(WheelView view, int offset) {
+
+            }
+
+            @Override
+            public void onWheelSelected(WheelView view, int position) {
+                mainViewModel.getTraffic_sign_minimumConfidence().setValue(position / 100f);
+            }
+
+            @Override
+            public void onWheelScrollStateChanged(WheelView view, int state) {
+
+            }
+
+            @Override
+            public void onWheelLoopFinished(WheelView view) {
+
+            }
+        });
+
+        binding.VIDMinData.setRange(0, 100, 1);
+        binding.VIDMinData.setTextSize(0);
+        binding.VIDMinData.setCyclicEnabled(true);
+        binding.VIDMinData.setIndicatorEnabled(false);
+        binding.VIDMinData.setOnWheelChangedListener(new OnWheelChangedListener() {
+            @Override
+            public void onWheelScrolled(WheelView view, int offset) {
+
+            }
+
+            @Override
+            public void onWheelSelected(WheelView view, int position) {
+                mainViewModel.getVID_minimumConfidence().setValue(position / 100f);
+            }
+
+            @Override
+            public void onWheelScrollStateChanged(WheelView view, int state) {
+
+            }
+
+            @Override
+            public void onWheelLoopFinished(WheelView view) {
+
+            }
+        });
     }
 
     /**
@@ -139,10 +251,26 @@ public class ConfigFragment extends Fragment {
                     break;
             }
         });
+        mainViewModel.getDetect_car_model().observe(getViewLifecycleOwner(), s -> {
+            switch (s) {
+                case "bike":
+                    binding.tvDetectCarModel.setText("自行车");
+                    break;
+                case "motor":
+                    binding.tvDetectCarModel.setText("摩托");
+                    break;
+                case "car":
+                    binding.tvDetectCarModel.setText("汽车");
+                    break;
+                case "truck":
+                    binding.tvDetectCarModel.setText("卡车/面包车");
+                    break;
+            }
+        });
         mainViewModel.getCar_model().observe(getViewLifecycleOwner(), s -> {
             switch (s) {
                 case "bike":
-                    binding.tvCarModel.setText("单车");
+                    binding.tvCarModel.setText("自行车");
                     break;
                 case "motor":
                     binding.tvCarModel.setText("摩托");
@@ -151,10 +279,21 @@ public class ConfigFragment extends Fragment {
                     binding.tvCarModel.setText("汽车");
                     break;
                 case "truck":
-                    binding.tvCarModel.setText("卡车");
+                    binding.tvCarModel.setText("卡车/面包车");
                     break;
-
             }
+        });
+        mainViewModel.getTraffic_sign_minimumConfidence().observe(getViewLifecycleOwner(), f -> {
+            binding.tvTSConfidence.setText(String.valueOf(f));
+            binding.sbTSMin.setProgress((int) (f * 100));
+            binding.TSMinData.setDefaultValue((int) (f * 100));
+            YoloV5_tfLite_TSDetector.minimumConfidence = f;
+        });
+        mainViewModel.getVID_minimumConfidence().observe(getViewLifecycleOwner(), f -> {
+            binding.tvVIDConfidence.setText(String.valueOf(f));
+            binding.sbVIDMin.setProgress((int) (f * 100));
+            binding.VIDMinData.setDefaultValue((int) (f * 100));
+            YoloV5_tfLite_VIDDetector.minimumConfidence = f;
         });
     }
 

@@ -68,6 +68,7 @@ public class ModuleFragment extends Fragment {
         binding.VIDModBtn.setOnClickListener(v -> moduleViewModel.module(5));
         binding.QRModBtn.setOnClickListener(v -> moduleViewModel.module(6));
         binding.cutterBitmapBtn.setOnClickListener(v -> moduleViewModel.module(7));
+        binding.devMethodBtn.setOnClickListener(v -> moduleViewModel.module(0xFF));
         binding.howDetectBtn.setOnCheckedChangeListener((buttonView, b) -> moduleViewModel.getDetectMode().setValue(b));
         binding.getImgBtn.setOnCheckedChangeListener((buttonView, b) -> moduleViewModel.getGetImgMode().setValue(b));
         binding.chooseDetectPicBtn.setOnClickListener(v -> {

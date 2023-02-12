@@ -25,19 +25,19 @@ public class YoloV5_tfLite_TSDetector {
 
     // Which detection model to use: by default uses Tensorflow Object Detection API frozen
     // checkpoints.
-    enum DetectorMode {TF_OD_API}
+//    enum DetectorMode {TF_OD_API}
 
     //日志对象
     private static final Logger LOGGER = new Logger();
     //枚举常量 - 检测模式
-    private static final DetectorMode MODE = DetectorMode.TF_OD_API;
-    //最小置信度
+//    private static final DetectorMode MODE = DetectorMode.TF_OD_API;
     public static final float MINIMUM_CONFIDENCE_TF_OD_API = 0.5f;
+    //最小置信度
+    public static float minimumConfidence = 0.5f;
     //核心检测对象
     private YoloV5Classifier detector;
 
     private long timestamp = 0;
-
 
     /**
      * 加载模型配置
@@ -59,16 +59,13 @@ public class YoloV5_tfLite_TSDetector {
         /* Try to load model. */
         /* 尝试加载模型 */
         try {
-            detector = DetectorFactory.getDetector(assetManager, modelString,labelFilename);
+            detector = DetectorFactory.getDetector(assetManager, modelString, labelFilename);
             // Customize the interpreter to the type of device we want to use.
-            if (detector == null) {
-                return false;
-            }
         } catch (IOException e) {
             e.printStackTrace();
             LOGGER.e(e, "Exception in updateActiveModel()");
 //            Toast toast = Toast.makeText(FirstActivity.getContext(), "Classifier could not be initialized", Toast.LENGTH_SHORT);
-//            toast.show();
+            return false;
         }
 
         switch (device) {
@@ -126,14 +123,6 @@ public class YoloV5_tfLite_TSDetector {
         Log.e("CHECK", "run: " + results.size());
         /* 检测时间 */
         Log.i("Time Spent: ", lastProcessingTimeMs + "ms");
-        /* 设置默认最低置信度阈值 */
-        float minimumConfidence = MINIMUM_CONFIDENCE_TF_OD_API;
-
-        switch (MODE) {
-            case TF_OD_API:
-                minimumConfidence = MINIMUM_CONFIDENCE_TF_OD_API;
-                break;
-        }
 
         /* 筛选通过最低置信度阈值的识别结果 */
         final List<Classifier.Recognition> mappedRecognitions = new LinkedList<>();

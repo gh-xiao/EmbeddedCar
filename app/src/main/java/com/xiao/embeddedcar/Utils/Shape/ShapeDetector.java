@@ -3,8 +3,8 @@ package com.xiao.embeddedcar.Utils.Shape;
 import android.graphics.Bitmap;
 import android.util.Log;
 
+import com.xiao.embeddedcar.Utils.PublicMethods.BitmapProcess;
 import com.xiao.embeddedcar.Utils.PublicMethods.ColorHSV;
-import com.xiao.embeddedcar.Utils.TrafficLight.TrafficLight;
 
 import org.opencv.android.Utils;
 import org.opencv.core.Core;
@@ -71,17 +71,6 @@ public class ShapeDetector {
 
         if (inputBitmap == null) return;
 
-        /* 图片截取方式1 */
-//        Bitmap Btmp = Bitmap.createBitmap(inputBitmap,
-//                //开始的x轴
-//                (inputBitmap.getWidth() / 100) * 25,
-//                //开始的y轴
-//                (inputBitmap.getHeight() / 100) * 50,
-//                //从开始的x轴截取到当前位置的宽度
-//                (inputBitmap.getWidth() / 100) * 35,
-//                //从开始的y轴截取到当前位置的高度
-//                (inputBitmap.getHeight() / 100) * 50);
-
         /* openCV创建用来存储图像信息的内存对象 */
         Mat srcMat = new Mat();
 
@@ -113,9 +102,7 @@ public class ShapeDetector {
 //        Imgproc.cvtColor(dstmat, dstmat, Imgproc.COLOR_BGR2RGB);
 
         /* 保存用 */
-        Bitmap save = Bitmap.createBitmap(srcMat.width(), srcMat.height(), Bitmap.Config.ARGB_8888);
-        Utils.matToBitmap(srcMat, save);
-        TrafficLight.saveBitmap("shape_裁剪.jpg", save);
+        BitmapProcess.saveBitmap("shape_裁剪", srcMat);
 
         /* 颜色形状分析 */
         Identify(srcMat, ColorHSV.yellowHSV1, "黄色");
@@ -239,9 +226,7 @@ public class ShapeDetector {
         Log.i(TAG, msg);
 
         /* 保存图片 */
-        Bitmap save = Bitmap.createBitmap(mat.width(), mat.height(), Bitmap.Config.ARGB_8888);
-        Utils.matToBitmap(mat, save);
-        TrafficLight.saveBitmap(colorName + ".jpg", save);
+        BitmapProcess.saveBitmap(colorName, mat);
     }
 
     /**

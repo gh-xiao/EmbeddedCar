@@ -3,17 +3,18 @@ package com.xiao.embeddedcar.Utils.TrafficLight;
 import android.graphics.Bitmap;
 import android.util.Log;
 
-import com.xiao.embeddedcar.Utils.PublicMethods.RGB2HSV;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
+import org.opencv.android.Utils;
+import org.opencv.core.Core;
+import org.opencv.core.Mat;
+import org.opencv.core.Rect;
+import org.opencv.core.Scalar;
+import org.opencv.core.Size;
+import org.opencv.imgproc.Imgproc;
 
 public class TrafficLight {
 
-    private static Bitmap bm = null;
-    private static String ColorPixel;
+    private static final String TAG = TrafficLight.class.getSimpleName();
+    private static Mat redMat, greenMat, yellowMat;
 
     /**
      * 识别传入的红绿灯图片
@@ -21,157 +22,116 @@ public class TrafficLight {
      * @param inputBitmap 传入需要识别的红绿灯图片
      * @return String – 红绿灯识别结果
      */
-    @Deprecated
-    public static String getImageColorPixel(Bitmap inputBitmap) {
+    public static String Identify(Bitmap inputBitmap) {
         if (inputBitmap == null) return "ERROR";
-        /*在这里调整传入的图片以方便红绿灯的识别*/
-        Bitmap bitmap = Bitmap.createBitmap(inputBitmap,
-                (inputBitmap.getWidth() / 100) * 25,
-                (inputBitmap.getHeight() / 100) * 2,
-                (inputBitmap.getWidth() / 100) * 65,
-                (inputBitmap.getHeight() / 100) * 45);
-        //保存图片用
-        bm = bitmap;
-        int[] rgb = new int[3];
-        int width = bitmap.getWidth();
-        int height = bitmap.getHeight();
-        int minx = 0;
-        //int miny = bi.getMinY();
-        int red = 0;
-        int yellow = 0;
-        int green = 0;
-        for (int i = minx; i < width; i += 5) {
-            for (int j = height / 3; j < height / 1.5; j += 5) {
-                int pixel = bitmap.getPixel(i, j);
-                rgb[0] = (pixel & 0xff0000) >> 16;
-                rgb[1] = (pixel & 0xff00) >> 8;
-                rgb[2] = (pixel & 0xff);
-                //调整RGB数组的参数可以改变识别的颜色
-                //可以将RGB数组改变为HSV数组方便选择需要识别的颜色
-                float[] hsv = RGB2HSV.rgbToHsv(rgb);
-                //RGB数组判断颜色
-//                if (rgb[0] >= 210 && rgb[1] < 200 && rgb[2] < 200) red++;
-//                if (rgb[0] >= 200 && rgb[1] >= 145 && rgb[2] < 200) yellow++;
-//                if (rgb[0] <= 200 && rgb[1] >= 200 && rgb[2] < 200) green++;
-                //HSV数组判断颜色
-//                if (ColorConfirmation.isRed(hsv)) red++;
-//                if (ColorConfirmation.isYellow(hsv)) yellow++;
-//                if (ColorConfirmation.isGreen(hsv)) green++;
-                if (hsv[0] <= 25 || (300 <= hsv[0])) red++;
-                if (25 < hsv[0] && hsv[0] <= 65) yellow++;
-                if (90 <= hsv[0] && hsv[0] <= 160) green++;
-            }
-        }
-        //输出该图片包含指定颜色的像素个数
-        System.out.println("红色" + red);
-        System.out.println("黄色" + yellow);
-        System.out.println("绿色" + green);
-        if (red > yellow) {
-            return ColorPixel = red > green ? "红灯" : "绿灯";
-        } else {
-            return ColorPixel = green > yellow ? "绿灯" : "黄灯";
-        }
+        /* 在这里调整传入的图片以方便红绿灯的识别(不建议) */
+//        Btmp = Bitmap.createBitmap(inputBitmap,
+//                //开始的x轴
+//                (inputBitmap.getWidth() / 100) * 25,
+//                //开始的y轴
+//                (inputBitmap.getHeight() / 100) * 2,
+//                //从开始的x轴截取到当前位置的宽度
+//                (inputBitmap.getWidth() / 100) * 65,
+//                //从开始的y轴截取到当前位置的高度
+//                (inputBitmap.getHeight() / 100) * 45);
+        Mat srcMat = new Mat();
+        Utils.bitmapToMat(inputBitmap, srcMat);
+        return Identify(srcMat);
     }
 
-
     /**
-     * 识别传入的图片
+     * 识别传入的红绿灯图片
      *
-     * @param inputBitmap 传入需要识别的红绿灯图片
+     * @param srcMat 传入需要识别的Mat
      * @return String – 红绿灯识别结果
      */
-    public static int getImagePixel(Bitmap inputBitmap) {
-        /*在这里调整传入的图片以方便红绿灯的识别*/
-        //保存图片用
-        int[] rgb = new int[3];
-        int width = inputBitmap.getWidth();
-        int height = inputBitmap.getHeight();
-        int minx = 0;
-        int miny = 0;
-        int white = 0;
-        for (int i = minx; i < width; i += 5) {
-            for (int j = miny; j < height; j += 5) {
-                int pixel = inputBitmap.getPixel(i, j);
-                rgb[0] = (pixel & 0xff0000) >> 16;
-                rgb[1] = (pixel & 0xff00) >> 8;
-                rgb[2] = (pixel & 0xff);
-                //调整RGB数组的参数可以改变识别的颜色
-                //可以将RGB数组改变为HSV数组方便选择需要识别的颜色
-                float[] hsv = RGB2HSV.rgbToHsv(rgb);
-                //HSV数组判断颜色
-                if (hsv[0] == 0 && hsv[1] == 0 && hsv[2] == 1) white++;
+    public static String Identify(Mat srcMat) {
 
+        if (srcMat == null) return "ERROR";
+        /*TODO 调整截图位置(图片截取方式2) */
+        Rect rect = new Rect((srcMat.width() / 100 * 20), (srcMat.height() / 100 * 2), (srcMat.width() / 100 * 60), (srcMat.height() / 100 * 45));
+        Mat ROI = new Mat(srcMat, rect);
+        /* 保存用 */
+//        BitmapProcess.saveBitmap("红绿灯ROI区域", ROI);
+        /* 创建用来存储图像信息的内存对象 */
+        redMat = new Mat();
+        greenMat = new Mat();
+        yellowMat = new Mat();
+        /* 转换为带有HSV数据的红,黄,绿Mat对象 */
+        Imgproc.cvtColor(ROI, redMat, Imgproc.COLOR_RGB2HSV);
+        Imgproc.cvtColor(ROI, yellowMat, Imgproc.COLOR_RGB2HSV);
+        Imgproc.cvtColor(ROI, greenMat, Imgproc.COLOR_RGB2HSV);
+
+        //颜色分割
+        Log.i("start Core.inRange()", "开始颜色分割");
+        /* 第一版测试 */
+//            Core.inRange(redMat, new Scalar(0, 80, 255), new Scalar(50, 255, 255), redMat);
+//            Core.inRange(yellowMat, new Scalar(0, 0, 255), new Scalar(0, 50, 255), yellowMat);
+//            Core.inRange(greenMat, new Scalar(70, 0, 255), new Scalar(90, 255, 255), greenMat);
+
+        /* 赛场上专用 */
+        Core.inRange(redMat, new Scalar(0, 80, 230), new Scalar(15, 255, 255), redMat);
+        Core.inRange(yellowMat, new Scalar(25, 0, 230), new Scalar(70, 255, 255), yellowMat);
+        Core.inRange(greenMat, new Scalar(70, 0, 230), new Scalar(100, 255, 255), greenMat);
+
+        /* 强光下使用 */
+//            Core.inRange(redMat, new Scalar(0, 80, 255), new Scalar(50, 255, 255), redMat);
+//            Core.inRange(yellowMat, new Scalar(0, 0, 255), new Scalar(0, 50, 255), greenMat);
+//            Core.inRange(greenMat, new Scalar(70, 0, 255), new Scalar(90, 255, 255), yellowMat);
+
+        /* 形态学处理 */
+        //确定运算核
+        Mat kernel = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3, 3));
+        /* 开,闭运算 */
+        Imgproc.morphologyEx(redMat, redMat, Imgproc.MORPH_OPEN, kernel);
+        Imgproc.morphologyEx(redMat, redMat, Imgproc.MORPH_CLOSE, kernel);
+        Imgproc.morphologyEx(yellowMat, yellowMat, Imgproc.MORPH_OPEN, kernel);
+        Imgproc.morphologyEx(yellowMat, yellowMat, Imgproc.MORPH_CLOSE, kernel);
+        Imgproc.morphologyEx(greenMat, greenMat, Imgproc.MORPH_OPEN, kernel);
+        Imgproc.morphologyEx(greenMat, greenMat, Imgproc.MORPH_CLOSE, kernel);
+
+//        BitmapProcess.saveBitmap("r", redMat);
+//        BitmapProcess.saveBitmap("y", yellowMat);
+//        BitmapProcess.saveBitmap("g", greenMat);
+
+        int Ir = 0;
+        int Iy = 0;
+        int Ig = 0;
+
+        /* 二值化HSV数组的每个像素值不是0(黑)就是255(白) */
+        for (int rows = 0; rows < redMat.rows(); rows++) {
+            for (int cols = 0; cols < redMat.cols(); cols++) {
+                double[] scalarVal = redMat.get(rows, cols);
+                if (scalarVal[0] > 1) Ir++;
             }
         }
-        //输出该图片包含指定颜色的像素个数
-//        System.out.println("白色: " + white);
-        return white;
+        for (int rows = 0; rows < yellowMat.rows(); rows++) {
+            for (int cols = 0; cols < yellowMat.cols(); cols++) {
+                double[] scalarVal = yellowMat.get(rows, cols);
+                if (scalarVal[0] > 1) Iy++;
+            }
+        }
+        for (int rows = 0; rows < greenMat.rows(); rows++) {
+            for (int cols = 0; cols < greenMat.cols(); cols++) {
+                double[] scalarVal = greenMat.get(rows, cols);
+                if (scalarVal[0] > 1) Ig++;
+            }
+        }
+
+        Log.i(TAG, "redPixel: " + Ir + "\nyellowPixel: " + Iy + "\ngreenPixel: " + Ig);
+        destroy();
+
+        /* 赛场上专用配套 */
+        if (Ig > 1000) return "绿灯";
+        return (Ir > 4000 || Iy < 500) ? "红灯" : "黄灯";
     }
 
     /**
-     * 全局保存图片的方法
-     *
-     * @param name 自定义图片名
-     * @param bm   需要保存的图片
+     * 释放资源
      */
-    public static void saveBitmap(String name, Bitmap bm) {
-        Log.d("Save Bitmap", "Ready to save picture");
-        // 指定我们想要存储文件的地址
-        String TargetPath = "/storage/emulated/0/DCIM/Tess/";
-        Log.d("Save Bitmap", "Save Path = " + TargetPath);
-        // 判断指定文件夹的路径是否存在
-        if (!fileIsExist(TargetPath)) {
-            Log.d("Save Bitmap", "TargetPath isn't exist");
-        } else {
-            // 如果指定文件夹创建成功，那么我们则需要进行图片存储操作
-            File saveFile = new File(TargetPath, name);
-            try {
-                FileOutputStream saveImgOut = new FileOutputStream(saveFile);
-                // compress - 压缩的意思
-                bm.compress(Bitmap.CompressFormat.JPEG, 80, saveImgOut);
-                // 存储完成后需要清除相关的进程
-                saveImgOut.flush();
-                saveImgOut.close();
-                Log.d("Save Bitmap", "The picture is save to your phone!");
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
-    }
-
-    /**
-     * 只保存TrafficLight类使用的图片
-     * 如需保存其他图片请添加bitmap参数
-     */
-    public static void saveBitmap() {
-        Log.d("Save Bitmap", "Ready to save picture");
-        // 指定我们想要存储文件的地址
-        String TargetPath = "/storage/emulated/0/DCIM/Tess/";
-        Log.d("Save Bitmap", "Save Path=" + TargetPath);
-        // 判断指定文件夹的路径是否存在
-        if (!fileIsExist(TargetPath)) {
-            Log.d("Save Bitmap", "TargetPath isn't exist");
-        } else {
-            // 如果指定文件夹创建成功，那么我们则需要进行图片存储操作
-            File saveFile = new File(TargetPath, ColorPixel + ".jpg");
-            try {
-                FileOutputStream saveImgOut = new FileOutputStream(saveFile);
-                // compress - 压缩的意思
-                bm.compress(Bitmap.CompressFormat.JPEG, 80, saveImgOut);
-                // 存储完成后需要清除相关的进程
-                saveImgOut.flush();
-                saveImgOut.close();
-                Log.d("Save Bitmap", "The picture is save to your phone!");
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
-    }
-
-    static boolean fileIsExist(String fileName) {
-        //传入指定的路径，然后判断路径是否存在
-        File file = new File(fileName);
-        //file.mkdirs() 创建文件夹的意思
-        return file.exists() || file.mkdirs();
+    private static void destroy() {
+        redMat.release();
+        greenMat.release();
+        yellowMat.release();
     }
 }

@@ -27,9 +27,9 @@ public class QRBitmapCutter {
 
     private static final String TAG = QRBitmapCutter.class.getSimpleName();
     //裁剪参数
-    private static final int[] RedQR = {0, 150, 100, 255, 40, 255, 40};
-    private static final int[] GreenQR = {0, 50, 35, 255, 75, 255, 100};
-    private static final int[] BlueQR = {0, 150, 100, 255, 80, 255, 80};
+    private static final int[] RedQR = {0, 100, 150, 40, 255, 40, 255};
+    private static final int[] GreenQR = {0, 35, 50, 75, 255, 100, 255};
+    private static final int[] BlueQR = {0, 100, 150, 80, 255, 80, 255};
     //轮廓统计
     private static final List<MatOfPoint> contours = new ArrayList<>();
     //检测颜色选择
@@ -60,17 +60,17 @@ public class QRBitmapCutter {
         /* 将图像根据指定参数转换为黑白mat对象,在选定范围内的像素转换为白色 */
         switch (color) {
             case GREEN:
-                Core.inRange(hsvMat, new Scalar(GreenQR[2], GreenQR[4], GreenQR[6]),
-                        new Scalar(GreenQR[1], GreenQR[3], GreenQR[5]), hsvMat);
+                Core.inRange(hsvMat, new Scalar(GreenQR[1], GreenQR[3], GreenQR[5]),
+                        new Scalar(GreenQR[2], GreenQR[4], GreenQR[6]), hsvMat);
                 break;
             case RED:
-                Core.inRange(hsvMat, new Scalar(RedQR[2], RedQR[4], RedQR[6]),
-                        new Scalar(RedQR[1], RedQR[3], RedQR[5]), hsvMat);
+                Core.inRange(hsvMat, new Scalar(RedQR[1], RedQR[3], RedQR[5]),
+                        new Scalar(RedQR[2], RedQR[4], RedQR[6]), hsvMat);
                 break;
             /* 默认处理蓝色二维码 */
             default:
-                Core.inRange(hsvMat, new Scalar(BlueQR[2], BlueQR[4], BlueQR[6]),
-                        new Scalar(BlueQR[1], BlueQR[3], BlueQR[5]), hsvMat);
+                Core.inRange(hsvMat, new Scalar(BlueQR[1], BlueQR[3], BlueQR[5]),
+                        new Scalar(BlueQR[2], BlueQR[4], BlueQR[6]), hsvMat);
                 break;
         }
 

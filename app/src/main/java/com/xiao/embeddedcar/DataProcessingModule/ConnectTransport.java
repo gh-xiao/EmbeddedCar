@@ -21,6 +21,7 @@ import com.xiao.embeddedcar.Utils.NetworkAndUIUtil.SerialPort;
 import com.xiao.embeddedcar.Utils.NetworkAndUIUtil.USBToSerialUtil;
 import com.xiao.embeddedcar.Utils.PaddleOCR.DetectPlateColor;
 import com.xiao.embeddedcar.Utils.PaddleOCR.PlateDetector;
+import com.xiao.embeddedcar.Utils.PublicMethods.BitmapProcess;
 import com.xiao.embeddedcar.Utils.PublicMethods.TFTAutoCutter;
 import com.xiao.embeddedcar.Utils.QRcode.GetCode;
 import com.xiao.embeddedcar.Utils.QRcode.QRBitmapCutter;
@@ -28,7 +29,6 @@ import com.xiao.embeddedcar.Utils.QRcode.WeChatQRCodeDetector;
 import com.xiao.embeddedcar.Utils.Shape.ShapeDetector;
 import com.xiao.embeddedcar.Utils.TrafficLight.ColorProcess;
 import com.xiao.embeddedcar.Utils.TrafficLight.TrafficLight;
-import com.xiao.embeddedcar.Utils.TrafficLight.TrafficLight_fix;
 import com.xiao.embeddedcar.ViewModel.MainViewModel;
 
 import org.opencv.android.Utils;
@@ -914,7 +914,7 @@ public class ConnectTransport {
                 break;
             //红绿灯识别
             case 4:
-                trafficLight_mod();//A
+                trafficLight_mod();
                 send((short) (0xA0 + carGoto++), (short) 0x00, (short) 0x00, (short) 0x00);
                 break;
             //立体显示 - 安卓控制
@@ -1535,7 +1535,7 @@ public class ConnectTransport {
         cameraCommandUtil.postHttp(MainActivity.getLoginInfo().getIPCamera(), 0, 1);
         for (int J = 0; J < 3; J++) {
             YanChi(100);
-            traffic_control(i + 13, 1, 0);
+            traffic_control(i + 0x0D, 1, 0);
         }
         sendUIMassage(1, "智能交通灯标志物进入识别模式");
         ColorProcess c = new ColorProcess(mContext);
@@ -1543,9 +1543,7 @@ public class ConnectTransport {
         sendUIMassage(1, "对图片进行加工...");
         c.PictureProcessing(stream);
         sendUIMassage(1, "生成结果...");
-        String color = TrafficLight_fix.Identify(c.getResult());
-        sendUIMassage(1, "保存图片...");
-        TrafficLight_fix.saveBitmap();
+        String color = TrafficLight.Identify(c.getResult());
         sendUIMassage(2, c.getResult());
         sendUIMassage(1, "识别的颜色: " + color);
         sendToTrafficLight(color, i);
@@ -1584,6 +1582,13 @@ public class ConnectTransport {
                 }
                 System.out.println("识别为黄灯");
                 break;
+            default:
+                for (int J = 0; J < 10; J++) {
+                    YanChi(100);
+                    traffic_control(0x0D + i, 0x02, 0x03);
+                }
+                System.out.println("ERROR!默认黄灯!");
+                break;
         }
         YanChi(1000);
     }
@@ -1598,9 +1603,7 @@ public class ConnectTransport {
         sendUIMassage(1, "对图片进行加工...");
         c.PictureProcessing(detect);
         sendUIMassage(1, "生成结果...");
-        String color = TrafficLight_fix.Identify(c.getResult());
-        sendUIMassage(1, "保存图片...");
-        TrafficLight_fix.saveBitmap();
+        String color = TrafficLight.Identify(c.getResult());
         sendUIMassage(2, c.getResult());
         sendUIMassage(1, "识别的颜色: " + color);
     }
@@ -1864,7 +1867,7 @@ public class ConnectTransport {
 
                 plate = DetectPlate(plateDetector.getRectBitmap());
                 /* 保存图片 */
-                TrafficLight.saveBitmap("裁剪后的车牌.jpg", plateDetector.getRectBitmap());
+                BitmapProcess.saveBitmap("裁剪后的车牌", plateDetector.getRectBitmap());
                 plate = completion(plate);
 //                System.out.println("车牌种类: " + plateType + "\n车牌号: " + plate);
                 Log.i(TAG, "车牌种类: " + plateType + "\n车牌号: " + plate);
@@ -1899,6 +1902,8 @@ public class ConnectTransport {
         //重新识别车牌号的次数
         int fre = 1;
         plate = null;
+        String needColor = mainViewModel.getPlate_color().getValue() != null ? mainViewModel.getPlate_color().getValue() : "green";
+        if (needColor.equals("all")) needColor = needColor + "green" + "blue";
         YanChi(2000);
         do {
             /* 裁剪TFT区域 */
@@ -1914,8 +1919,7 @@ public class ConnectTransport {
             if (results.size() > 0) for (OcrResultModel result : results) {
                 /* 色彩判断 */
                 String detectColor = DetectPlateColor.getColor(detect, result);
-                String needColor = mainViewModel.getPlate_color().getValue() != null ? mainViewModel.getPlate_color().getValue() : "green";
-                if (needColor.equals(detectColor)) {
+                if (needColor.contains(detectColor)) {
                     /* 最终结果 */
                     plate = result.getLabel();
                     /* 过滤与补全 */
@@ -1936,7 +1940,7 @@ public class ConnectTransport {
             }
         } while (plate == null && fre++ < 5);
 
-        //发送车牌给TFT
+        //TODO 发送车牌给TFT
         YanChi(2000);
 //        for (int J = 0; J < 5; J++) {
 //            YanChi(500);
@@ -1951,28 +1955,113 @@ public class ConnectTransport {
     }
 
     /**
-     * 车牌识别 - 车种识别框选
+     * 车牌识别 - 车型识别框选(开发版)
      */
     public synchronized void plate_DetectByVID() {
-
+        //车型识别结果
+        Classifier.Recognition recognition = VID_mod(stream);
+        //车型识别使用的Bitmap
+        Bitmap getCarLocal = MainActivity.getVID_Detector().getSaveBitmap();
+        //是否处理成功
+        boolean process = true;
+        if (recognition != null) {
+            sendUIMassage(1, "需要识别" + recognition.getTitle() + "上的车牌");
+            int x = (int) recognition.getLocation().left;
+            int y = (int) recognition.getLocation().top;
+            int width = (int) (recognition.getLocation().right - recognition.getLocation().left);
+            int height = (int) (recognition.getLocation().bottom - recognition.getLocation().top);
+            sendUIMassage(1, "检测图片的宽:" + getCarLocal.getWidth() + "\n" + "检测图片的高:" + getCarLocal.getHeight() + "\n" +
+                    "裁剪图片的x: " + x + " 裁剪图片的y: " + y + "\n" + "裁剪图片的width: " + width + "\n" + " 裁剪图片的height: " + height);
+            try {
+                Bitmap ROI = Bitmap.createBitmap(getCarLocal, x, y, width, height);
+                sendUIMassage(2, ROI);
+                /* 获得序列化的结果 */
+                String serialize = DetectPlate(ROI);
+                /* 反序列化 */
+                Type typeMap = new TypeToken<List<OcrResultModel>>() {}.getType();
+                Gson gson = new GsonBuilder().enableComplexMapKeySerialization().setPrettyPrinting().create();
+                /* 获得结果 */
+                List<OcrResultModel> results = gson.fromJson(serialize, typeMap);
+                /* 如果OCR成功 */
+                if (results.size() > 0) for (OcrResultModel result : results) {
+                    /* 最终结果 */
+                    plate = result.getLabel();
+                    /* 过滤与补全 */
+                    plate = completion(plate);
+                    sendUIMassage(1, plate);
+                    process = false;
+                    break;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e(TAG, "ROI区域创建失败!");
+            }
+        }
+        if (process && getCarLocal != null) {
+            //重新识别车牌号的次数
+            int fre = 1;
+            plate = null;
+            do {
+                /* 获得序列化的结果 */
+                String serialize = DetectPlate(getCarLocal);
+                /* 反序列化 */
+                Type typeMap = new TypeToken<List<OcrResultModel>>() {}.getType();
+                Gson gson = new GsonBuilder().enableComplexMapKeySerialization().setPrettyPrinting().create();
+                /* 获得结果 */
+                List<OcrResultModel> results = gson.fromJson(serialize, typeMap);
+                /* 如果OCR成功 */
+                if (results.size() > 0) for (OcrResultModel result : results) {
+                    /* 色彩判断 */
+                    String detectColor = DetectPlateColor.getColor(getCarLocal, result);
+                    String needColor = mainViewModel.getPlate_color().getValue() != null ? mainViewModel.getPlate_color().getValue() : "green";
+                    if (needColor.equals(detectColor)) {
+                        /* 最终结果 */
+                        plate = result.getLabel();
+                        /* 过滤与补全 */
+                        plate = completion(plate);
+                        sendUIMassage(1, plate);
+                        break;
+                    }
+                }
+            } while (plate == null && fre++ < 5);
+        }
+        //TODO 发送车牌给指定标志物
+        YanChi(2000);
+//        for (int J = 0; J < 5; J++) {
+//            YanChi(500);
+//            TFT_LCD(0x0B, 0x20, plate.charAt(0), plate.charAt(1), plate.charAt(2));
+//        }
+//        System.out.println("第一次发送成功");
+//        YanChi(1500);
+//        for (int J = 0; J < 5; J++)
+//            TFT_LCD(0x0B, 0x21, plate.charAt(3), plate.charAt(4), plate.charAt(5));
+//        System.out.println("第二次发送成功");
+        YanChi(500);
     }
 
     /* ================================================== */
 
     /**
      * 车型识别模块
+     *
+     * @return 识别结果
      */
-    public synchronized void VID() {
+    public synchronized Classifier.Recognition VID_mod(Bitmap inputBitmap) {
+        if (inputBitmap == null) return null;
         //重新识别次数
         int fre = 1;
         //所有识别结果
         TreeMap<String, Integer> total = new TreeMap<>();
         Type typeMap = new TypeToken<List<Classifier.Recognition>>() {}.getType();
+        //指定检测车型
+        String detectNeed = mainViewModel.getDetect_car_model().getValue() != null ? mainViewModel.getDetect_car_model().getValue() : "bike";
         //指定所需车型
-        String need = mainViewModel.getCar_model().getValue();
-        if (need != null && need.equals("truck")) need += "/van";
+        String need = mainViewModel.getCar_model().getValue() != null ? mainViewModel.getCar_model().getValue() : "truck";
+        //处理卡车车型
+        if (need.equals("truck")) need += "/van";
+        if (detectNeed.equals("truck")) detectNeed += "/van";
         //识别结果
-        String finalResult = mainViewModel.getCar_model().getValue();
+        Classifier.Recognition recognition = null;
         //是否包含指定结果
         boolean has = false;
         YanChi(2000);
@@ -1981,7 +2070,7 @@ public class ConnectTransport {
             total.clear();
             for (int i = 0; i < 10; i++) {
                 /* 裁剪TFT区域 */
-                Bitmap detect = TFTAutoCutter.TFTCutter(stream);
+                Bitmap detect = TFTAutoCutter.TFTCutter(inputBitmap);
                 /* 获得序列化的结果 */
                 String serialize = MainActivity.getVID_Detector().processImage(detect);
                 /* 反序列化 */
@@ -1992,14 +2081,14 @@ public class ConnectTransport {
                     /* 将识别结果添加到TreeMap */
                     if (!total.containsKey(result.getTitle())) total.put(result.getTitle(), 0);
                     else total.put(result.getTitle(), total.get(result.getTitle()) + 1);
-                    /* 包含结果 */
-                    if (result.getTitle().equals(need)) {
-                        has = true;
-                        finalResult = result.getTitle();
-                    }
+                    /* 如果包含指定检测车型 */
+                    if (detectNeed.contains(result.getTitle())) has = true;
+                    /* 如果包含指定识别车型 */
+                    if (need.contains(result.getTitle())) recognition = result;
                 }
             }
             /* 结果获取失败处理 */
+            /*TODO 根据题意设置约束数量 */
             if (total.size() <= 0 || !has) {
                 sendUIMassage(1, "第" + fre + "次识别车型失败!");
                 for (int J = 0; J < 3; J++) {
@@ -2010,9 +2099,10 @@ public class ConnectTransport {
                 YanChi(6000);
                 continue;
             }
-            sendUIMassage(1, "查找到指定车型: " + finalResult + "\n结果出现次数: " + total.get(finalResult));
+            sendUIMassage(1, "检测到可能包含车牌的指定车型: " + (recognition != null ? recognition.getTitle() : null) + "\n结果出现次数: " + total.get(recognition != null ? recognition.getTitle() : null));
         } while (!has && fre++ < 5);
-        sendUIMassage(1, "车型识别结果: " + (has ? "成功" : "失败"));
+        sendUIMassage(1, "车型识别" + (has ? "成功" : "失败"));
+        return recognition;
     }
 
     /* ================================================== */
@@ -2059,12 +2149,11 @@ public class ConnectTransport {
             }
             /* 找出出现次数最多的结果 */
             Integer maxvalue = 0;
-            for (Map.Entry<String, Integer> entry : total.entrySet()) {
+            for (Map.Entry<String, Integer> entry : total.entrySet())
                 if (entry.getValue() > maxvalue && entry.getValue() < 15) {
                     finalResult = entry.getKey();
                     maxvalue = entry.getValue();
                 }
-            }
             /* 出现次数不足/出现次数过多,重置结果 */
             sendUIMassage(1, "交通标志物识别结果: " + finalResult + "\n识别结果出现次数: " + maxvalue);
             if (maxvalue <= 5 || maxvalue >= 16) finalResult = null;
@@ -2159,4 +2248,3 @@ public class ConnectTransport {
         send((short) 0xB6, (short) 0x00, (short) 0x00, (short) 0x00);
     }
 }
-

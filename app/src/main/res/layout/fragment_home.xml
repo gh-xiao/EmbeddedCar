@@ -191,7 +191,8 @@
                 android:text="设备没有连接，这里空空如也哦~"
                 android:textColor="@color/white"
                 android:textSize="15sp"
-                tools:ignore="NestedWeights" />
+                tools:ignore="NestedWeights"
+                android:gravity="center" />
 
             <!--内层参数填充-->
             <GridLayout

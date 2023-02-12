@@ -5,270 +5,438 @@
     android:layout_height="match_parent"
     tools:context=".FragmentUI.ConfigFragment">
 
-    <LinearLayout
-        android:id="@+id/line_qr"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:padding="15dp"
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.92"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.5">
+        app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="二维码检测颜色:"
-            android:textColor="@color/white"
-            android:textStyle="bold" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/tv_qr_color"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:textColor="@color/white"
-            android:textStyle="bold" />
-    </LinearLayout>
+            <LinearLayout
+                android:id="@+id/line_qr"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="15dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.5">
 
-    <RadioGroup
-        android:id="@+id/QR_color_choose_RG"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="@+id/line_qr"
-        app:layout_constraintStart_toEndOf="@+id/line_qr"
-        app:layout_constraintTop_toTopOf="@+id/line_qr">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="二维码检测颜色:"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
 
-        <RadioButton
-            android:id="@+id/rb_QR_red"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="红色" />
+                <TextView
+                    android:id="@+id/tv_qr_color"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+            </LinearLayout>
 
-        <RadioButton
-            android:id="@+id/rb_QR_green"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="绿色" />
+            <RadioGroup
+                android:id="@+id/QR_color_choose_RG"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="@+id/line_qr"
+                app:layout_constraintStart_toEndOf="@+id/line_qr"
+                app:layout_constraintTop_toTopOf="@+id/line_qr">
 
-        <RadioButton
-            android:id="@+id/rb_QR_blue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="蓝色" />
+                <RadioButton
+                    android:id="@+id/rb_QR_red"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="红色" />
 
-    </RadioGroup>
+                <RadioButton
+                    android:id="@+id/rb_QR_green"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="绿色" />
 
-    <LinearLayout
-        android:id="@+id/line_shape"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:padding="15dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/line_qr"
-        app:layout_constraintWidth_percent="0.5">
+                <RadioButton
+                    android:id="@+id/rb_QR_blue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="蓝色" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="图形统计:"
-            android:textColor="@color/white"
-            android:textStyle="bold" />
+            </RadioGroup>
 
-        <TextView
-            android:id="@+id/tv_shape_color"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.5"
-            android:gravity="center"
-            android:textColor="@color/white"
-            android:textStyle="bold" />
+            <LinearLayout
+                android:id="@+id/line_shape"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="15dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/line_qr"
+                app:layout_constraintWidth_percent="0.5">
 
-        <TextView
-            android:id="@+id/tv_shape_type"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.5"
-            android:gravity="center"
-            android:textColor="@color/white"
-            android:textStyle="bold" />
-    </LinearLayout>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="图形统计:"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
 
-    <Button
-        android:id="@+id/shape_color_choose_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="选择颜色"
-        app:layout_constraintBottom_toBottomOf="@+id/line_shape"
-        app:layout_constraintStart_toEndOf="@+id/line_shape"
-        app:layout_constraintTop_toTopOf="@+id/line_shape" />
+                <TextView
+                    android:id="@+id/tv_shape_color"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
 
-    <Button
-        android:id="@+id/shape_type_choose_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="选择类型"
-        app:layout_constraintBottom_toBottomOf="@+id/shape_color_choose_btn"
-        app:layout_constraintStart_toEndOf="@+id/shape_color_choose_btn"
-        app:layout_constraintTop_toTopOf="@+id/shape_color_choose_btn" />
+                <TextView
+                    android:id="@+id/tv_shape_type"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+            </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/line_trafficLight"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:padding="15dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/line_shape"
-        app:layout_constraintWidth_percent="0.5">
+            <Button
+                android:id="@+id/shape_color_choose_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="选择颜色"
+                app:layout_constraintBottom_toBottomOf="@+id/line_shape"
+                app:layout_constraintStart_toEndOf="@+id/line_shape"
+                app:layout_constraintTop_toTopOf="@+id/line_shape" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="红绿灯信息发送:"
-            android:textColor="@color/white"
-            android:textStyle="bold" />
+            <Button
+                android:id="@+id/shape_type_choose_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="选择类型"
+                app:layout_constraintBottom_toBottomOf="@+id/shape_color_choose_btn"
+                app:layout_constraintStart_toEndOf="@+id/shape_color_choose_btn"
+                app:layout_constraintTop_toTopOf="@+id/shape_color_choose_btn" />
 
-        <TextView
-            android:id="@+id/tv_trafficLight"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:textColor="@color/white"
-            android:textStyle="bold" />
-    </LinearLayout>
+            <LinearLayout
+                android:id="@+id/line_trafficLight"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="15dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/line_shape"
+                app:layout_constraintWidth_percent="0.5">
 
-    <RadioGroup
-        android:id="@+id/trafficLight_choose_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:text="选择设备"
-        app:layout_constraintBottom_toBottomOf="@+id/line_trafficLight"
-        app:layout_constraintStart_toEndOf="@+id/line_trafficLight"
-        app:layout_constraintTop_toTopOf="@+id/line_trafficLight">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="红绿灯信息发送:"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
 
-        <RadioButton
-            android:id="@+id/rb_tl_a"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="A灯" />
+                <TextView
+                    android:id="@+id/tv_trafficLight"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+            </LinearLayout>
 
-        <RadioButton
-            android:id="@+id/rb_tl_b"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="B灯" />
-    </RadioGroup>
+            <RadioGroup
+                android:id="@+id/trafficLight_choose_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:text="选择设备"
+                app:layout_constraintBottom_toBottomOf="@+id/line_trafficLight"
+                app:layout_constraintStart_toEndOf="@+id/line_trafficLight"
+                app:layout_constraintTop_toTopOf="@+id/line_trafficLight">
 
-    <LinearLayout
-        android:id="@+id/line_plateColor_detect"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:padding="15dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/line_trafficLight"
-        app:layout_constraintWidth_percent="0.5">
+                <RadioButton
+                    android:id="@+id/rb_tl_a"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="A灯" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="车牌颜色检测:"
-            android:textColor="@color/white"
-            android:textStyle="bold" />
+                <RadioButton
+                    android:id="@+id/rb_tl_b"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="B灯" />
+            </RadioGroup>
 
-        <TextView
-            android:id="@+id/tv_plateColor"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:textColor="@color/white"
-            android:textStyle="bold" />
-    </LinearLayout>
+            <LinearLayout
+                android:id="@+id/line_plateColor_detect"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="15dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/line_trafficLight"
+                app:layout_constraintWidth_percent="0.5">
 
-    <RadioGroup
-        android:id="@+id/plateColor_choose_RG"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="@+id/line_plateColor_detect"
-        app:layout_constraintStart_toEndOf="@+id/line_plateColor_detect"
-        app:layout_constraintTop_toTopOf="@+id/line_plateColor_detect">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="车牌颜色检测:"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
 
-        <RadioButton
-            android:id="@+id/rb_plate_all"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="任意" />
+                <TextView
+                    android:id="@+id/tv_plateColor"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+            </LinearLayout>
 
-        <RadioButton
-            android:id="@+id/rb_plate_blue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="蓝色" />
+            <RadioGroup
+                android:id="@+id/plateColor_choose_RG"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="@+id/line_plateColor_detect"
+                app:layout_constraintStart_toEndOf="@+id/line_plateColor_detect"
+                app:layout_constraintTop_toTopOf="@+id/line_plateColor_detect">
 
-        <RadioButton
-            android:id="@+id/rb_plate_green"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="新能源" />
+                <RadioButton
+                    android:id="@+id/rb_plate_all"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="任意" />
 
-    </RadioGroup>
+                <RadioButton
+                    android:id="@+id/rb_plate_blue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="蓝色" />
+
+                <RadioButton
+                    android:id="@+id/rb_plate_green"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="新能源" />
+
+            </RadioGroup>
+
+            <LinearLayout
+                android:id="@+id/line_carModels"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="15dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/line_plateColor_detect"
+                app:layout_constraintWidth_percent="0.7">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:text="指定检测车型:"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_detect_car_model"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:text="需要识别车牌的车型:"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_car_model"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/detect_car_model_choose_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="选择车型"
+                app:layout_constraintBottom_toBottomOf="@+id/line_carModels"
+                app:layout_constraintStart_toEndOf="@+id/line_carModels"
+                app:layout_constraintTop_toTopOf="@+id/line_carModels" />
+
+
+            <Button
+                android:id="@+id/car_model_choose_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="选择车型"
+                app:layout_constraintBottom_toBottomOf="@+id/detect_car_model_choose_btn"
+                app:layout_constraintStart_toEndOf="@+id/detect_car_model_choose_btn"
+                app:layout_constraintTop_toTopOf="@+id/detect_car_model_choose_btn" />
+
+
+            <LinearLayout
+                android:id="@+id/line_TS_Confidence"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="15dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/line_carModels"
+                app:layout_constraintWidth_percent="0.45">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="交通标志物识别置信度:"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_TS_Confidence"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <SeekBar
+                android:id="@+id/sb_TS_min"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:max="100"
+                android:maxHeight="2dp"
+                android:minHeight="2dp"
+                app:layout_constraintBottom_toBottomOf="@+id/line_TS_Confidence"
+                app:layout_constraintStart_toEndOf="@+id/line_TS_Confidence"
+                app:layout_constraintTop_toTopOf="@+id/line_TS_Confidence"
+                app:layout_constraintWidth_percent="0.25" />
+
+            <com.github.gzuliyujiang.wheelview.widget.NumberWheelView
+                android:id="@+id/TS_min_data"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="@+id/sb_TS_min"
+                app:layout_constraintStart_toEndOf="@+id/sb_TS_min"
+                app:layout_constraintTop_toTopOf="@+id/sb_TS_min"
+                app:layout_constraintWidth_percent="0.15" />
+
+            <Button
+                android:id="@+id/reset_TS_btn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="还原"
+                app:layout_constraintBottom_toBottomOf="@+id/TS_min_data"
+                app:layout_constraintStart_toEndOf="@+id/TS_min_data"
+                app:layout_constraintTop_toTopOf="@+id/TS_min_data"
+                app:layout_constraintWidth_percent="0.15" />
+
+            <LinearLayout
+                android:id="@+id/line_VID_Confidence"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="15dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/line_TS_Confidence"
+                app:layout_constraintWidth_percent="0.45">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="车型识别最低置信度:"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_VID_Confidence"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <SeekBar
+                android:id="@+id/sb_VID_min"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="4"
+                android:max="100"
+                android:maxHeight="2dp"
+                android:minHeight="2dp"
+                app:layout_constraintBottom_toBottomOf="@+id/line_VID_Confidence"
+                app:layout_constraintStart_toEndOf="@+id/line_VID_Confidence"
+                app:layout_constraintTop_toTopOf="@+id/line_VID_Confidence"
+                app:layout_constraintWidth_percent="0.25" />
+
+            <com.github.gzuliyujiang.wheelview.widget.NumberWheelView
+                android:id="@+id/VID_min_data"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                app:layout_constraintBottom_toBottomOf="@+id/sb_VID_min"
+                app:layout_constraintStart_toEndOf="@+id/sb_VID_min"
+                app:layout_constraintTop_toTopOf="@+id/sb_VID_min"
+                app:layout_constraintWidth_percent="0.15" />
+
+            <Button
+                android:id="@+id/reset_VID_btn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="还原"
+                app:layout_constraintBottom_toBottomOf="@+id/VID_min_data"
+                app:layout_constraintStart_toEndOf="@+id/VID_min_data"
+                app:layout_constraintTop_toTopOf="@+id/VID_min_data"
+                app:layout_constraintWidth_percent="0.15" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
 
     <TextView
         android:id="@+id/tv_version"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:gravity="center"
+        android:background="@drawable/nav_header_background"
         android:textColor="@color/white"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent" />
-
-    <LinearLayout
-        android:id="@+id/line_carModels"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:padding="15dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/line_plateColor_detect"
-        app:layout_constraintWidth_percent="0.5">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="指定检测车型:"
-            android:textColor="@color/white"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/tv_car_model"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:textColor="@color/white"
-            android:textStyle="bold" />
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/car_model_choose_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="选择车型"
-        app:layout_constraintBottom_toBottomOf="@+id/line_carModels"
-        app:layout_constraintStart_toEndOf="@+id/line_carModels"
-        app:layout_constraintTop_toTopOf="@+id/line_carModels" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent="0.08" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

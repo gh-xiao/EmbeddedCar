@@ -8,7 +8,7 @@ import android.util.Log;
 
 import com.xiao.baiduocr.TestInferOcrTask;
 import com.xiao.embeddedcar.DataProcessingModule.ConnectTransport;
-import com.xiao.embeddedcar.Utils.TrafficLight.TrafficLight;
+import com.xiao.embeddedcar.Utils.PublicMethods.BitmapProcess;
 
 import org.opencv.android.Utils;
 import org.opencv.core.Core;
@@ -451,8 +451,8 @@ public class PlateDetector {
                         Bitmap threshold_bitmap = Mat2Bitmap(threshold);
                         /* num4 和num6比较准确 */
 //                        String baiduOCR_str = doOcr(threshold_bitmap, "eng");
-                        TrafficLight.saveBitmap("车牌.jpg", threshold_bitmap);
-                        String baiduOCR_str = TestInferOcrTask.getInstance().detector(threshold_bitmap).toString();
+                        BitmapProcess.saveBitmap("车牌", threshold_bitmap);
+                        String baiduOCR_str = TestInferOcrTask.getInstance().detector(threshold_bitmap);
                         Log.i(TAG, "*****这里是车牌号*****" + baiduOCR_str);
                         if (baiduOCR_str != null) {
                             if (baiduOCR_str.length() >= 6 && baiduOCR_str.length() <= 10) {
@@ -462,7 +462,6 @@ public class PlateDetector {
                                 return result_str;
                             }
                         }
-
                     }
                 }
             }

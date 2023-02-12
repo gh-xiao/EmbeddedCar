@@ -28,7 +28,7 @@
                 android:id="@+id/plate_ocr_mod_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="车牌识别" />
+                android:text="车牌识别(色彩)" />
 
             <Button
                 android:id="@+id/shape_mod_btn"
@@ -46,14 +46,18 @@
                 android:id="@+id/VID_mod_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="车种识别" />
+                android:text="车牌识别(车型)" />
 
             <Button
                 android:id="@+id/QR_mod_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="二维码识别" />
-
+            <Button
+                android:id="@+id/dev_method_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="开发方法测试" />
         </GridLayout>
     </ScrollView>
 

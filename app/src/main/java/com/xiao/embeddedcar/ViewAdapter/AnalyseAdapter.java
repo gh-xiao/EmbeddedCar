@@ -76,17 +76,15 @@ public class AnalyseAdapter extends BaseAdapter {
         }
     }
 
+    /**
+     * 加载图片名进入列表
+     */
     private void loadImages() {
         list.clear();
-        getImages(list);
-        Log.i("list.size(): ", String.valueOf(list.size()));
-    }
-
-    private void getImages(List<String> ImgNameList) {
         File[] files;
         File file = new File(Environment.getExternalStorageDirectory() + "/" + Environment.DIRECTORY_DCIM + "/Tess/");
-        if (file.exists() && (files = file.listFiles()) != null) {
-            for (File value : files) if (value.isFile()) ImgNameList.add(value.getName());
+        if (file.exists() && (files = file.listFiles()) != null) for (File value : files) {
+            if (value.isFile()) list.add(value.getName());
         }
     }
 
