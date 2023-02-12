@@ -33,7 +33,7 @@ public class YoloV5_tfLite_TSDetector {
 //    private static final DetectorMode MODE = DetectorMode.TF_OD_API;
     public static final float MINIMUM_CONFIDENCE_TF_OD_API = 0.5f;
     //最小置信度
-    public static float minimumConfidence = 0.5f;
+    public static float minimumConfidence;
     //核心检测对象
     private YoloV5Classifier detector;
 

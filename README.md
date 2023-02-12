@@ -8,10 +8,13 @@ EmbeddedCar
 
     #修复部分Bug
 
+## 版本号: 2.3.1
+
 ### 2023/2/12
 
     #大幅度重新优化红绿灯识别代码
     #清除最原始的TrafficLight类,并将TrafficLight_fix类改名为TrafficLight
+    #向半自动方法预留结果发送
 
 ## 版本号: 2.2.0
 

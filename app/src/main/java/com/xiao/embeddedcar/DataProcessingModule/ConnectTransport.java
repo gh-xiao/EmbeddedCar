@@ -308,6 +308,7 @@ public class ConnectTransport {
      * <p>zigbee主车与从车通讯方法</p>
      * <p>TYPE = 0xAA -> 主车</p>
      * <p>TYPE = 0x02 -> 从车</p>
+     * <p>[ 0x55, TYPE, MAJOR, FIRST, SECOND, THIRD, CHECKSUM, 0xBB ]</p>
      *
      * @param MAJOR  操作指令-在主车上也被称为包头
      * @param FIRST  指令1
@@ -593,13 +594,15 @@ public class ConnectTransport {
     /**
      * 从车二维码识别
      * TODO 注意查看从车重新修改过的指令
+     *  当前0x91为二维码识别,0x92为红绿灯识别
+     *  当前命令发现问题!
      *
      * @param state 开启/关闭识别
      */
     public void qr_rec(int state) {
 //        sendOther()调用的TYPE1默认值为0x02,即从车通讯
         short MAJOR = (byte) state;
-        sendOther(MAJOR, (short) 0x92, (short) 0x00, (short) 0x00);
+        sendOther(MAJOR, (short) 0x91, (short) 0x00, (short) 0x00);
     }
 
     /**
@@ -876,7 +879,7 @@ public class ConnectTransport {
     /**
      * 重置Android控制的处理模块值
      *
-     * @param mark TODO 注意题意标志物的顺序,可根据Android或主车控制该值
+     * @param mark TODO 注意题意标志物的顺序,可根据Android或主车修改执行内容的顺序
      */
     public static void setMark(int mark) {
         ConnectTransport.mark = mark;
@@ -893,53 +896,66 @@ public class ConnectTransport {
 
     /**
      * 半安卓控制方案
+     * C6二维码识别结果发送
+     * C7图形识别结果发送
+     * C8识别的车牌号发送
+     * C9交通标志物识别编号发送
      */
     public void half_Android() {
         switch (mark) {
             //开始半自动
             case 1:
-                //回发握手指令
-//                send((short) 0, (short) 0, (short) 0, (short) 0);
-                YanChi(500);
-                send((short) (0xA0 + carGoto++), (short) 0x00, (short) 0x00, (short) 0x00);
+                for (int J = 0; J < 3; J++)
+                    send((short) (0xA0 + carGoto++), (short) 0x00, (short) 0x00, (short) 0x00);
                 break;
-            //车牌识别/图形识别/交通标志物识别+发送道闸车牌
+            //TODO 车牌识别/图形识别/交通标志物识别+发送道闸车牌
             case 2:
-                send((short) (0xA0 + carGoto++), (short) 0x00, (short) 0x00, (short) 0x00);
+
+                YanChi(500);
+                for (int J = 0; J < 3; J++)
+                    send((short) (0xA0 + carGoto++), (short) 0x00, (short) 0x00, (short) 0x00);
                 break;
             //二维码识别
             case 3:
                 WeChatQR_mod();
-                send((short) (0xA0 + carGoto++), (short) 0x00, (short) 0x00, (short) 0x00);
+                YanChi(500);
+                for (int J = 0; J < 3; J++)
+                    send((short) (0xA0 + carGoto++), (short) 0x00, (short) 0x00, (short) 0x00);
                 break;
             //红绿灯识别
             case 4:
                 trafficLight_mod();
-                send((short) (0xA0 + carGoto++), (short) 0x00, (short) 0x00, (short) 0x00);
+                YanChi(500);
+                for (int J = 0; J < 3; J++)
+                    send((short) (0xA0 + carGoto++), (short) 0x00, (short) 0x00, (short) 0x00);
                 break;
             //立体显示 - 安卓控制
             case 5:
-                send((short) (0xA0 + carGoto++), (short) 0x00, (short) 0x00, (short) 0x00);
+
+                YanChi(500);
+                for (int J = 0; J < 3; J++)
+                    send((short) (0xA0 + carGoto++), (short) 0x00, (short) 0x00, (short) 0x00);
                 break;
-            //TFT合并项目 - TFTA
+            //TODO TFT合并项目
             case 6:
-                System.out.println("TFT");
 
-                plate_mod_branch3();
-                Shape_mod();
-
-                YanChi(1500);
-                short i10 = (short) (0xA0 + carGoto++);
-                for (int J = 0; J < 3; J++) send(i10, (short) 0x00, (short) 0x00, (short) 0x00);
-                System.out.println("启动主车: " + i10);
+                YanChi(500);
+                for (int J = 0; J < 3; J++)
+                    send((short) (0xA0 + carGoto++), (short) 0x00, (short) 0x00, (short) 0x00);
                 break;
-            //TFT合并项目 - TFTB
+            //TODO TFT合并项目
             case 7:
-                send((short) (0xA0 + carGoto++), (short) 0x00, (short) 0x00, (short) 0x00);
+
+                YanChi(500);
+                for (int J = 0; J < 3; J++)
+                    send((short) (0xA0 + carGoto++), (short) 0x00, (short) 0x00, (short) 0x00);
                 break;
             //-----
             case 8:
-                send((short) (0xA0 + carGoto++), (short) 0x00, (short) 0x00, (short) 0x00);
+
+                YanChi(500);
+                for (int J = 0; J < 3; J++)
+                    send((short) (0xA0 + carGoto++), (short) 0x00, (short) 0x00, (short) 0x00);
                 break;
             case 9:
                 break;
@@ -964,9 +980,13 @@ public class ConnectTransport {
      * C1短后退
      * C2返回语音标志物识别信息至立体显示标志物
      * C3(仅)获取智能路灯目标初始挡位
-     * TODO C_获取智能路灯目标初始挡位并调灯-----
+     * C_获取智能路灯目标初始挡位并调灯-----
      * C4初始化赛场LED数码显示管和车库
      * C5(仅)倒车入库
+     * C6二维码识别结果发送
+     * C7图形识别结果发送
+     * C8识别的车牌号发送
+     * C9交通标志物识别编号发送
      */
     private void Q1() {
 
@@ -1307,7 +1327,7 @@ public class ConnectTransport {
         send((short) 0xB3, (short) 0x00, (short) 0x00, (short) 0x00);
         YanChi(1500);
         //----------
-        plate_mod_branch3();
+//        plate_mod_branch3();
         Shape_mod();
         sendOther((short) 160, (short) 162, (short) 0x00, (short) 0x00);
         //----------
@@ -1531,7 +1551,7 @@ public class ConnectTransport {
     public synchronized void trafficLight_mod() {
         int i = mainViewModel.getSend_trafficLight().getValue() != null ? mainViewModel.getSend_trafficLight().getValue() : 1;
         sendUIMassage(1, "等待摄像头向上微调延迟...");
-        YanChi(1500);
+        YanChi(500);
         cameraCommandUtil.postHttp(MainActivity.getLoginInfo().getIPCamera(), 0, 1);
         for (int J = 0; J < 3; J++) {
             YanChi(100);
@@ -1640,6 +1660,10 @@ public class ConnectTransport {
         } while (fail && fre++ < 5);
         sendUIMassage(1, "检测出的全部的图形数量: " + totals + "\n题意所需数据: " + shapeResult + "个" + mainViewModel.getShape_color().getValue() + mainViewModel.getShape_type().getValue());
         sendUIMassage(1, "----------形状识别完成----------");
+        //TODO 发送给指定设备
+        send((short) 0xC7, (short) shapeResult, (short) 0x00, (short) 0x00);
+        YanChi(500);
+        sendOther((short) 0xC7, (short) shapeResult, (short) 0x00, (short) 0x00);
     }
 
     /**
@@ -1707,6 +1731,8 @@ public class ConnectTransport {
         if (qrStr == null || qrStr.isEmpty()) qrStr = "A1B2C3D4E5";
         qrResult = GetCode.parsing(qrStr);
         sendUIMassage(1, "最终结果: ■■■" + qrResult + "■■■");
+        //TODO 发送给指定设备
+
     }
 
     /**
@@ -1801,6 +1827,7 @@ public class ConnectTransport {
      * <p>使用车牌号判断 - 无法区分颜色,但遇号既出结果</p>
      * <p>针对于赛场不使用干扰颜色车牌</p>
      */
+    @Deprecated
     private void plate_mod_branch2() {
         //重新识别车牌号的次数
         int fre = 1;
@@ -1841,6 +1868,7 @@ public class ConnectTransport {
      * <p>车牌识别模块 - 分支3</p>
      * 结合openCV库(仅)定位车牌,识别车牌种类和车牌号
      */
+    @Deprecated
     private void plate_mod_branch3() {
         //重新识别车牌号的次数
         int fre = 1;
@@ -1939,8 +1967,7 @@ public class ConnectTransport {
                 YanChi(6000);
             }
         } while (plate == null && fre++ < 5);
-
-        //TODO 发送车牌给TFT
+        //TODO 发送给指定设备
         YanChi(2000);
 //        for (int J = 0; J < 5; J++) {
 //            YanChi(500);
@@ -2025,17 +2052,17 @@ public class ConnectTransport {
                 }
             } while (plate == null && fre++ < 5);
         }
-        //TODO 发送车牌给指定标志物
+        //TODO 发送给指定设备
         YanChi(2000);
 //        for (int J = 0; J < 5; J++) {
 //            YanChi(500);
 //            TFT_LCD(0x0B, 0x20, plate.charAt(0), plate.charAt(1), plate.charAt(2));
 //        }
-//        System.out.println("第一次发送成功");
+//        sendUIMassage(1, "第一次发送成功");
 //        YanChi(1500);
 //        for (int J = 0; J < 5; J++)
 //            TFT_LCD(0x0B, 0x21, plate.charAt(3), plate.charAt(4), plate.charAt(5));
-//        System.out.println("第二次发送成功");
+//        sendUIMassage(1, "第二次发送成功");
         YanChi(500);
     }
 
@@ -2181,6 +2208,10 @@ public class ConnectTransport {
                 getTrafficFlag = 0x03;
                 break;
         }
+        //TODO 发送给指定设备
+        send((short) 0xC9, getTrafficFlag, (short) 0x00, (short) 0x00);
+        YanChi(500);
+        sendOther((short) 0xC9, getTrafficFlag, (short) 0x00, (short) 0x00);
     }
 
     /* ================================================== */

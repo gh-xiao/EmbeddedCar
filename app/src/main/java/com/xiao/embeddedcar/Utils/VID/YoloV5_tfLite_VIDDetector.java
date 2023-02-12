@@ -33,7 +33,7 @@ public class YoloV5_tfLite_VIDDetector {
 //    private static final DetectorMode MODE = DetectorMode.TF_OD_API;
     public static final float MINIMUM_CONFIDENCE_TF_OD_API = 0.3f;
     //最小置信度
-    public static float minimumConfidence = 0.3f;
+    public static float minimumConfidence;
     //核心检测对象
     private YoloV5Classifier detector;
     //检测图片

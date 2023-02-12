@@ -205,8 +205,6 @@ public class HomeViewModel extends ViewModel {
                 //启动全自动
                 ConnectTransport.setMark(mByte[3]);
                 new Thread(() -> ConnectTransport.getInstance().half_Android()).start();
-                //旧方案
-//                new Thread(() -> Connect_Transport.half_Android_old()).start();
             }
             return true;
         } else connectState.setValue(msg.what);
