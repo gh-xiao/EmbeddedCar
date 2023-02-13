@@ -152,8 +152,6 @@ public class ShapeDetector {
         /* 轮廓提取,用于提取图像的轮廓 */
         contours.clear();
         Imgproc.findContours(hsvMat, contours, outMat, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
-        /* 轮廓数量统计 */
-        int contoursCounts = contours.size();
         /* 绘制轮廓,用于绘制找到的图像轮廓 */
         /*
         函数参数详解:
@@ -175,7 +173,7 @@ public class ShapeDetector {
         int tri, rect, circle, star, rhombus;
         tri = rect = circle = star = rhombus = 0;
         /* 遍历轮廓 */
-        for (int i = 0; i < contoursCounts; i++) {
+        for (int i = 0; i < contours.size(); i++) {
             /* 判断面积是否大于阈值 */
             Log.i(TAG, "这是轮廓面积: " + Imgproc.contourArea(contours.get(i)));
             if (Imgproc.contourArea(contours.get(i)) > 250) {
@@ -222,7 +220,7 @@ public class ShapeDetector {
         SaveResult(colorName, circle, tri, rect, star, rhombus);
 
         /* 输出结果 */
-        String msg = colorName + "轮廓: " + contoursCounts + "\n圆形: " + circle + " 三角形: " + tri + " 矩形: " + rect + " 菱形: " + rhombus + " 五角星: " + star;
+        String msg = colorName + "轮廓: " + contours.size() + "\n圆形: " + circle + " 三角形: " + tri + " 矩形: " + rect + " 菱形: " + rhombus + " 五角星: " + star;
         Log.i(TAG, msg);
 
         /* 保存图片 */

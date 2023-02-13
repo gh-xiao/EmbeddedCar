@@ -58,8 +58,6 @@ public class ModuleFragment extends Fragment {
      * 控件动作初始化
      */
     private void init() {
-        /* 设置模块消息接收线程 */
-        moduleViewModel.getThreadReturnMsg();
         binding.moduleInfo.setMovementMethod(ScrollingMovementMethod.getInstance());
         binding.trafficLightModBtn.setOnClickListener(v -> moduleViewModel.module(1));
         binding.plateOcrModBtn.setOnClickListener(v -> moduleViewModel.module(2));

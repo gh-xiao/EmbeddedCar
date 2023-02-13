@@ -20,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
 import com.xiao.embeddedcar.Activity.MainActivity;
 import com.xiao.embeddedcar.R;
@@ -87,6 +88,7 @@ public class ConnectFragment extends Fragment {
             if (FastClick.isFastClick()) {
                 if (XcApplication.isSerial != XcApplication.Mode.SOCKET) tryGetUsbPermission();
                 connectViewModel.requestConnect();
+                Navigation.findNavController( binding.getRoot()).navigate(R.id.action_nav_connect_to_nav_home);
             }
         });
     }

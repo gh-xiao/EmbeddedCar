@@ -20,7 +20,7 @@ android {
         //项目版本号
         versionCode 1
         //版本名
-        versionName "2.3.1"
+        versionName "2.4.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         //设置支持的so库架构(开发者可以根据需要，选择一个或多个平台的so)
         ndk {

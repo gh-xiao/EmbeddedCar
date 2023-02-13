@@ -1,5 +1,7 @@
 package com.xiao.embeddedcar.Activity;
 
+import static com.xiao.embeddedcar.Utils.CameraUtil.XcApplication.cachedThreadPool;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -257,6 +259,8 @@ public class MainActivity extends AppCompatActivity {
      */
     private void observerDataStateUpdateAction() {
         mainViewModel.getChief_state_flag().observe(this, b -> chief_status_flag = b);
+        /* 消息回传解析线程启动 */
+        cachedThreadPool.execute(() -> ConnectTransport.getInstance().setReMsgHandler(moduleViewModel.getGetModuleInfoHandle()));
     }
 
     /**
@@ -407,13 +411,13 @@ public class MainActivity extends AppCompatActivity {
             /* YoloV5s-tfLite模型初始化 */
             /* TODO 在此更改模型加载参数 */
             initMsg.append(TS_Detector.LoadModel("CPU", 4, this.getAssets()) ? "交通标志物识别模型创建成功\n" : "交通标志物识别模型创建失败\n");
-            initMsg.append(VID_Detector.LoadModel("CPU", 4, this.getAssets()) ? "车种识别模型创建成功" : "车种识别模型创建失败");
+            initMsg.append(VID_Detector.LoadModel("CPU", 4, this.getAssets()) ? "车型识别模型创建成功" : "车型识别模型创建失败");
         } catch (Exception e) {
             e.printStackTrace();
         }
         /* 实例化连接类(需要库文件先初始化完毕) */
         ConnectTransport.getInstance().init(this, mainViewModel);
-        /* 使用非Socket通讯将初始化SerialUtil类 */
+        /* 初始化SerialUtil类(用于非Socket通讯) */
         USBToSerialUtil.getInstance().init(this, homeViewModel, connectViewModel);
         homeViewModel.getDebugArea().setValue(initMsg.toString());
     }

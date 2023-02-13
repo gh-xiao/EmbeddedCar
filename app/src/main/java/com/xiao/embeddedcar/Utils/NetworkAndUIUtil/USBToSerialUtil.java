@@ -40,9 +40,7 @@ public class USBToSerialUtil {
     /**
      * 私有构造器
      */
-    private USBToSerialUtil() {
-
-    }
+    private USBToSerialUtil() {}
 
     /**
      * 单例对象获取

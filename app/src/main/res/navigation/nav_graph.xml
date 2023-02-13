@@ -15,7 +15,15 @@
         android:id="@+id/nav_connect"
         android:name="com.xiao.embeddedcar.FragmentUI.ConnectFragment"
         android:label="@string/menu_connect"
-        tools:layout="@layout/fragment_connect" />
+        tools:layout="@layout/fragment_connect" >
+        <action
+            android:id="@+id/action_nav_connect_to_nav_home"
+            app:destination="@id/nav_home"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
 
 
     <fragment

@@ -11,7 +11,7 @@ public class MainViewModel extends ViewModel {
     //二维码检测色彩
     private final MutableLiveData<QRBitmapCutter.QRColor> QR_color = new MutableLiveData<>(QRBitmapCutter.color);
     //智能交通灯设备发送选择
-    private final MutableLiveData<Integer> send_trafficLight = new MutableLiveData<>(2);
+    private final MutableLiveData<Integer> send_trafficLight = new MutableLiveData<>(1);
     //图形统计 - 颜色选择
     private final MutableLiveData<String> shape_color = new MutableLiveData<>("红色");
     //图形统计 - 形状类别
@@ -19,9 +19,9 @@ public class MainViewModel extends ViewModel {
     //车牌种类
     private final MutableLiveData<String> plate_color = new MutableLiveData<>("green");
     //车型检测种类
-    private final MutableLiveData<String> detect_car_model = new MutableLiveData<>("bike");
+    private final MutableLiveData<String> detect_car_type = new MutableLiveData<>("bike");
     //车型所需种类
-    private final MutableLiveData<String> car_model = new MutableLiveData<>("truck");
+    private final MutableLiveData<String> car_type = new MutableLiveData<>("all");
     //交通标志物识别最低置信度
     private final MutableLiveData<Float> traffic_sign_minimumConfidence = new MutableLiveData<>(0.5f);
     //车型识别最低置信度
@@ -51,12 +51,12 @@ public class MainViewModel extends ViewModel {
         return plate_color;
     }
 
-    public MutableLiveData<String> getDetect_car_model() {
-        return detect_car_model;
+    public MutableLiveData<String> getDetect_car_type() {
+        return detect_car_type;
     }
 
-    public MutableLiveData<String> getCar_model() {
-        return car_model;
+    public MutableLiveData<String> getCar_type() {
+        return car_type;
     }
 
     /* 设置交通标志物识别默认最低置信度阈值 */

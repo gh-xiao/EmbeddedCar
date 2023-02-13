@@ -67,6 +67,10 @@ public class ModuleViewModel extends ViewModel {
         return plate_color;
     }
 
+    public Handler getGetModuleInfoHandle() {
+        return getModuleInfoHandle;
+    }
+
     /**
      * 获取模块回传信息Handler
      */
@@ -75,13 +79,6 @@ public class ModuleViewModel extends ViewModel {
         if (msg.what == 2) moduleImgShow.setValue((Bitmap) msg.obj);
         return true;
     }).get());
-
-    /**
-     * 消息回传解析线程启动
-     */
-    public void getThreadReturnMsg() {
-        cachedThreadPool.execute(() -> ConnectTransport.getInstance().setReMsgHandler(getModuleInfoHandle));
-    }
 
     /**
      * 模块测试控制

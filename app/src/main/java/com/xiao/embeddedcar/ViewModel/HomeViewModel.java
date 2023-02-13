@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModel;
 import com.xiao.embeddedcar.Activity.MainActivity;
 import com.xiao.embeddedcar.DataProcessingModule.ConnectTransport;
 import com.xiao.embeddedcar.Utils.CameraUtil.XcApplication;
+import com.xiao.embeddedcar.Utils.NetworkAndUIUtil.FastClick;
 import com.xiao.embeddedcar.Utils.NetworkAndUIUtil.ToastUtil;
 import com.xiao.embeddedcar.Utils.RFID.Tools;
 
@@ -230,7 +231,10 @@ public class HomeViewModel extends ViewModel {
         if (msg.what == 1) {
             showImg.setValue((Bitmap) msg.obj);
             return true;
+        } else if (msg.what == 0) {
+            if (FastClick.isFastClick()) refreshConnect();
         } else connectState.setValue(msg.what);
+
         return false;
     }).get());
 }

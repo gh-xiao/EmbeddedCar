@@ -97,16 +97,16 @@ public class ConfigFragment extends Fragment {
             car_model_choose_builder.setTitle("指定检测车型");
             String[] item = {"bike", "motor", "car", "truck", "van", "bus"};
             String[] showItem = {"自行车", "摩托", "汽车", "卡车/面包车"};
-            car_model_choose_builder.setSingleChoiceItems(showItem, -1, (dialog, which) -> mainViewModel.getDetect_car_model().setValue(item[which]));
+            car_model_choose_builder.setSingleChoiceItems(showItem, -1, (dialog, which) -> mainViewModel.getDetect_car_type().setValue(item[which]));
             car_model_choose_builder.create().show();
         });
         /* 车型识别选择 */
         binding.carModelChooseBtn.setOnClickListener(v -> {
             AlertDialog.Builder car_model_choose_builder = new AlertDialog.Builder(requireActivity());
             car_model_choose_builder.setTitle("指定识别车型");
-            String[] item = {"bike", "motor", "car", "truck", "van", "bus"};
-            String[] showItem = {"自行车", "摩托", "汽车", "卡车/面包车"};
-            car_model_choose_builder.setSingleChoiceItems(showItem, -1, (dialog, which) -> mainViewModel.getCar_model().setValue(item[which]));
+            String[] item = {"all", "bike", "motor", "car", "truck", "van", "bus"};
+            String[] showItem = {"任意", "自行车", "摩托", "汽车", "卡车/面包车"};
+            car_model_choose_builder.setSingleChoiceItems(showItem, -1, (dialog, which) -> mainViewModel.getCar_type().setValue(item[which]));
             car_model_choose_builder.create().show();
         });
         /* 交通标志物识别最低置信度 */
@@ -251,7 +251,7 @@ public class ConfigFragment extends Fragment {
                     break;
             }
         });
-        mainViewModel.getDetect_car_model().observe(getViewLifecycleOwner(), s -> {
+        mainViewModel.getDetect_car_type().observe(getViewLifecycleOwner(), s -> {
             switch (s) {
                 case "bike":
                     binding.tvDetectCarModel.setText("自行车");
@@ -267,7 +267,7 @@ public class ConfigFragment extends Fragment {
                     break;
             }
         });
-        mainViewModel.getCar_model().observe(getViewLifecycleOwner(), s -> {
+        mainViewModel.getCar_type().observe(getViewLifecycleOwner(), s -> {
             switch (s) {
                 case "bike":
                     binding.tvCarModel.setText("自行车");
@@ -280,6 +280,9 @@ public class ConfigFragment extends Fragment {
                     break;
                 case "truck":
                     binding.tvCarModel.setText("卡车/面包车");
+                    break;
+                default:
+                    binding.tvCarModel.setText("任意");
                     break;
             }
         });
