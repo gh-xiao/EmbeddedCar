@@ -91,7 +91,12 @@ public class YoloV5_tfLite_TSDetector {
      * @return Gson字符串
      */
     public String processImage(Bitmap inputBitmap) {
-        if (inputBitmap == null) return "ERROR";
+        /* 结果列表对象 */
+        List<Classifier.Recognition> recognitions = new LinkedList<>();
+        /* 将结果转换成Gson */
+        Gson gson = new Gson();
+
+        if (inputBitmap == null) return gson.toJson(recognitions);
         //416*416
         int cropSize = detector.getInputSize();
         System.out.println(cropSize);
@@ -137,8 +142,6 @@ public class YoloV5_tfLite_TSDetector {
             }
         }
 
-        /* 将结果转换成Gson */
-        Gson gson = new Gson();
-        return gson.toJson(mappedRecognitions.size() > 0 ? mappedRecognitions : new LinkedList<Classifier.Recognition>());
+        return gson.toJson(mappedRecognitions.size() > 0 ? mappedRecognitions :recognitions);
     }
 }

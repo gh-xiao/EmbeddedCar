@@ -95,8 +95,12 @@ public class YoloV5_tfLite_VIDDetector {
      * @return 检测结果
      */
     public String processImage(Bitmap inputBitmap) {
-        if (inputBitmap == null) return "ERROR";
+        /* 结果列表对象 */
+        List<Classifier.Recognition> recognitions = new LinkedList<>();
+        /* 将结果转换成Gson */
+        Gson gson = new Gson();
 
+        if (inputBitmap == null) return gson.toJson(recognitions);
         //416*416
         int cropSize = detector.getInputSize();
         System.out.println(cropSize);
@@ -143,9 +147,7 @@ public class YoloV5_tfLite_VIDDetector {
             }
         }
 
-        /* 将结果转换成Gson */
-        Gson gson = new Gson();
-        return gson.toJson(mappedRecognitions.size() > 0 ? mappedRecognitions : new LinkedList<Classifier.Recognition>());
+        return gson.toJson(mappedRecognitions.size() > 0 ? mappedRecognitions : recognitions);
 //        //最终结果
 //        if (mappedRecognitions.size() != 0) {
 //            /* 排列出最高置信度的结果 */

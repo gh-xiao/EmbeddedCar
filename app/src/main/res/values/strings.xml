@@ -22,9 +22,9 @@
     <string name="follow_status">接收移动机器人状态</string>
     <string name="main_control">控制实训平台</string>
     <string name="follow_control">控制移动机器人</string>
-    <string name="clear_coded_disc">清除码盘</string>
-    <string name="set_ConnectTransport_mark">重置半自动mark值</string>
-    <string name="auto_Android_control">全自动方案</string>
+    <string name="clear_coded_disc">清除小车码盘</string>
+    <string name="set_ConnectTransport_mark">重置半自动控制值</string>
+    <string name="auto_Android_control">(备用)全自动方案</string>
 
     <!--    登录页面-->
     <string name="device_id">设备ID</string>

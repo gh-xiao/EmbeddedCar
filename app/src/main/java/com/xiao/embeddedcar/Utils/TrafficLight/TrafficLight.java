@@ -120,7 +120,7 @@ public class TrafficLight {
         destroy();
 
         /* 赛场上专用配套 */
-        if (Ig > 1000) return "绿灯";
+        if (Ig > 750) return "绿灯";
         return rAy_X <= 65 ? "红灯" : "黄灯";
     }
 

@@ -99,7 +99,7 @@ public class ConnectTransport {
     //识别的车牌号
     private String plate;
     //识别的车型
-    private int car_type = 3;
+    private short car_type = 3;
     //交通标志物识别编号
     private static short getTrafficFlag = 0x03;
 
@@ -918,7 +918,7 @@ public class ConnectTransport {
      * 半安卓控制方案
      * C6二维码识别结果发送
      * C7图形识别结果发送
-     * C8识别的车牌号发送
+     * C8识别的车型发送
      * C9交通标志物识别编号发送
      */
     public void half_Android() {
@@ -975,6 +975,18 @@ public class ConnectTransport {
             //TODO TFT合并项目 - 图形和交通标志物
             case 7:
                 YanChi(500);
+                go(50, 100);
+                YanChi(500);
+                cameraCommandUtil.postHttp(MainActivity.getLoginInfo().getIPCamera(), 2, 1);
+
+                trafficSign_mod();
+                Shape_mod();
+
+                YanChi(500);
+                cameraCommandUtil.postHttp(MainActivity.getLoginInfo().getIPCamera(), 0, 1);
+                YanChi(500);
+                back(50, 100);
+                YanChi(500);
                 send((short) (0xA0 + carGoto++), (short) 0x00, (short) 0x00, (short) 0x00);
                 break;
             //-----
@@ -1010,7 +1022,7 @@ public class ConnectTransport {
      * C5(仅)倒车入库
      * C6二维码识别结果发送
      * C7图形识别结果发送
-     * C8识别的车牌号发送
+     * C8识别的车型发送
      * C9交通标志物识别编号发送
      */
     private void Q1() {
@@ -1578,13 +1590,14 @@ public class ConnectTransport {
         sendUIMassage(1, "等待摄像头向上微调延迟...");
         YanChi(500);
         cameraCommandUtil.postHttp(MainActivity.getLoginInfo().getIPCamera(), 0, 1);
+        YanChi(3500);
         for (int J = 0; J < 3; J++) {
             YanChi(100);
             traffic_control(i + 0x0D, 1, 0);
         }
         sendUIMassage(1, "智能交通灯标志物进入识别模式");
+        YanChi(3000);
         ColorProcess c = new ColorProcess(mContext);
-        YanChi(3500);
         sendUIMassage(1, "对图片进行加工...");
         c.PictureProcessing(stream);
         sendUIMassage(1, "生成结果...");
@@ -2020,27 +2033,32 @@ public class ConnectTransport {
      * 车牌识别 - 车型识别框选(开发版)
      */
     public synchronized void plate_DetectByVID() {
-
+        if (stream == null) {
+            sendUIMassage(1, "摄像头连接异常!");
+            return;
+        }
         //车型识别结果
-        Classifier.Recognition recognition = VID_mod(stream);
+        Classifier.Recognition recognition = VID_mod();
         //车型识别使用的Bitmap
         Bitmap getCarLocal = MainActivity.getVID_Detector().getSaveBitmap();
         //是否处理成功
         boolean process = true;
         if (recognition != null) {
             sendUIMassage(1, "需要识别" + recognition.getTitle() + "上的车牌");
+            //TODO 将识别到的车型发送给从车
             switch (recognition.getTitle()) {
                 case "motor":
-                    car_type = 1;
+                    car_type = 0x01;
                     break;
                 case "car":
-                    car_type = 2;
+                    car_type = 0x02;
                     break;
                 case "truck":
                 case "van":
-                    car_type = 3;
+                    car_type = 0x03;
                     break;
             }
+            sendOther((short) 0xC8, car_type, (short) 0x00, (short) 0x00);
             int x = (int) recognition.getLocation().left;
             int y = (int) recognition.getLocation().top;
             int width = (int) (recognition.getLocation().right - recognition.getLocation().left);
@@ -2063,7 +2081,6 @@ public class ConnectTransport {
                     plate = result.getLabel();
                     /* 过滤与补全 */
                     plate = completion(plate);
-                    sendUIMassage(1, plate);
                     process = false;
                     break;
                 }
@@ -2094,22 +2111,21 @@ public class ConnectTransport {
                         plate = result.getLabel();
                         /* 过滤与补全 */
                         plate = completion(plate);
-                        sendUIMassage(1, plate);
                         break;
                     }
                 }
             } while (plate == null && fre++ < 5);
         }
         if (plate == null) plate = "A123B4";
+        sendUIMassage(1, plate);
         //TODO 发送给指定设备
-        YanChi(2000);
-        for (int J = 0; J < 3; J++) {
+        for (int J = 0; J < 5; J++) {
             YanChi(500);
             TFT_LCD(0x0B, 0x20, plate.charAt(0), plate.charAt(1), plate.charAt(2));
         }
         sendUIMassage(1, "第一次发送成功");
         YanChi(1500);
-        for (int J = 0; J < 3; J++)
+        for (int J = 0; J < 5; J++)
             TFT_LCD(0x0B, 0x21, plate.charAt(3), plate.charAt(4), plate.charAt(5));
         sendUIMassage(1, "第二次发送成功");
         YanChi(500);
@@ -2122,8 +2138,7 @@ public class ConnectTransport {
      *
      * @return 识别结果
      */
-    public synchronized Classifier.Recognition VID_mod(Bitmap inputBitmap) {
-        if (inputBitmap == null) return null;
+    public synchronized Classifier.Recognition VID_mod() {
         //重新识别次数
         int fre = 1;
         //所有识别结果
@@ -2140,13 +2155,16 @@ public class ConnectTransport {
         Classifier.Recognition recognition = null;
         //是否包含指定结果
         boolean has = false;
-        YanChi(3500);
         //TODO 更改为使用List存储结果,并按时间进行统计取得最终结果
         do {
+            sendUIMassage(1, "第" + fre + "次识别车型");
             total.clear();
+            sendUIMassage(1, "等待图像稳定...");
+            YanChi(6000);
+            sendUIMassage(1, "开始识别...");
             for (int i = 0; i < 10; i++) {
                 /* 裁剪TFT区域 */
-                Bitmap detect = TFTAutoCutter.TFTCutter(inputBitmap);
+                Bitmap detect = TFTAutoCutter.TFTCutter(stream);
                 /* 获得序列化的结果 */
                 String serialize = MainActivity.getVID_Detector().processImage(detect);
                 /* 反序列化 */
@@ -2164,19 +2182,17 @@ public class ConnectTransport {
                         if (!detectNeed.contains(result.getTitle())) recognition = result;
                     /* 指定需要识别车型 */
                     if (need.contains(result.getTitle())) recognition = result;
-
                 }
             }
             /* 结果获取失败处理 */
             /*TODO 根据题意设置约束数量 */
             if (total.size() <= 0 || !has) {
-                sendUIMassage(1, "第" + fre + "次识别车型失败!");
+                sendUIMassage(1, "识别车型失败!");
                 for (int J = 0; J < 3; J++) {
                     YanChi(100);
                     TFT_LCD(0x0B, 0x10, 0x02, 0x00, 0x00);
                 }
                 sendUIMassage(1, "翻页中...");
-                YanChi(7000);
                 continue;
             }
             sendUIMassage(1, "检测到可能包含车牌的指定车型: " + (recognition != null ? recognition.getTitle() : null) + "\n结果出现次数: " + total.get(recognition != null ? recognition.getTitle() : null));
@@ -2198,9 +2214,9 @@ public class ConnectTransport {
         Type typeMap = new TypeToken<List<Classifier.Recognition>>() {}.getType();
         //最终结果
         String finalResult = null;
-        YanChi(2000);
         //TODO 更改为使用List存储结果,并按时间进行统计取得最终结果
         do {
+            YanChi(6000);
             total.clear();
             for (int i = 0; i < 10; i++) {
                 /* 裁剪TFT区域 */
@@ -2224,7 +2240,6 @@ public class ConnectTransport {
                     TFT_LCD(0x0B, 0x10, 0x02, 0x00, 0x00);
                 }
                 sendUIMassage(1, "翻页中...");
-                YanChi(6000);
                 continue;
             }
             /* 找出出现次数最多的结果 */
@@ -2262,7 +2277,7 @@ public class ConnectTransport {
                 break;
         }
         //TODO 发送给指定设备
-        send((short) 0xC9, getTrafficFlag, (short) 0x00, (short) 0x00);
+//        send((short) 0xC9, getTrafficFlag, (short) 0x00, (short) 0x00);
         YanChi(500);
         sendOther((short) 0xC9, getTrafficFlag, (short) 0x00, (short) 0x00);
     }
