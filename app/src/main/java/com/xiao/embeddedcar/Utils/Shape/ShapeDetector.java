@@ -29,8 +29,8 @@ public class ShapeDetector {
     private static final String TAG = ShapeDetector.class.getSimpleName();
     //轮廓绘制/轮廓统计
     private static final List<MatOfPoint> contours = new ArrayList<>();
-    //HashMap<颜色,对应颜色HashMap<形状,数量>>
-    private final HashMap<String, ShapeStatistics> Shape = new HashMap<>();
+    //HashMap<颜色,HashMap<形状,数量>>
+    private final HashMap<String, ShapeStatistics> ColorCounts = new HashMap<>();
     //检测出的所有图形数量
     private int totals = 0;
 
@@ -38,7 +38,7 @@ public class ShapeDetector {
      * 获取该图片中所有的图形数量
      */
     public int getTotals() {
-        for (Map.Entry<String, ShapeStatistics> map : Shape.entrySet()) {
+        for (Map.Entry<String, ShapeStatistics> map : ColorCounts.entrySet()) {
             totals += map.getValue().getCounts("总计");
         }
         return totals;
@@ -58,8 +58,19 @@ public class ShapeDetector {
      *
      * @return 该颜色的统计对象<形状, 数量>
      */
-    public HashMap<String, ShapeStatistics> getShape() {
-        return Shape;
+    public HashMap<String, ShapeStatistics> getColorCounts() {
+        return ColorCounts;
+    }
+
+    /**
+     * 获取指定图形的数量
+     */
+    public int getShapeCounts(String shapeName) {
+        int counts = 0;
+        for (Map.Entry<String, ShapeStatistics> map : ColorCounts.entrySet()) {
+            counts += map.getValue().getCounts(shapeName);
+        }
+        return counts;
     }
 
     /**
@@ -86,7 +97,7 @@ public class ShapeDetector {
      */
     public void shapePicProcess(Mat srcMat) {
         if (srcMat == null) return;
-        Shape.clear();
+        ColorCounts.clear();
         /* 调整截图位置(图片截取方式2) */
         //测试图片用
 //        Rect rect = new Rect(188, 81, 322, 192);
@@ -109,7 +120,7 @@ public class ShapeDetector {
         Identify(srcMat, ColorHSV.greenHSV1, "绿色");
         Identify(srcMat, ColorHSV.cyanHSV, "青色");
         Identify(srcMat, ColorHSV.blueHSV2, "蓝色");
-        Identify(srcMat, ColorHSV.purpleHSV1, "紫色");
+        Identify(srcMat, ColorHSV.purpleHSV3, "紫色");
         /* 红色颜色取反,方便处理 */
         Identify(srcMat, "红色");
     }
@@ -161,7 +172,7 @@ public class ShapeDetector {
         第四个参数color为轮廓的颜色
         第五个参数thickness为轮廓的线宽，如果为负值或CV_FILLED表⽰填充轮廓内部
         */
-        Imgproc.drawContours(mat, contours, -1, new Scalar(0, 255, 0), 4);
+        Imgproc.drawContours(mat, contours, -1, new Scalar(0, 255, 0), 1);
 
         /* 形状统计 */
         /* 核心统计代码,参数已调整 */
@@ -175,8 +186,8 @@ public class ShapeDetector {
         /* 遍历轮廓 */
         for (int i = 0; i < contours.size(); i++) {
             /* 判断面积是否大于阈值 */
-            Log.i(TAG, "这是轮廓面积: " + Imgproc.contourArea(contours.get(i)));
             if (Imgproc.contourArea(contours.get(i)) > 250) {
+                Log.i(TAG, "查找到有效轮廓,面积为: " + Imgproc.contourArea(contours.get(i)));
                 /* 某一个点的集合(当前对象的轮廓) */
                 contour2f = new MatOfPoint2f(contours.get(i).toArray());
                 /* 计算轮廓的周长 */
@@ -188,7 +199,8 @@ public class ShapeDetector {
                 /* 获取包含旋转角度的最小外接矩形 */
                 Rect minRect = Imgproc.boundingRect(approxCurve);
                 /* 计算外接矩形的轮廓中心 */
-                Imgproc.rectangle(mat, new Point(minRect.x, minRect.y), new Point(minRect.x + minRect.width, minRect.y + minRect.height), new Scalar(255, 255, 0), 4);
+                Imgproc.rectangle(mat, new Point(minRect.x, minRect.y), new Point(minRect.x + minRect.width, minRect.y + minRect.height), new Scalar(255, 255, 0), 2);
+                Log.e(TAG, "包含角点数: " + approxCurve.rows());
                 if (approxCurve.rows() == 3) tri++;
                     /* 判断矩形和菱形 */
                 else if (approxCurve.rows() == 4) {
@@ -201,7 +213,7 @@ public class ShapeDetector {
                     /* 图形面积/外接矩形面积 */
                     double rec = area / minArea;
                     Log.i(TAG, "这是area / minArea得到的阈值: " + rec);
-                    if (rec >= 0.75 && rec < 1.15) rect++;
+                    if (rec >= 0.80 && rec < 1.15) rect++;
                     else rhombus++;
                 }
                 /* 判断五角星和圆形 */
@@ -239,17 +251,17 @@ public class ShapeDetector {
      */
     private void SaveResult(String colorName, int circle, int tri, int rect, int star, int rhombus) {
         /* 保存该颜色包含的图形统计 */
-        HashMap<String, Integer> shapeStatistics = new HashMap<>();
-        shapeStatistics.put("三角形", tri);
-        shapeStatistics.put("矩形", rect);
-        shapeStatistics.put("菱形", rhombus);
-        shapeStatistics.put("五角星", star);
-        shapeStatistics.put("圆形", circle);
-        shapeStatistics.put("总计", tri + rect + rhombus + star + circle);
+        HashMap<String, Integer> hashMap = new HashMap<>();
+        hashMap.put("三角形", tri);
+        hashMap.put("矩形", rect);
+        hashMap.put("菱形", rhombus);
+        hashMap.put("五角星", star);
+        hashMap.put("圆形", circle);
+        hashMap.put("总计", tri + rect + rhombus + star + circle);
         /* 形状计数对象 */
         ShapeStatistics statistics = new ShapeStatistics();
         /* 保存在该对象上 */
-        statistics.setShapeStatistics(shapeStatistics);
-        Shape.put(colorName, statistics);
+        statistics.setShapeStatistics(hashMap);
+        ColorCounts.put(colorName, statistics);
     }
 }

@@ -956,7 +956,7 @@ public class ConnectTransport {
                 YanChi(500);
                 send((short) (0xA0 + carGoto++), (short) 0x00, (short) 0x00, (short) 0x00);
                 break;
-            //TODO TFT(A)合并项目 - 车型和车牌
+            //TODO TFT(A)合并项目 - 车型和车牌(注意TFT发送指令)
             case 6:
                 YanChi(500);
                 go(50, 100);
@@ -972,20 +972,12 @@ public class ConnectTransport {
                 YanChi(500);
                 send((short) (0xA0 + carGoto++), (short) 0x00, (short) 0x00, (short) 0x00);
                 break;
-            //TODO TFT合并项目 - 图形和交通标志物
+            //TODO TFT合并项目 - 图形和交通标志物(注意TFT发送指令)
             case 7:
-                YanChi(500);
-                go(50, 100);
-                YanChi(500);
-                cameraCommandUtil.postHttp(MainActivity.getLoginInfo().getIPCamera(), 2, 1);
 
                 trafficSign_mod();
                 Shape_mod();
 
-                YanChi(500);
-                cameraCommandUtil.postHttp(MainActivity.getLoginInfo().getIPCamera(), 0, 1);
-                YanChi(500);
-                back(50, 100);
                 YanChi(500);
                 send((short) (0xA0 + carGoto++), (short) 0x00, (short) 0x00, (short) 0x00);
                 break;
@@ -1682,8 +1674,9 @@ public class ConnectTransport {
         do {
             YanChi(6000);
             task.setTotals(0);
-            sendUIMassage(2, stream);
-            task.shapePicProcess(stream);
+            Bitmap detect = TFTAutoCutter.TFTCutter(stream);
+            sendUIMassage(2, detect);
+            task.shapePicProcess(detect);
             totals = task.getTotals();
             if (totals <= 3 /*|| totals >= 6*/) {
                 for (int J = 0; J < 3; J++) {
@@ -1693,15 +1686,36 @@ public class ConnectTransport {
                 sendUIMassage(1, "当前识别次数: " + fre + "\n图形数量小于3,TFT_A翻页");
             } else {
                 fail = false;
-                shapeResult = Objects.requireNonNull(task.getShape().get(mainViewModel.getShape_color().getValue())).getCounts(mainViewModel.getShape_type().getValue());
+                shapeResult = Objects.requireNonNull(task.getColorCounts().get(mainViewModel.getShape_color().getValue())).getCounts(mainViewModel.getShape_type().getValue());
             }
         } while (fail && fre++ < 5);
-        sendUIMassage(1, "检测出的全部的图形数量: " + totals + "\n题意所需数据: " + shapeResult + "个" + mainViewModel.getShape_color().getValue() + mainViewModel.getShape_type().getValue());
+//        sendUIMassage(1, "检测出的全部的图形数量: " + totals + "\n题意所需数据: " + shapeResult + "个" + mainViewModel.getShape_color().getValue() + mainViewModel.getShape_type().getValue());
         sendUIMassage(1, "----------形状识别完成----------");
-        //TODO 发送给指定设备
-        send((short) 0xC7, (short) shapeResult, (short) 0x00, (short) 0x00);
+        //TODO ==========发送给指定设备==========
+//        send((short) 0xC7, (short) shapeResult, (short) 0x00, (short) 0x00);
+//        YanChi(500);
+//        sendOther((short) 0xC7, (short) shapeResult, (short) 0x00, (short) 0x00);
+        String toTFT_B = "F" +
+                task.getShapeCounts("矩形") +
+                task.getShapeCounts("圆形") +
+                task.getShapeCounts("三角形") +
+                task.getShapeCounts("菱形") +
+                task.getShapeCounts("五角星");
+        for (int J = 0; J < 5; J++) {
+            YanChi(500);
+            TFT_LCD(0x0B, 0x20, toTFT_B.charAt(0), toTFT_B.charAt(1), toTFT_B.charAt(2));
+        }
+        sendUIMassage(1, "第一次发送成功");
+        YanChi(1500);
+        for (int J = 0; J < 5; J++)
+            TFT_LCD(0x0B, 0x21, toTFT_B.charAt(3), toTFT_B.charAt(4), toTFT_B.charAt(5));
+        sendUIMassage(1, "第二次发送成功");
         YanChi(500);
-        sendOther((short) 0xC7, (short) shapeResult, (short) 0x00, (short) 0x00);
+        String toLED_one = "F" + Objects.requireNonNull(task.getColorCounts().get("红色")).getCounts("总计");
+        StringBuilder toLED_two = new StringBuilder();
+        toLED_two.append(Objects.requireNonNull(task.getColorCounts().get("绿色")).getCounts("总计"))
+                .append(Objects.requireNonNull(task.getColorCounts().get("蓝色")).getCounts("总计"));
+        digital(0x02, Integer.parseInt(toLED_one, 16), Integer.parseInt(toLED_two.toString(), 16), Integer.parseInt("0" + getTrafficFlag, 16));
     }
 
     /**
@@ -1715,7 +1729,7 @@ public class ConnectTransport {
         sendUIMassage(2, detect);
         task.shapePicProcess(detect);
         int totals = task.getTotals();
-        shapeResult = Objects.requireNonNull(task.getShape().get(mainViewModel.getShape_color().getValue())).getCounts(mainViewModel.getShape_type().getValue());
+        shapeResult = Objects.requireNonNull(task.getColorCounts().get(mainViewModel.getShape_color().getValue())).getCounts(mainViewModel.getShape_type().getValue());
         sendUIMassage(1, "检测出的全部的图形数量: " + totals + "\n题意所需数据: " + shapeResult + "个" + mainViewModel.getShape_color().getValue() + mainViewModel.getShape_type().getValue());
         sendUIMassage(1, "----------形状识别完成----------");
     }
@@ -2173,7 +2187,7 @@ public class ConnectTransport {
                 /* 获得统计结果 */
                 if (results.size() > 0) for (Classifier.Recognition result : results) {
                     /* 将识别结果添加到TreeMap */
-                    if (!total.containsKey(result.getTitle())) total.put(result.getTitle(), 0);
+                    if (!total.containsKey(result.getTitle())) total.put(result.getTitle(), 1);
                     else total.put(result.getTitle(), total.get(result.getTitle()) + 1);
                     /* 如果包含指定检测车型 */
                     if (detectNeed.contains(result.getTitle())) has = true;
@@ -2219,16 +2233,14 @@ public class ConnectTransport {
             YanChi(6000);
             total.clear();
             for (int i = 0; i < 10; i++) {
-                /* 裁剪TFT区域 */
-                Bitmap detect = TFTAutoCutter.TFTCutter(stream);
-                /* 获得序列化的结果 */
-                String serialize = MainActivity.getTS_Detector().processImage(detect);
+                /* 裁剪TFT区域并获得序列化的结果 */
+                String serialize = MainActivity.getTS_Detector().processImage(TFTAutoCutter.TFTCutter(stream));
                 /* 反序列化 */
                 Gson gson = new GsonBuilder().enableComplexMapKeySerialization().setPrettyPrinting().create();
                 List<Classifier.Recognition> results = gson.fromJson(serialize, typeMap);
                 /* 获得统计结果 */
                 if (results.size() > 0) for (Classifier.Recognition result : results) {
-                    if (!total.containsKey(result.getTitle())) total.put(result.getTitle(), 0);
+                    if (!total.containsKey(result.getTitle())) total.put(result.getTitle(), 1);
                     else total.put(result.getTitle(), total.get(result.getTitle()) + 1);
                 }
             }
@@ -2251,29 +2263,29 @@ public class ConnectTransport {
                 }
             /* 出现次数不足/出现次数过多,重置结果 */
             sendUIMassage(1, "交通标志物识别结果: " + finalResult + "\n识别结果出现次数: " + maxvalue);
-            if (maxvalue <= 5 || maxvalue >= 16) finalResult = null;
+            if (maxvalue <= 2 || maxvalue >= 16) finalResult = null;
         } while (finalResult == null && fre++ < 5);
         if (finalResult == null) finalResult = "ERROR";
         sendUIMassage(1, "交通标志物识别结果: " + finalResult);
         switch (finalResult) {
             case "go_straight":
-                getTrafficFlag = 0x01;
+                getTrafficFlag = 1;
                 break;
             case "turn_left":
-                getTrafficFlag = 0x02;
+                getTrafficFlag = 2;
                 break;
             case "turn_around":
-                getTrafficFlag = 0x04;
+                getTrafficFlag = 4;
                 break;
             case "no_straight":
-                getTrafficFlag = 0x05;
+                getTrafficFlag = 5;
                 break;
             case "no_turn":
-                getTrafficFlag = 0x06;
+                getTrafficFlag = 6;
                 break;
             case "turn_right":
             default:
-                getTrafficFlag = 0x03;
+                getTrafficFlag = 3;
                 break;
         }
         //TODO 发送给指定设备
