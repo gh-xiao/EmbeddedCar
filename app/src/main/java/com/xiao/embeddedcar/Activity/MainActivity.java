@@ -55,6 +55,8 @@ import org.opencv.android.OpenCVLoader;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+    //xml绑定类
+    ActivityMainBinding binding;
     //应用栏配置
     private AppBarConfiguration mAppBarConfiguration;
     //导航控制对象
@@ -112,8 +114,7 @@ public class MainActivity extends AppCompatActivity {
         connectViewModel = new ViewModelProvider(this).get(ConnectViewModel.class);
         moduleViewModel = new ViewModelProvider(this).get(ModuleViewModel.class);
         /* 绑定xml文件 */
-        //xml绑定类
-        ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
         /* 设置内容视图为绑定类的根视图 */
         setContentView(binding.getRoot());
         /* 权限检查 */
@@ -141,6 +142,8 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
                 (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED || (Build.VERSION.SDK_INT >= 30 && Environment.isExternalStorageManager())))
             initLibrary();
+        /* 控件动作初始化 */
+        init();
         /* 设置观察者 */
         observerDataStateUpdateAction();
     }
@@ -252,6 +255,13 @@ public class MainActivity extends AppCompatActivity {
         ConnectTransport.getInstance().destroy();
         CameraConnectUtil.getInstance().destroy();
         USBToSerialUtil.getInstance().onDestroy();
+    }
+
+    /**
+     * 控件动作初始化
+     */
+    private void init() {
+
     }
 
     /**

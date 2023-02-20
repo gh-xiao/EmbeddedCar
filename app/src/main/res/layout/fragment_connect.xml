@@ -54,13 +54,14 @@
                     android:id="@+id/device_id"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="13sp"
+                    android:layout_margin="10sp"
                     android:layout_weight="3"
                     android:background="@drawable/edit_view_case"
                     android:cursorVisible="true"
                     android:hint="@string/device_text"
                     android:importantForAutofill="no"
                     android:inputType="none"
+                    android:minHeight="48dp"
                     android:selectAllOnFocus="true"
                     android:text="@string/device_text"
                     android:textColor="@color/black"
@@ -89,7 +90,7 @@
                     android:id="@+id/login_name"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="13sp"
+                    android:layout_margin="10sp"
                     android:layout_weight="3"
                     android:background="@drawable/edit_view_case"
                     android:cursorVisible="true"
@@ -97,6 +98,7 @@
                     android:importantForAutofill="no"
                     android:inputType="none"
                     android:maxLength="10"
+                    android:minHeight="48dp"
                     android:selectAllOnFocus="true"
                     android:text="@string/login_text"
                     android:textColor="@color/black"
@@ -125,13 +127,14 @@
                     android:id="@+id/login_psd"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="13sp"
+                    android:layout_margin="10sp"
                     android:layout_weight="7"
                     android:background="@drawable/edit_view_case"
                     android:hint="@string/login_psd"
                     android:importantForAutofill="no"
                     android:inputType="textPassword"
                     android:maxLength="16"
+                    android:minHeight="48dp"
                     android:selectAllOnFocus="true"
                     android:text="@string/edit_password"
                     android:textColor="@color/black"
@@ -142,7 +145,7 @@
                     android:id="@+id/eyes"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="13sp"
+                    android:layout_margin="8sp"
                     android:layout_weight="1"
                     android:scaleType="centerInside"
                     app:srcCompat="@drawable/hide" />
@@ -153,22 +156,21 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:gravity="center"
                 android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="3"
-                    android:gravity="center"
-                    android:padding="3dp"
+                    android:layout_weight="1"
                     android:text="通信方式"
+                    android:textAlignment="center"
                     android:textSize="15sp"
                     android:textStyle="bold" />
 
                 <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/connection_mode"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:checked="true"
@@ -183,14 +185,13 @@
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/reset"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="20dp"
+                    android:layout_margin="10dp"
                     android:layout_weight="1"
                     android:text="清空与重置" />
 
@@ -198,7 +199,7 @@
                     android:id="@+id/connect"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="20dp"
+                    android:layout_margin="10dp"
                     android:layout_weight="1"
                     android:text="连接" />
 

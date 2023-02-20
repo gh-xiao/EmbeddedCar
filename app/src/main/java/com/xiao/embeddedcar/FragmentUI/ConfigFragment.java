@@ -76,6 +76,8 @@ public class ConfigFragment extends Fragment {
         });
         /* 红绿灯信息发送选择 */
         binding.trafficLightChooseBtn.setOnCheckedChangeListener((group, id) -> mainViewModel.getSend_trafficLight().setValue(id == R.id.rb_tl_a ? 1 : 2));
+        /* 红绿灯检测位置选择 */
+        binding.detectTrafficLightChooseBtn.setOnCheckedChangeListener((group, id) -> mainViewModel.getDetect_trafficLight().setValue(id == R.id.rb_detect_tl_l ? 1 : 2));
         /* 车牌检测颜色选择 */
         binding.plateColorChooseRG.setOnCheckedChangeListener((group, id) -> {
             if (id == R.id.rb_plate_all) {
@@ -233,6 +235,12 @@ public class ConfigFragment extends Fragment {
             if (i != null) {
                 binding.tvTrafficLight.setText(i == 1 ? "A灯" : "B灯");
                 binding.trafficLightChooseBtn.check(i == 1 ? R.id.rb_tl_a : R.id.rb_tl_b);
+            }
+        });
+        mainViewModel.getDetect_trafficLight().observe(getViewLifecycleOwner(), i -> {
+            if (i != null) {
+                binding.tvDetectTrafficLight.setText(i == 1 ? "长线" : "短线");
+                binding.detectTrafficLightChooseBtn.check(i == 1 ? R.id.rb_detect_tl_l : R.id.rb_detect_tl_s);
             }
         });
         mainViewModel.getPlate_color().observe(getViewLifecycleOwner(), s -> {

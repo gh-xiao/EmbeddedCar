@@ -12,6 +12,8 @@ public class MainViewModel extends ViewModel {
     private final MutableLiveData<QRBitmapCutter.QRColor> QR_color = new MutableLiveData<>(QRBitmapCutter.color);
     //智能交通灯设备发送选择
     private final MutableLiveData<Integer> send_trafficLight = new MutableLiveData<>(1);
+    //智能交通灯设备位置检测选择
+    private final MutableLiveData<Integer> detect_trafficLight = new MutableLiveData<>(1);
     //图形统计 - 颜色选择
     private final MutableLiveData<String> shape_color = new MutableLiveData<>("红色");
     //图形统计 - 形状类别
@@ -37,6 +39,10 @@ public class MainViewModel extends ViewModel {
 
     public MutableLiveData<Integer> getSend_trafficLight() {
         return send_trafficLight;
+    }
+
+    public MutableLiveData<Integer> getDetect_trafficLight() {
+        return detect_trafficLight;
     }
 
     public MutableLiveData<String> getShape_color() {

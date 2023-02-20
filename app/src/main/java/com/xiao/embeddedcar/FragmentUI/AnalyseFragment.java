@@ -9,6 +9,7 @@ import android.widget.SeekBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -197,8 +198,9 @@ public class AnalyseFragment extends Fragment {
             Bitmap bitmap = Bitmap.createBitmap(hsvMat.width(), hsvMat.height(), Bitmap.Config.ARGB_8888);
             if (analyseViewModel.getMorphologyExMode().getValue()) {
                 Mat morphologyExMat = new Mat();
-                /* 形态学操作 - 膨胀*/
-                Imgproc.morphologyEx(hsvMat, morphologyExMat, Imgproc.MORPH_DILATE, kernel);
+                /* 形态学操作 */
+                Imgproc.morphologyEx(hsvMat, morphologyExMat, analyseViewModel.getChooseMorphologyExMode().getValue() == null ?
+                        Imgproc.MORPH_DILATE : analyseViewModel.getChooseMorphologyExMode().getValue(), kernel);
                 /* 输出 */
                 Utils.matToBitmap(morphologyExMat, bitmap);
                 analyseViewModel.getRecursionMorphologyExMat().setValue(morphologyExMat);
@@ -214,7 +216,16 @@ public class AnalyseFragment extends Fragment {
             }
             binding.imgShow.setImageBitmap(bitmap);
         });
-        /* 形态学操作模式选择 */
+        /* 选择形态学操作 */
+        binding.chooseMorphologyExBtn.setOnClickListener(v -> {
+            AlertDialog.Builder shape_color_choose_builder = new AlertDialog.Builder(requireActivity());
+            shape_color_choose_builder.setTitle("形态学操作选择");
+            String[] item = {"腐蚀", "膨胀", "开操作", "闭操作", "梯度操作", "黑帽操作"};
+            shape_color_choose_builder.setSingleChoiceItems(item, -1, (dialog, which) ->
+                    analyseViewModel.getChooseMorphologyExMode().setValue(which));
+            shape_color_choose_builder.create().show();
+        });
+        /* 形态学操作模式选择(对当前图像单次或多次操作) */
         binding.morphologyExMode.setOnCheckedChangeListener((buttonView, b) -> analyseViewModel.getMorphologyExMode().setValue(b));
         /* TFT智能裁剪 */
         binding.TFTAutoCutterBtn.setOnClickListener(v -> {
@@ -266,6 +277,11 @@ public class AnalyseFragment extends Fragment {
             binding.VMaxData.setDefaultValue(i);
         });
 
+        analyseViewModel.getChooseMorphologyExMode().observe(getViewLifecycleOwner(), i -> {
+            if (i == null) return;
+            String[] item = {"腐蚀", "膨胀", "开操作", "闭操作", "梯度操作", "黑帽操作"};
+            binding.morphologyExBtn.setText(item[i]);
+        });
         analyseViewModel.getMorphologyExMode().observe(getViewLifecycleOwner(), b -> binding.morphologyExMode.setText(b ? "常规" : "递归"));
     }
 

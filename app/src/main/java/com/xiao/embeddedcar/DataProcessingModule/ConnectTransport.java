@@ -90,6 +90,10 @@ public class ConnectTransport {
     //从车与其他道具交互类型指令
     public short TYPE1 = 0x02;
     /* ================================================== */
+    //RFID1卡
+    private static char[] RFID1;
+    //RFID2卡
+    private static char[] RFID2;
     //超声波数据
     private long ultraSonic = 260;
     //二维码识别结果
@@ -105,6 +109,14 @@ public class ConnectTransport {
 
     public Bitmap getStream() {
         return stream;
+    }
+
+    public static void setRFID1(char[] RFID1) {
+        ConnectTransport.RFID1 = RFID1;
+    }
+
+    public static void setRFID2(char[] RFID2) {
+        ConnectTransport.RFID2 = RFID2;
     }
 
     /**
@@ -927,9 +939,8 @@ public class ConnectTransport {
             case 1:
                 send((short) (0xA0 + carGoto++), (short) 0x00, (short) 0x00, (short) 0x00);
                 break;
-            //TODO 车牌识别/图形识别/交通标志物识别+发送道闸车牌
+            //RFID解密后启动主车
             case 2:
-
                 YanChi(500);
                 send((short) (0xA0 + carGoto++), (short) 0x00, (short) 0x00, (short) 0x00);
                 break;
@@ -1593,7 +1604,7 @@ public class ConnectTransport {
         sendUIMassage(1, "对图片进行加工...");
         c.PictureProcessing(stream);
         sendUIMassage(1, "生成结果...");
-        String color = TrafficLight.Identify(c.getResult());
+        String color = TrafficLight.Identify(c.getResult(), mainViewModel.getDetect_trafficLight().getValue() != null ? mainViewModel.getDetect_trafficLight().getValue() : 1);
         sendUIMassage(2, c.getResult());
         sendUIMassage(1, "识别的颜色: " + color);
         sendToTrafficLight(color, i);
@@ -1653,7 +1664,7 @@ public class ConnectTransport {
         sendUIMassage(1, "对图片进行加工...");
         c.PictureProcessing(detect);
         sendUIMassage(1, "生成结果...");
-        String color = TrafficLight.Identify(c.getResult());
+        String color = TrafficLight.Identify(c.getResult(), mainViewModel.getDetect_trafficLight().getValue() != null ? mainViewModel.getDetect_trafficLight().getValue() : 1);
         sendUIMassage(2, c.getResult());
         sendUIMassage(1, "识别的颜色: " + color);
     }
@@ -2296,10 +2307,23 @@ public class ConnectTransport {
 
     /* ================================================== */
 
-    /*TODO
-     * 解密
-     * {}
+    /**
+     * TODO RFID1解密
      */
+    public void RFID1(byte toMark) {
+        //TODO 解密
+//        setMark(toMark);
+//        half_Android();
+    }
+
+    /**
+     * TODO RFID2解密
+     */
+    public void RFID2(byte toMark) {
+        //TODO 解密
+//        setMark(toMark);
+//        half_Android();
+    }
 
     /* 以下全安卓控制主车读卡循迹未必完全有效,仅作为备用手段使用 */
 

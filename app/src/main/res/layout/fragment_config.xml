@@ -162,7 +162,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:text="选择设备"
                 app:layout_constraintBottom_toBottomOf="@+id/line_trafficLight"
                 app:layout_constraintStart_toEndOf="@+id/line_trafficLight"
                 app:layout_constraintTop_toTopOf="@+id/line_trafficLight">
@@ -181,12 +180,62 @@
             </RadioGroup>
 
             <LinearLayout
-                android:id="@+id/line_plateColor_detect"
+                android:id="@+id/line_detect_trafficLight"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:padding="15dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/line_trafficLight"
+                app:layout_constraintWidth_percent="0.5">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="红绿灯检测位置:"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_detect_trafficLight"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <RadioGroup
+                android:id="@+id/detect_trafficLight_choose_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="@+id/line_detect_trafficLight"
+                app:layout_constraintStart_toEndOf="@+id/line_detect_trafficLight"
+                app:layout_constraintTop_toTopOf="@+id/line_detect_trafficLight">
+
+                <RadioButton
+                    android:id="@+id/rb_detect_tl_l"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="长线" />
+
+                <RadioButton
+                    android:id="@+id/rb_detect_tl_s"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="短线" />
+            </RadioGroup>
+
+            <LinearLayout
+                android:id="@+id/line_plateColor_detect"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="15dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/line_detect_trafficLight"
                 app:layout_constraintWidth_percent="0.5">
 
                 <TextView
@@ -393,7 +442,7 @@
             <SeekBar
                 android:id="@+id/sb_VID_min"
                 android:layout_width="0dp"
-                android:layout_height="40dp"
+                android:layout_height="0dp"
                 android:layout_weight="4"
                 android:max="100"
                 android:maxHeight="2dp"
@@ -432,8 +481,8 @@
         android:id="@+id/tv_version"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:gravity="center"
         android:background="@drawable/nav_header_background"
+        android:gravity="center"
         android:textColor="@color/white"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"

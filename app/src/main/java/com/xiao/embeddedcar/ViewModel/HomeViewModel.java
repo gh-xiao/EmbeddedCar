@@ -14,7 +14,6 @@ import com.xiao.embeddedcar.DataProcessingModule.ConnectTransport;
 import com.xiao.embeddedcar.Utils.CameraUtil.XcApplication;
 import com.xiao.embeddedcar.Utils.NetworkAndUIUtil.FastClick;
 import com.xiao.embeddedcar.Utils.NetworkAndUIUtil.ToastUtil;
-import com.xiao.embeddedcar.Utils.RFID.Tools;
 
 import java.lang.ref.WeakReference;
 import java.nio.charset.StandardCharsets;
@@ -196,16 +195,29 @@ public class HomeViewModel extends ViewModel {
              * 自定义信息指令
              * 验证是否为自定义发送数据启动 */
             if (mByte[0] == (byte) 0xAA) {
-                //验证是否为自定义发送数据启动
-                if (mByte[1] == (byte) 0x11 && mByte[2] == (byte) 0x0A) {
+                /* 验证是否为自定义发送数据启动 */
+                if (mByte[1] == (byte) 0x11) {
                     debugArea.setValue("读卡成功!Android获取RFID卡成功!");
                     //RFID卡识别数据传入
-                    Tools.data = new Character[16];
-                    for (int i = 0; i < 16; i++) Tools.data[i] = (char) mByte[i + 4];
+                    char[] data = new char[16];
+                    for (int i = 0; i < 16; i++) data[i] = (char) mByte[i + 4];
+                    /* 检测到卡1处理 */
+                    if (mByte[2] == (byte) 0x0A) {
+                        debugArea.setValue("卡(1)数据:\n" + Arrays.toString(data));
+                        ConnectTransport.setRFID1(data);
+                        XcApplication.cachedThreadPool.execute(() -> ConnectTransport.getInstance().RFID1(mByte[3]));
+                    }
+                    /* 检测到卡2处理 */
+                    if (mByte[2] == (byte) 0x0B) {
+                        debugArea.setValue("卡(2)数据:\n" + Arrays.toString(data));
+                        ConnectTransport.setRFID2(data);
+                        XcApplication.cachedThreadPool.execute(() -> ConnectTransport.getInstance().RFID2(mByte[3]));
+                    }
+                    return true;
                 }
-                //启动全自动
+                /* 启动全自动 */
                 ConnectTransport.setMark(mByte[3]);
-                new Thread(() -> ConnectTransport.getInstance().half_Android()).start();
+                XcApplication.cachedThreadPool.execute(() -> ConnectTransport.getInstance().half_Android());
             }
             return true;
         } else connectState.setValue(msg.what);

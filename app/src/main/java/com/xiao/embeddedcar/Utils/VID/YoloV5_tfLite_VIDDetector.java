@@ -53,17 +53,18 @@ public class YoloV5_tfLite_VIDDetector {
      */
     public boolean LoadModel(String device, int numThreads, AssetManager assetManager) {
         //模型文件
-        String modelString = "VIDyolov5s-fp16.tflite";
+        String modelString1 = "VIDyolov5s-fp16.tflite";
+        String modelString2 = "VIDyolov5s-fp16_new.tflite";
         //检测类别(标签)
         String labelFilename = "VIDclass.txt";
         /* 线程数(不推荐超过9线程数) */
         if (numThreads > 9) numThreads = 4;
-        LOGGER.i("Changing model to ***" + modelString + "*** device ***" + device + "***");
+        LOGGER.i("Changing model to ***" + modelString1 + "*** device ***" + device + "***");
 
         /* Try to load model. */
         /* 尝试加载模型 */
         try {
-            detector = DetectorFactory.getDetector(assetManager, modelString, labelFilename);
+            detector = DetectorFactory.getDetector(assetManager, modelString1, labelFilename);
             // Customize the interpreter to the type of device we want to use.
         } catch (IOException e) {
             e.printStackTrace();

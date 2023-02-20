@@ -42,7 +42,7 @@ public class ConnectFragment extends Fragment {
     private final UsbManager mUsbManager = USBToSerialUtil.getInstance().getmUsbManager();
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)  {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //ViewModel
         connectViewModel = new ViewModelProvider(requireActivity()).get(ConnectViewModel.class);
         //xml文件绑定
@@ -88,7 +88,7 @@ public class ConnectFragment extends Fragment {
             if (FastClick.isFastClick()) {
                 if (XcApplication.isSerial != XcApplication.Mode.SOCKET) tryGetUsbPermission();
                 connectViewModel.requestConnect();
-                Navigation.findNavController( binding.getRoot()).navigate(R.id.action_nav_connect_to_nav_home);
+                Navigation.findNavController(binding.getRoot()).navigate(R.id.action_nav_connect_to_nav_home);
             }
         });
     }

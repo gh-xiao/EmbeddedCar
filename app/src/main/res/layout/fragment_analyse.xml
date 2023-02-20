@@ -44,12 +44,20 @@
             android:textSize="12sp" />
 
         <Button
-            android:id="@+id/morphologyEx_btn"
+            android:id="@+id/choose_morphologyEx_btn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="形态学操作"
+            android:text="选择形态学操作"
             android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/morphologyEx_btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.8"
+            android:textSize="12sp"
+            tools:ignore="SpeakableTextPresentCheck" />
 
         <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/morphologyEx_mode"

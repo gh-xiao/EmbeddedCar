@@ -6,65 +6,55 @@
     android:layout_height="match_parent"
     tools:context=".FragmentUI.HomeFragment">
 
-
-    <LinearLayout
+    <RelativeLayout
+        android:id="@+id/parentRelative"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:layout_margin="5dp"
+        android:background="@drawable/bg_selete_all"
+        app:layout_constraintEnd_toStartOf="@+id/connect_control"
+        app:layout_constraintHeight_percent="0.6"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintWidth_percent="0.45">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.44">
 
-        <RelativeLayout
-            android:id="@+id/parentRelative"
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_centerInParent="true"
+            android:background="@drawable/ic_no_pic"
+            android:contentDescription="@string/no_pic" />
+
+        <ImageView
+            android:id="@+id/img"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_gravity="center"
-            android:layout_margin="5dp"
-            android:layout_weight="3"
-            android:background="@drawable/bg_selete_all">
+            android:layout_height="match_parent"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
+            android:scaleType="fitXY"
+            tools:ignore="ContentDescription" />
 
-            <ImageView
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_centerInParent="true"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/ic_no_pic"
-                android:contentDescription="@string/no_pic" />
+    </RelativeLayout>
 
-            <ImageView
-                android:id="@+id/img"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="5dp"
-                android:layout_marginBottom="5dp"
-                android:scaleType="fitXY"
-                tools:ignore="ContentDescription" />
-
-        </RelativeLayout>
-
-        <TextView
-            android:id="@+id/Debug"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_margin="5dp"
-            android:layout_marginStart="5sp"
-            android:layout_marginTop="5sp"
-            android:layout_marginEnd="5sp"
-            android:layout_marginBottom="5sp"
-            android:layout_weight="2"
-            android:background="@drawable/bg_selete_all"
-            android:padding="2dp"
-            android:scrollbars="vertical"
-            android:text="Debug显示\n"
-            android:textAlignment="center"
-            android:textColor="@color/white" />
-
-    </LinearLayout>
+    <TextView
+        android:id="@+id/Debug"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="5dp"
+        android:background="@drawable/bg_selete_all"
+        android:padding="2dp"
+        android:scrollbars="vertical"
+        android:text="Debug显示\n"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/connect_control"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/parentRelative"
+        app:layout_constraintWidth_percent="0.44" />
 
     <LinearLayout
         android:id="@+id/connect_control"
@@ -182,17 +172,17 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/rvdata"
+                android:id="@+id/rvData"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="marquee"
+                android:gravity="center"
                 android:padding="6dp"
                 android:singleLine="true"
                 android:text="设备没有连接，这里空空如也哦~"
                 android:textColor="@color/white"
                 android:textSize="15sp"
-                tools:ignore="NestedWeights"
-                android:gravity="center" />
+                tools:ignore="NestedWeights" />
 
             <!--内层参数填充-->
             <GridLayout

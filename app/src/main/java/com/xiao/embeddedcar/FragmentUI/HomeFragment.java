@@ -210,8 +210,8 @@ public class HomeFragment extends Fragment {
         homeViewModel.getIpShow().observe(getViewLifecycleOwner(), s -> binding.showIP.setText(s));
         //设备数据接收
         homeViewModel.getDataShow().observe(getViewLifecycleOwner(), s -> {
-            binding.rvdata.setTextColor(chief_status_flag ? getResources().getColor(R.color.white) : getResources().getColor(R.color.black));
-            binding.rvdata.setText(s);
+            binding.rvData.setTextColor(chief_status_flag ? getResources().getColor(R.color.white) : getResources().getColor(R.color.black));
+            binding.rvData.setText(s);
         });
         //debug显示
         homeViewModel.getDebugArea().observe(getViewLifecycleOwner(), s -> {
