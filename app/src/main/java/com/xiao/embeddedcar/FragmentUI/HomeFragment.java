@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -26,6 +25,7 @@ import com.xiao.embeddedcar.Utils.CameraUtil.XcApplication;
 import com.xiao.embeddedcar.Utils.NetworkAndUIUtil.FastClick;
 import com.xiao.embeddedcar.Utils.NetworkAndUIUtil.ToastUtil;
 import com.xiao.embeddedcar.Utils.NetworkAndUIUtil.WiFiStateUtil;
+import com.xiao.embeddedcar.Utils.PublicMethods.BaseConversion;
 import com.xiao.embeddedcar.ViewModel.ConnectViewModel;
 import com.xiao.embeddedcar.ViewModel.HomeViewModel;
 import com.xiao.embeddedcar.ViewModel.ModuleViewModel;
@@ -66,24 +66,6 @@ public class HomeFragment extends Fragment {
     private void init() {
         //设置TextView滚动
         binding.Debug.setMovementMethod(ScrollingMovementMethod.getInstance());
-        //自动驾驶按钮监听事件
-        binding.autoDriveBtn.setOnClickListener(view -> {
-            //对话框构造器
-            AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
-            // 设置Title的内容
-            builder.setIcon(R.mipmap.rc_logo);
-            builder.setTitle("温馨提示");
-            // 设置Content(内容)来显示一个信息
-            builder.setMessage("请确认是否开始自动驾驶！");
-            // 设置一个PositiveButton(确认按钮)
-            builder.setPositiveButton("开始", (dialog, which) -> {
-                new Thread(() -> ConnectTransport.getInstance().half_Android()).start();
-                ToastUtil.getInstance().ShowToast("开始自动驾驶，请检查车辆周围环境！");
-            });
-            // 设置一个NegativeButton
-            builder.setNegativeButton("取消", (dialog, which) -> dialog.dismiss());
-            builder.show();
-        });
         //清空Debug区(重置)按钮监听事件
         binding.clearDebugArea.setOnClickListener(view -> {
             binding.Debug.setText("Debug显示\n");
@@ -211,7 +193,18 @@ public class HomeFragment extends Fragment {
         //设备数据接收
         homeViewModel.getDataShow().observe(getViewLifecycleOwner(), s -> {
             binding.rvData.setTextColor(chief_status_flag ? getResources().getColor(R.color.white) : getResources().getColor(R.color.black));
+            binding.commandData.setTextColor(chief_status_flag ? getResources().getColor(R.color.white) : getResources().getColor(R.color.black));
             binding.rvData.setText(s);
+        });
+        //设备指令接收区
+        homeViewModel.getCommandData().observe(getViewLifecycleOwner(), bytes -> {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < 50; i++) {
+                sb.append("0x").append(BaseConversion.decToHex(bytes[i]).substring(6)).append(",");
+                if (i == 25) sb.append("\n");
+                if (sb.toString().contains("0xbb") || sb.toString().contains("0xBB")) break;
+            }
+            binding.commandData.setText(sb.toString());
         });
         //debug显示
         homeViewModel.getDebugArea().observe(getViewLifecycleOwner(), s -> {

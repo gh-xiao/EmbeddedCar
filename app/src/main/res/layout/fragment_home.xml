@@ -12,8 +12,7 @@
         android:layout_height="0dp"
         android:layout_gravity="center"
         android:layout_margin="5dp"
-        android:background="@drawable/bg_selete_all"
-        app:layout_constraintEnd_toStartOf="@+id/connect_control"
+        android:background="@drawable/bg_select_all"
         app:layout_constraintHeight_percent="0.6"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -44,179 +43,115 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="5dp"
-        android:background="@drawable/bg_selete_all"
+        android:background="@drawable/bg_select_all"
         android:padding="2dp"
         android:scrollbars="vertical"
         android:text="Debug显示\n"
         android:textAlignment="center"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/connect_control"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/parentRelative"
         app:layout_constraintWidth_percent="0.44" />
 
-    <LinearLayout
-        android:id="@+id/connect_control"
+    <ScrollView
         android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintWidth_percent="0.55">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.54">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp">
+            android:layout_height="wrap_content">
 
-            <Button
-                android:id="@+id/refresh_btn"
-                android:layout_width="0dp"
+            <TextView
+                android:id="@+id/showIP"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:background="@drawable/bg_select_all"
                 android:gravity="center"
-                android:text="@string/refresh"
-                android:textSize="12sp"
-                app:layout_constraintEnd_toStartOf="@+id/up_button"
-                app:layout_constraintTop_toTopOf="@+id/up_button" />
-
-            <Button
-                android:id="@+id/auto_drive_btn"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/full_auto"
-                android:textSize="12sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <Button
-                android:id="@+id/clear_debug_area"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="清空Debug区"
-                android:textSize="8sp"
-                app:layout_constraintEnd_toEndOf="@+id/left_button"
-                app:layout_constraintTop_toBottomOf="@+id/left_button"
-                tools:ignore="SmallSp" />
-
-            <Button
-                android:id="@+id/stop_button"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="■"
-                app:layout_constraintEnd_toEndOf="@+id/up_button"
-                app:layout_constraintStart_toStartOf="@+id/up_button"
-                app:layout_constraintTop_toBottomOf="@+id/up_button" />
-
-            <Button
-                android:id="@+id/up_button"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="☝"
-                app:layout_constraintEnd_toStartOf="@+id/auto_drive_btn"
-                app:layout_constraintTop_toTopOf="@+id/auto_drive_btn" />
-
-            <Button
-                android:id="@+id/below_button"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="☟"
-                app:layout_constraintEnd_toEndOf="@+id/stop_button"
-                app:layout_constraintStart_toEndOf="@+id/clear_debug_area"
-                app:layout_constraintStart_toStartOf="@+id/stop_button"
-                app:layout_constraintTop_toBottomOf="@+id/stop_button" />
-
-            <Button
-                android:id="@+id/left_button"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="☚"
-                app:layout_constraintEnd_toStartOf="@+id/stop_button"
-                app:layout_constraintTop_toTopOf="@+id/stop_button" />
-
-            <Button
-                android:id="@+id/right_button"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="☛"
-                app:layout_constraintEnd_toEndOf="@+id/auto_drive_btn"
-                app:layout_constraintStart_toEndOf="@+id/stop_button"
-                app:layout_constraintTop_toBottomOf="@+id/auto_drive_btn" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <TextView
-            android:id="@+id/showIP"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_margin="5dp"
-            android:background="@drawable/bg_selete_all"
-            android:gravity="center"
-            android:lines="2"
-            android:padding="5sp"
-            android:text="IP信息"
-            app:layout_constraintBottom_toTopOf="@+id/relativeLayout"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/parentRelative"
-            app:layout_constraintTop_toBottomOf="@+id/below_button" />
-
-        <RelativeLayout
-            android:id="@+id/relativeLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="5dp"
-            android:background="@drawable/bg_selete_all"
-            android:gravity="center"
-            android:orientation="vertical">
+                android:lines="2"
+                android:padding="5sp"
+                android:text="IP信息"
+                android:textAlignment="center"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.54" />
 
             <TextView
                 android:id="@+id/rvData"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ellipsize="marquee"
-                android:gravity="center"
+                android:layout_margin="5dp"
+                android:background="@drawable/bg_select_all"
                 android:padding="6dp"
                 android:singleLine="true"
                 android:text="设备没有连接，这里空空如也哦~"
-                android:textColor="@color/white"
-                android:textSize="15sp"
-                tools:ignore="NestedWeights" />
+                android:textAlignment="center"
+                app:layout_constraintTop_toBottomOf="@id/showIP"
+                app:layout_constraintWidth_percent="0.54" />
 
-            <!--内层参数填充-->
-            <GridLayout
+            <TextView
+                android:id="@+id/commandData"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_marginStart="3dp"
-                android:layout_marginTop="3dp"
-                android:layout_marginEnd="3dp"
-                android:layout_marginBottom="3dp"
-                android:columnCount="4"
+                android:layout_margin="5dp"
+                android:background="@drawable/bg_select_all"
                 android:gravity="center"
+                android:lines="2"
+                android:padding="6dp"
+                android:text="设备指令接收区"
+                android:textAlignment="center"
+                app:layout_constraintTop_toBottomOf="@id/rvData"
+                app:layout_constraintWidth_percent="0.54" />
+
+
+            <GridLayout
+                android:id="@+id/gridLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:columnCount="4"
                 android:orientation="horizontal"
-                android:rowCount="2">
+                android:rowCount="2"
+                app:layout_constraintTop_toBottomOf="@id/commandData"
+                app:layout_constraintWidth_percent="0.54">
 
                 <TextView
-                    android:layout_width="75dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
+                    android:layout_row="0"
+                    android:layout_rowWeight="1"
+                    android:layout_column="0"
+                    android:layout_columnWeight="1"
+                    android:layout_gravity="center"
                     android:text="@string/mp_disc"
                     android:textSize="14sp" />
 
                 <EditText
                     android:id="@+id/mp_data"
-                    android:layout_width="75dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
+                    android:layout_row="0"
+                    android:layout_rowWeight="1"
+                    android:layout_column="1"
+                    android:layout_columnWeight="1"
                     android:inputType="number"
+                    android:minHeight="48dp"
                     android:text="@string/mp_data"
+                    android:textAlignment="center"
                     android:textSize="14sp" />
 
                 <TextView
-                    android:layout_width="75dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_row="0"
+                    android:layout_rowWeight="1"
+                    android:layout_column="2"
+                    android:layout_columnWeight="1"
+                    android:layout_gravity="center"
                     android:gravity="center_horizontal"
                     android:lines="1"
                     android:text="@string/line_disc"
@@ -224,34 +159,134 @@
 
                 <EditText
                     android:id="@+id/speed_data"
-                    android:layout_width="75dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
+                    android:layout_row="0"
+                    android:layout_rowWeight="1"
+                    android:layout_column="3"
+                    android:layout_columnWeight="1"
                     android:inputType="number"
+                    android:minHeight="48dp"
                     android:text="@string/line_data"
+                    android:textAlignment="center"
                     android:textSize="14sp" />
 
                 <TextView
-                    android:layout_width="75dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
+                    android:layout_row="1"
+                    android:layout_rowWeight="1"
+                    android:layout_column="0"
+                    android:layout_columnWeight="1"
+                    android:layout_gravity="center"
                     android:text="@string/angle_disc"
                     android:textSize="14sp" />
 
                 <EditText
                     android:id="@+id/angle_data"
-                    android:layout_width="75dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
+                    android:layout_row="1"
+                    android:layout_rowWeight="1"
+                    android:layout_column="1"
+                    android:layout_columnWeight="1"
                     android:inputType="number"
+                    android:minHeight="48dp"
                     android:text="@string/angle_data"
+                    android:textAlignment="center"
                     android:textSize="14sp" />
 
             </GridLayout>
 
-        </RelativeLayout>
+            <GridLayout
+                android:id="@+id/connect_control"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:columnCount="3"
+                android:rowCount="3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/gridLayout"
+                app:layout_constraintWidth_percent="0.54">
 
-    </LinearLayout>
+                <Button
+                    android:id="@+id/refresh_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_row="0"
+                    android:layout_rowWeight="1"
+                    android:layout_column="2"
+                    android:layout_columnWeight="1"
+                    android:gravity="center"
+                    android:text="@string/refresh"
+                    android:textSize="12sp" />
 
+                <Button
+                    android:id="@+id/clear_debug_area"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_row="0"
+                    android:layout_rowWeight="1"
+                    android:layout_column="0"
+                    android:layout_columnWeight="1"
+                    android:gravity="center"
+                    android:text="清空Debug区"
+                    android:textSize="8sp" />
+
+                <ImageButton
+                    android:id="@+id/stop_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_row="1"
+                    android:layout_rowWeight="1"
+                    android:layout_column="1"
+                    android:layout_columnWeight="1"
+                    android:background="@drawable/button_stop_img" />
+
+                <ImageButton
+                    android:id="@+id/up_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_row="0"
+                    android:layout_rowWeight="1"
+                    android:layout_column="1"
+                    android:layout_columnWeight="1"
+                    android:background="@drawable/button_up_img" />
+
+                <ImageButton
+                    android:id="@+id/below_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_row="2"
+                    android:layout_rowWeight="1"
+                    android:layout_column="1"
+                    android:layout_columnWeight="1"
+                    android:background="@drawable/button_below_img" />
+
+                <ImageButton
+                    android:id="@+id/left_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_row="1"
+                    android:layout_rowWeight="1"
+                    android:layout_column="0"
+                    android:layout_columnWeight="1"
+                    android:background="@drawable/button_left_img" />
+
+                <ImageButton
+                    android:id="@+id/right_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_row="1"
+                    android:layout_rowWeight="1"
+                    android:layout_column="2"
+                    android:layout_columnWeight="1"
+                    android:background="@drawable/button_right_img" />
+
+            </GridLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

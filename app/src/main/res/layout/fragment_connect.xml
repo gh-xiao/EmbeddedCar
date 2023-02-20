@@ -11,7 +11,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_margin="5dp"
-        android:background="@drawable/bg_selete_all"
+        android:background="@drawable/bg_select_all"
         android:padding="5dp"
         android:scrollbars="vertical"
         android:textAlignment="center"

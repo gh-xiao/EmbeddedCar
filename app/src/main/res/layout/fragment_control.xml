@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="5"
-            android:background="@drawable/bg_selete_all"
+            android:background="@drawable/bg_select_all"
             android:gravity="center">
 
             <ImageView
@@ -37,7 +37,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="2"
-            android:background="@drawable/bg_selete_all"
+            android:background="@drawable/bg_select_all"
             android:gravity="center"
             android:padding="5dp"
             android:text="@string/no_choose"
@@ -49,7 +49,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="3"
-            android:background="@drawable/bg_selete_all"
+            android:background="@drawable/bg_select_all"
             android:padding="5dp"
             android:text="通讯日志\n"
             android:textAlignment="center"

@@ -18,7 +18,7 @@
         android:id="@+id/img_show"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@drawable/bg_selete_all"
+        android:background="@drawable/bg_select_all"
         android:padding="5dp"
         app:layout_constraintHeight_percent="0.6"
         app:layout_constraintStart_toEndOf="@+id/lv_list"

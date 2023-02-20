@@ -14,6 +14,7 @@ import com.xiao.embeddedcar.DataProcessingModule.ConnectTransport;
 import com.xiao.embeddedcar.Utils.CameraUtil.XcApplication;
 import com.xiao.embeddedcar.Utils.NetworkAndUIUtil.FastClick;
 import com.xiao.embeddedcar.Utils.NetworkAndUIUtil.ToastUtil;
+import com.xiao.embeddedcar.Utils.PublicMethods.BaseConversion;
 
 import java.lang.ref.WeakReference;
 import java.nio.charset.StandardCharsets;
@@ -30,6 +31,8 @@ public class HomeViewModel extends ViewModel {
     private final MutableLiveData<String> ipShow = new MutableLiveData<>();
     //数据接收显示区
     private final MutableLiveData<String> dataShow = new MutableLiveData<>();
+    //指令接收区
+    private final MutableLiveData<byte[]> commandData = new MutableLiveData<>();
     //debug显示区
     private final MutableLiveData<String> debugArea = new MutableLiveData<>();
     //速度(前进)
@@ -62,6 +65,10 @@ public class HomeViewModel extends ViewModel {
 
     public MutableLiveData<String> getDataShow() {
         return dataShow;
+    }
+
+    public MutableLiveData<byte[]> getCommandData() {
+        return commandData;
     }
 
     public MutableLiveData<String> getDebugArea() {
@@ -197,10 +204,12 @@ public class HomeViewModel extends ViewModel {
             if (mByte[0] == (byte) 0xAA) {
                 /* 验证是否为自定义发送数据启动 */
                 if (mByte[1] == (byte) 0x11) {
-                    debugArea.setValue("读卡成功!Android获取RFID卡成功!");
+                    debugArea.setValue("Android获取RFID卡成功!");
                     //RFID卡识别数据传入
                     char[] data = new char[16];
-                    for (int i = 0; i < 16; i++) data[i] = (char) mByte[i + 4];
+                    /* 获取RFID卡原数据 */
+                    for (int i = 0; i < 16; i++)
+                        data[i] = (char) Integer.parseInt(BaseConversion.decToHex(mByte[i + 4]).substring(6));
                     /* 检测到卡1处理 */
                     if (mByte[2] == (byte) 0x0A) {
                         debugArea.setValue("卡(1)数据:\n" + Arrays.toString(data));
@@ -213,11 +222,13 @@ public class HomeViewModel extends ViewModel {
                         ConnectTransport.setRFID2(data);
                         XcApplication.cachedThreadPool.execute(() -> ConnectTransport.getInstance().RFID2(mByte[3]));
                     }
+                    commandData.setValue(mByte);
                     return true;
                 }
                 /* 启动全自动 */
                 ConnectTransport.setMark(mByte[3]);
                 XcApplication.cachedThreadPool.execute(() -> ConnectTransport.getInstance().half_Android());
+                commandData.setValue(mByte);
             }
             return true;
         } else connectState.setValue(msg.what);
