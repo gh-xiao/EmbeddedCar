@@ -19,6 +19,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@drawable/bg_select_all"
+        android:contentDescription="@string/choose_img"
         android:padding="5dp"
         app:layout_constraintHeight_percent="0.6"
         app:layout_constraintStart_toEndOf="@+id/lv_list"
@@ -26,7 +27,7 @@
         app:layout_constraintWidth_percent="0.5" />
 
     <LinearLayout
-        android:id="@+id/ll_contorl"
+        android:id="@+id/ll_control"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:gravity="center"
@@ -40,7 +41,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="分析HSV色彩"
+            android:text="@string/analyse_HSV"
             android:textSize="12sp" />
 
         <Button
@@ -48,7 +49,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="选择形态学操作"
+            android:text="@string/choose_morphologyEx"
             android:textSize="12sp" />
 
         <Button
@@ -67,7 +68,6 @@
             android:checked="true"
             android:layoutDirection="rtl"
             android:padding="5sp"
-            android:text="常规"
             android:textSize="12sp"
             android:thumb="@drawable/switch_thumb"
             app:switchPadding="15dp"
@@ -78,44 +78,46 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:gravity="center"
-        app:layout_constraintEnd_toEndOf="@+id/ll_contorl"
+        app:layout_constraintEnd_toEndOf="@+id/ll_control"
         app:layout_constraintHeight_percent="0.2"
-        app:layout_constraintStart_toStartOf="@+id/ll_contorl"
-        app:layout_constraintTop_toBottomOf="@+id/ll_contorl">
+        app:layout_constraintStart_toStartOf="@+id/ll_control"
+        app:layout_constraintTop_toBottomOf="@+id/ll_control">
 
         <Button
             android:id="@+id/TFTAutoCutter_btn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="TFT智能裁剪"
-            android:textSize="12sp" />
+            android:text="@string/TFT_auto_cutter"
+            android:textSize="12sp"
+            tools:ignore="ButtonStyle" />
 
         <Button
             android:id="@+id/restore_btn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="还原HSV参数"
-            android:textSize="12sp" />
+            android:text="@string/reset_HSV"
+            android:textSize="12sp"
+            tools:ignore="ButtonStyle" />
 
         <Button
             android:id="@+id/import_btn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="导入到裁剪"
-            android:textSize="12sp" />
+            android:text="@string/import_HSV"
+            android:textSize="12sp"
+            tools:ignore="ButtonStyle" />
 
         <Button
             android:id="@+id/export_btn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="导出裁剪参数"
-            android:textSize="12sp" />
-
-
+            android:text="@string/export_HSV"
+            android:textSize="12sp"
+            tools:ignore="ButtonStyle" />
     </LinearLayout>
 
     <LinearLayout
@@ -132,7 +134,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Hmin" />
+            android:text="@string/Hmin" />
 
         <SeekBar
             android:id="@+id/sb_h_min"
@@ -166,7 +168,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Hmax" />
+            android:text="@string/hmax" />
 
         <SeekBar
             android:id="@+id/sb_h_max"
@@ -198,7 +200,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Smin" />
+            android:text="@string/smin" />
 
         <SeekBar
             android:id="@+id/sb_s_min"
@@ -216,7 +218,6 @@
             android:layout_weight="1" />
     </LinearLayout>
 
-
     <LinearLayout
         android:id="@+id/ll_smax"
         android:layout_width="0dp"
@@ -231,7 +232,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Smax" />
+            android:text="@string/smax" />
 
         <SeekBar
             android:id="@+id/sb_s_max"
@@ -263,7 +264,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Vmin" />
+            android:text="@string/vmin" />
 
         <SeekBar
             android:id="@+id/sb_v_min"
@@ -281,7 +282,6 @@
             android:layout_weight="1" />
     </LinearLayout>
 
-
     <LinearLayout
         android:id="@+id/ll_vmax"
         android:layout_width="0dp"
@@ -296,7 +296,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Vmax" />
+            android:text="@string/vmax" />
 
         <SeekBar
             android:id="@+id/sb_v_max"
@@ -313,4 +313,5 @@
             android:layout_height="match_parent"
             android:layout_weight="1" />
     </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

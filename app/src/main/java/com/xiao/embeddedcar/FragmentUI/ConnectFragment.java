@@ -99,12 +99,13 @@ public class ConnectFragment extends Fragment {
     private void observerDataStateUpdateAction() {
         connectViewModel.getConnectInfo().observe(getViewLifecycleOwner(), s -> binding.connectInfo.append(s + "\n"));
         connectViewModel.getConnectMode().observe(getViewLifecycleOwner(), b -> {
+            binding.connectionMode.setChecked(b);
             if (b) {
                 XcApplication.isSerial = XcApplication.Mode.SOCKET;
-                binding.connectionMode.setText("WiFi");
+                binding.connectionMode.setText(R.string.wifi);
             } else {
                 XcApplication.isSerial = XcApplication.Mode.USB_SERIAL;
-                binding.connectionMode.setText("串口");
+                binding.connectionMode.setText(R.string.serial);
             }
         });
         connectViewModel.getLoginInfo().observe(getViewLifecycleOwner(), loginInfo -> {

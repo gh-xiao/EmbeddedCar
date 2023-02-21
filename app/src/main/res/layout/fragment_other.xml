@@ -37,7 +37,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="摄像头控制"
+                    android:text="@string/camera_control"
                     android:textColor="@color/light_black" />
             </LinearLayout>
 
@@ -54,12 +54,13 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5sp"
                     android:contentDescription="@string/no_pic"
-                    app:srcCompat="@mipmap/qr_code" />
+                    app:srcCompat="@mipmap/qr_code"
+                    tools:ignore="ImageContrastCheck" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="从车二维码识别"
+                    android:text="@string/car_QR_detect"
                     android:textColor="@color/light_black" />
             </LinearLayout>
 
@@ -81,7 +82,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="蜂鸣器控制"
+                    android:text="@string/buzzer_control"
                     android:textColor="@color/light_black" />
             </LinearLayout>
 
@@ -104,7 +105,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="转向灯控制"
+                    android:text="@string/light_control"
                     android:textColor="@color/light_black" />
             </LinearLayout>
 

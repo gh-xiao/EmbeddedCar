@@ -31,6 +31,8 @@ import com.xiao.embeddedcar.ViewModel.HomeViewModel;
 import com.xiao.embeddedcar.ViewModel.ModuleViewModel;
 import com.xiao.embeddedcar.databinding.FragmentHomeBinding;
 
+import java.util.Locale;
+
 public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
@@ -66,6 +68,7 @@ public class HomeFragment extends Fragment {
     private void init() {
         //设置TextView滚动
         binding.Debug.setMovementMethod(ScrollingMovementMethod.getInstance());
+        binding.commandData.setMovementMethod(ScrollingMovementMethod.getInstance());
         //清空Debug区(重置)按钮监听事件
         binding.clearDebugArea.setOnClickListener(view -> {
             binding.Debug.setText("Debug显示\n");
@@ -201,10 +204,9 @@ public class HomeFragment extends Fragment {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < 50; i++) {
                 sb.append("0x").append(BaseConversion.decToHex(bytes[i]).substring(6)).append(",");
-                if (i == 25) sb.append("\n");
                 if (sb.toString().contains("0xbb") || sb.toString().contains("0xBB")) break;
             }
-            binding.commandData.setText(sb.toString());
+            binding.commandData.setText(sb.toString().toLowerCase(Locale.ROOT));
         });
         //debug显示
         homeViewModel.getDebugArea().observe(getViewLifecycleOwner(), s -> {

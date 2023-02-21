@@ -1674,7 +1674,6 @@ public class ConnectTransport {
     /**
      * 形状识别模块
      */
-    //TODO 仍需要优化
     public synchronized void Shape_mod() {
         sendUIMassage(1, "----------形状识别开始----------");
         int totals;

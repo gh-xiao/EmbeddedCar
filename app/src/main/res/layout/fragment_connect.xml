@@ -27,26 +27,25 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintWidth_percent="0.5">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/connect_control"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
             <LinearLayout
-                android:layout_width="fill_parent"
+                android:id="@+id/ll_id"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
+                    android:layout_gravity="center"
                     android:layout_weight="1"
-                    android:gravity="center"
-                    android:padding="3dp"
                     android:text="@string/device_id"
+                    android:textAlignment="center"
                     android:textSize="15sp"
                     android:textStyle="bold" />
 
@@ -54,7 +53,7 @@
                     android:id="@+id/device_id"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10sp"
+                    android:layout_margin="10dp"
                     android:layout_weight="3"
                     android:background="@drawable/edit_view_case"
                     android:cursorVisible="true"
@@ -67,22 +66,22 @@
                     android:textColor="@color/black"
                     android:textColorHint="#c0c0c0"
                     android:textSize="13sp" />
+
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="fill_parent"
+                android:id="@+id/ll_name"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:orientation="horizontal">
+                app:layout_constraintTop_toBottomOf="@+id/ll_id">
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
+                    android:layout_gravity="center"
                     android:layout_weight="1"
-                    android:gravity="center"
-                    android:padding="3dp"
                     android:text="@string/login_name"
+                    android:textAlignment="center"
                     android:textSize="15sp"
                     android:textStyle="bold" />
 
@@ -104,22 +103,22 @@
                     android:textColor="@color/black"
                     android:textColorHint="#c0c0c0"
                     android:textSize="13sp" />
+
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="fill_parent"
+                android:id="@+id/ll_psd"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:orientation="horizontal">
+                app:layout_constraintTop_toBottomOf="@+id/ll_name">
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="3"
-                    android:gravity="center"
-                    android:padding="3dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
                     android:text="@string/password"
+                    android:textAlignment="center"
                     android:textSize="15sp"
                     android:textStyle="bold" />
 
@@ -128,7 +127,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="10sp"
-                    android:layout_weight="7"
+                    android:layout_weight="3"
                     android:background="@drawable/edit_view_case"
                     android:hint="@string/login_psd"
                     android:importantForAutofill="no"
@@ -139,31 +138,37 @@
                     android:text="@string/edit_password"
                     android:textColor="@color/black"
                     android:textColorHint="#c0c0c0"
-                    android:textSize="13sp" />
+                    android:textSize="13sp">
 
-                <ImageView
-                    android:id="@+id/eyes"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8sp"
-                    android:layout_weight="1"
-                    android:scaleType="centerInside"
-                    app:srcCompat="@drawable/hide" />
+                </EditText>
 
             </LinearLayout>
 
+            <ImageView
+                android:id="@+id/eyes"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginEnd="15dp"
+                android:contentDescription="@string/show_and_hide_psd"
+                android:scaleType="centerInside"
+                app:layout_constraintBottom_toBottomOf="@+id/ll_psd"
+                app:layout_constraintEnd_toEndOf="@+id/ll_psd"
+                app:layout_constraintTop_toTopOf="@+id/ll_psd"
+                app:srcCompat="@drawable/hide"
+                tools:ignore="ImageContrastCheck" />
+
             <LinearLayout
-                android:layout_width="fill_parent"
+                android:id="@+id/ll_communication_method"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:gravity="center"
-                android:orientation="horizontal">
+                app:layout_constraintTop_toBottomOf="@+id/ll_psd">
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:layout_weight="1"
-                    android:text="通信方式"
+                    android:text="@string/communication_method"
                     android:textAlignment="center"
                     android:textSize="15sp"
                     android:textStyle="bold" />
@@ -173,9 +178,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:checked="true"
                     android:layoutDirection="rtl"
-                    android:text="WiFi"
                     android:thumb="@drawable/switch_thumb"
                     app:switchPadding="15dp"
                     app:track="@drawable/switch_track_selector" />
@@ -183,29 +186,31 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                app:layout_constraintTop_toBottomOf="@+id/ll_communication_method">
 
                 <Button
                     android:id="@+id/reset"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
                     android:layout_weight="1"
-                    android:text="清空与重置" />
+                    android:text="@string/clean_and_reset"
+                    tools:ignore="ButtonStyle,TextContrastCheck" />
 
                 <Button
                     android:id="@+id/connect"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
                     android:layout_weight="1"
-                    android:text="连接" />
+                    android:text="@string/connect"
+                    tools:ignore="ButtonStyle,TextContrastCheck" />
 
             </LinearLayout>
 
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>
 

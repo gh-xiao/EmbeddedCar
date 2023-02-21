@@ -4,36 +4,39 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-  <ImageView
-      android:id="@+id/splash_activity_image"
-      android:layout_width="100dp"
-      android:layout_height="100dp"
-      android:layout_marginTop="100dp"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent"
-      app:srcCompat="@mipmap/bkrckj_logo"
-      android:contentDescription="@string/logo_name" />
-  <TextView
-      android:id="@+id/splash_activity_title"
-      android:layout_width="wrap_content"
-      android:layout_height="45dp"
-      android:layout_marginTop="20dp"
-      android:text="百科荣创嵌入式智能小车"
-      android:textAppearance="@style/TextAppearance.AppCompat.Large"
-      android:textColor="@android:color/black"
-      android:textSize="24sp"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/splash_activity_image" />
-  <TextView
-      android:id="@+id/timer"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="15dp"
-      android:textAppearance="?android:attr/textAppearanceMedium"
-      android:textColor="@android:color/black"
-      app:layout_constraintLeft_toLeftOf="parent"
-      app:layout_constraintRight_toRightOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/splash_activity_title" />
+    <ImageView
+        android:id="@+id/splash_activity_image"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="100dp"
+        android:contentDescription="@string/logo_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@mipmap/bkrckj_logo" />
+
+    <TextView
+        android:id="@+id/splash_activity_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/nav_header_title"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="@android:color/black"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/splash_activity_image" />
+
+    <TextView
+        android:id="@+id/timer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@android:color/black"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/splash_activity_title" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

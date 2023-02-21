@@ -31,7 +31,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="二维码检测颜色:"
+                    android:text="@string/QR_color_detect"
                     android:textColor="@color/white"
                     android:textStyle="bold" />
 
@@ -58,19 +58,19 @@
                     android:id="@+id/rb_QR_red"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="红色" />
+                    android:text="@string/red" />
 
                 <RadioButton
                     android:id="@+id/rb_QR_green"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="绿色" />
+                    android:text="@string/green" />
 
                 <RadioButton
                     android:id="@+id/rb_QR_blue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="蓝色" />
+                    android:text="@string/blue" />
 
             </RadioGroup>
 
@@ -88,7 +88,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="图形统计:"
+                    android:text="@string/Shape_statistics"
                     android:textColor="@color/white"
                     android:textStyle="bold" />
 
@@ -115,19 +115,21 @@
                 android:id="@+id/shape_color_choose_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="选择颜色"
+                android:text="@string/choose_color"
                 app:layout_constraintBottom_toBottomOf="@+id/line_shape"
                 app:layout_constraintStart_toEndOf="@+id/line_shape"
-                app:layout_constraintTop_toTopOf="@+id/line_shape" />
+                app:layout_constraintTop_toTopOf="@+id/line_shape"
+                tools:ignore="TextContrastCheck" />
 
             <Button
                 android:id="@+id/shape_type_choose_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="选择类型"
+                android:text="@string/choose_type"
                 app:layout_constraintBottom_toBottomOf="@+id/shape_color_choose_btn"
                 app:layout_constraintStart_toEndOf="@+id/shape_color_choose_btn"
-                app:layout_constraintTop_toTopOf="@+id/shape_color_choose_btn" />
+                app:layout_constraintTop_toTopOf="@+id/shape_color_choose_btn"
+                tools:ignore="TextContrastCheck" />
 
             <LinearLayout
                 android:id="@+id/line_trafficLight"
@@ -143,7 +145,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="红绿灯信息发送:"
+                    android:text="@string/send_to_trafficLight"
                     android:textColor="@color/white"
                     android:textStyle="bold" />
 
@@ -170,13 +172,13 @@
                     android:id="@+id/rb_tl_a"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="A灯" />
+                    android:text="@string/trafficLight_A" />
 
                 <RadioButton
                     android:id="@+id/rb_tl_b"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="B灯" />
+                    android:text="@string/trafficLight_B" />
             </RadioGroup>
 
             <LinearLayout
@@ -193,12 +195,12 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="红绿灯检测位置:"
+                    android:text="@string/trafficLight_location"
                     android:textColor="@color/white"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/tv_detect_trafficLight"
+                    android:id="@+id/tv_trafficLight_location"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -220,13 +222,13 @@
                     android:id="@+id/rb_detect_tl_l"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="长线" />
+                    android:text="@string/long_line" />
 
                 <RadioButton
                     android:id="@+id/rb_detect_tl_s"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="短线" />
+                    android:text="@string/short_long" />
             </RadioGroup>
 
             <LinearLayout
@@ -243,7 +245,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="车牌颜色检测:"
+                    android:text="@string/plate_color_detect"
                     android:textColor="@color/white"
                     android:textStyle="bold" />
 
@@ -270,19 +272,19 @@
                     android:id="@+id/rb_plate_all"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="任意" />
+                    android:text="@string/all" />
 
                 <RadioButton
                     android:id="@+id/rb_plate_blue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="蓝色" />
+                    android:text="@string/blue" />
 
                 <RadioButton
                     android:id="@+id/rb_plate_green"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="新能源" />
+                    android:text="@string/new_energy" />
 
             </RadioGroup>
 
@@ -300,7 +302,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:gravity="center"
-                    android:text="指定检测车型:"
+                    android:text="@string/detect_car_type"
                     android:textColor="@color/white"
                     android:textStyle="bold" />
 
@@ -318,7 +320,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:gravity="center"
-                    android:text="需要识别车牌的车型:"
+                    android:text="@string/ocr_car_type"
                     android:textColor="@color/white"
                     android:textStyle="bold" />
 
@@ -336,20 +338,22 @@
                 android:id="@+id/detect_car_model_choose_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="选择车型"
+                android:text="@string/choose_car_type"
                 app:layout_constraintBottom_toBottomOf="@+id/line_carModels"
                 app:layout_constraintStart_toEndOf="@+id/line_carModels"
-                app:layout_constraintTop_toTopOf="@+id/line_carModels" />
+                app:layout_constraintTop_toTopOf="@+id/line_carModels"
+                tools:ignore="TextContrastCheck" />
 
 
             <Button
                 android:id="@+id/car_model_choose_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="选择车型"
+                android:text="@string/choose_car_type"
                 app:layout_constraintBottom_toBottomOf="@+id/detect_car_model_choose_btn"
                 app:layout_constraintStart_toEndOf="@+id/detect_car_model_choose_btn"
-                app:layout_constraintTop_toTopOf="@+id/detect_car_model_choose_btn" />
+                app:layout_constraintTop_toTopOf="@+id/detect_car_model_choose_btn"
+                tools:ignore="TextContrastCheck" />
 
 
             <LinearLayout
@@ -366,7 +370,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="交通标志物识别置信度:"
+                    android:text="@string/traffic_sign_confidence"
                     android:textColor="@color/white"
                     android:textStyle="bold" />
 
@@ -405,11 +409,12 @@
                 android:id="@+id/reset_TS_btn"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="还原"
+                android:text="@string/reset"
                 app:layout_constraintBottom_toBottomOf="@+id/TS_min_data"
                 app:layout_constraintStart_toEndOf="@+id/TS_min_data"
                 app:layout_constraintTop_toTopOf="@+id/TS_min_data"
-                app:layout_constraintWidth_percent="0.15" />
+                app:layout_constraintWidth_percent="0.15"
+                tools:ignore="TextContrastCheck" />
 
             <LinearLayout
                 android:id="@+id/line_VID_Confidence"
@@ -425,7 +430,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="车型识别最低置信度:"
+                    android:text="@string/VID_confidence"
                     android:textColor="@color/white"
                     android:textStyle="bold" />
 
@@ -466,11 +471,12 @@
                 android:id="@+id/reset_VID_btn"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="还原"
+                android:text="@string/reset"
                 app:layout_constraintBottom_toBottomOf="@+id/VID_min_data"
                 app:layout_constraintStart_toEndOf="@+id/VID_min_data"
                 app:layout_constraintTop_toTopOf="@+id/VID_min_data"
-                app:layout_constraintWidth_percent="0.15" />
+                app:layout_constraintWidth_percent="0.15"
+                tools:ignore="TextContrastCheck" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

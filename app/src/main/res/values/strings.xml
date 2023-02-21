@@ -7,7 +7,7 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
-    <!--    侧边栏说明-->
+    <!--    导航栏-->
     <string name="menu_home">主页</string>
     <string name="menu_connect">设备连接</string>
     <string name="menu_control">通讯控制</string>
@@ -26,16 +26,7 @@
     <string name="set_ConnectTransport_mark">重置半自动控制值</string>
     <string name="auto_Android_control">(备用)全自动方案</string>
 
-    <!--    登录页面-->
-    <string name="device_id">设备ID</string>
-    <string name="login_name">用户名</string>
-    <string name="device_text">BKRC-001</string>
-    <string name="login_text">BKRC-2021</string>
-    <string name="login_psd">不超过16个字符,可直接点击登录!</string>
-    <string name="password">密 码</string>
-    <string name="no_pic">no_pic</string>
-
-    <!--    主页控制数据-->
+    <!--    fragment_home-->
     <string name="mp_data">100</string>
     <string name="line_data">50</string>
     <string name="angle_data">90</string>
@@ -48,9 +39,101 @@
     <string name="edit_password">BKRC20210520</string>
     <string name="no_choose">未选择</string>
 
+    <string name="forward">前进</string>
+    <string name="turn_left">向左转弯</string>
+    <string name="turn_right">向右转弯</string>
+    <string name="back_off">后退</string>
+    <string name="stop">停止</string>
+
+    <!--    主页显示信息-->
+    <string name="Debug_display">Debug显示\n</string>
+    <string name="IPInfo">IP信息</string>
+    <string name="rv_data_show">设备没有连接，这里空空如也哦~</string>
+    <string name="command_data_show">设备指令接收区</string>
+    <string name="clear_debug">清空Debug区</string>
+
+    <!--    fragment_connect-->
+    <string name="device_id">设备ID</string>
+    <string name="login_name">用户名</string>
+    <string name="device_text">BKRC-001</string>
+    <string name="login_text">BKRC-2021</string>
+    <string name="login_psd">不超过16个字符,可直接点击登录!</string>
+    <string name="password">密 码</string>
+    <string name="no_pic">no_pic</string>
+
+    <!--    fragment_analyse-->
+    <string name="choose_img">选择的图片</string>
+    <string name="analyse_HSV">分析HSV色彩</string>
+    <string name="choose_morphologyEx">选择形态学操作</string>
+    <string name="TFT_auto_cutter">TFT智能裁剪</string>
+    <string name="reset_HSV">还原HSV参数</string>
+    <string name="import_HSV">导入到裁剪</string>
+    <string name="export_HSV">导出裁剪参数</string>
+    <string name="Hmin">Hmin</string>
+    <string name="hmax">Hmax</string>
+    <string name="smin">Smin</string>
+    <string name="smax">Smax</string>
+    <string name="vmin">Vmin</string>
+    <string name="vmax">Vmax</string>
+
+    <!--    fragment_config-->
+    <string name="QR_color_detect">二维码检测颜色:</string>
+    <string name="red">红色</string>
+    <string name="green">绿色</string>
+    <string name="blue">蓝色</string>
+    <string name="Shape_statistics">图形统计:</string>
+    <string name="choose_color">选择颜色</string>
+    <string name="choose_type">选择类型</string>
+    <string name="send_to_trafficLight">红绿灯信息发送:</string>
+    <string name="trafficLight_A">A灯</string>
+    <string name="trafficLight_B">B灯</string>
+    <string name="trafficLight_location">红绿灯检测位置:</string>
+    <string name="long_line">长线</string>
+    <string name="short_long">短线</string>
+    <string name="plate_color_detect">车牌颜色检测:</string>
+    <string name="all">任意</string>
+    <string name="new_energy">新能源</string>
+    <string name="detect_car_type">指定检测车型:</string>
+    <string name="ocr_car_type">需要识别车牌的车型:</string>
+    <string name="choose_car_type">选择车型</string>
+    <string name="traffic_sign_confidence">交通标志物识别置信度:</string>
+    <string name="reset">还原</string>
+    <string name="VID_confidence">车型识别最低置信度:</string>
+
+    <!--    fragment_connect-->
+    <string name="show_and_hide_psd">showAndHidePsd</string>
+    <string name="communication_method">通信方式</string>
+    <string name="wifi">WiFi</string>
+    <string name="serial">串口</string>
+    <string name="clean_and_reset">清空与重置</string>
+    <string name="connect">连接</string>
+
+    <!--    fragment_control-->
+    <string name="display_info">显示信息</string>
+    <string name="log">通讯日志\n</string>
+
+    <!--    fragment_module-->
+    <string name="trafficLight_detect">红绿灯识别</string>
+    <string name="plate_detect_by_color">车牌识别(色彩)</string>
+    <string name="shape_detect">形状识别</string>
+    <string name="trafficSign_detect">交通标志物识别</string>
+    <string name="plate_detect_by_VID">车牌识别(车型)</string>
+    <string name="QR_detect">二维码识别</string>
+    <string name="testing_method">开发方法测试</string>
+    <string name="what_your_detect">What your detect</string>
+    <string name="default_detect">默认检测</string>
+    <string name="choose_detect_pic">选择检测图片</string>
+
+    <!--    fragment_module-->
+    <string name="camera_control">摄像头控制</string>
+    <string name="car_QR_detect">从车二维码识别</string>
+    <string name="buzzer_control">蜂鸣器控制</string>
+    <string name="light_control">转向灯控制</string>
+
     <!--    layout - item_car-->
-    <string name="voicetext">播报的文本:</string>
+    <string name="voice_text">播报的文本:</string>
     <string name="voiceText">百科荣创（北京）科技发展有限公司</string>
+    <string name="all_text">任意文本</string>
 
     <!--    layout - item_digital-->
     <string name="digital_title">显示数据行:</string>

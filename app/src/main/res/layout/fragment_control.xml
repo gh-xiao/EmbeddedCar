@@ -28,7 +28,9 @@
                 android:layout_margin="5dp"
                 android:background="@color/white"
                 android:scaleType="fitCenter"
-                app:srcCompat="@mipmap/choose" />
+                app:srcCompat="@mipmap/choose"
+                tools:ignore="ImageContrastCheck"
+                android:contentDescription="@string/display_info" />
 
         </LinearLayout>
 
@@ -51,7 +53,7 @@
             android:layout_weight="3"
             android:background="@drawable/bg_select_all"
             android:padding="5dp"
-            android:text="通讯日志\n"
+            android:text="@string/log"
             android:textAlignment="center"
             android:textColor="@color/white" />
 

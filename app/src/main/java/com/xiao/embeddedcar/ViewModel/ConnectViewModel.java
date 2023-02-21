@@ -16,7 +16,7 @@ public class ConnectViewModel extends ViewModel {
     //左侧TextView显示
     private final MutableLiveData<String> connectInfo = new MutableLiveData<>();
     //Switch控件值
-    private final MutableLiveData<Boolean> connectMode = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> connectMode = new MutableLiveData<>(true);
 
     public MutableLiveData<String> getConnectInfo() {
         return connectInfo;

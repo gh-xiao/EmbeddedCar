@@ -22,42 +22,50 @@
                 android:id="@+id/traffic_light_mod_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="红绿灯识别" />
+                android:text="@string/trafficLight_detect"
+                tools:ignore="TextContrastCheck" />
 
             <Button
                 android:id="@+id/plate_ocr_mod_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="车牌识别(色彩)" />
+                android:text="@string/plate_detect_by_color"
+                tools:ignore="TextContrastCheck" />
 
             <Button
                 android:id="@+id/shape_mod_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="形状识别" />
+                android:text="@string/shape_detect"
+                tools:ignore="TextContrastCheck" />
 
             <Button
                 android:id="@+id/traffic_sign_mod_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="交通标志物识别" />
+                android:text="@string/trafficSign_detect"
+                tools:ignore="TextContrastCheck" />
 
             <Button
                 android:id="@+id/VID_mod_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="车牌识别(车型)" />
+                android:text="@string/plate_detect_by_VID"
+                tools:ignore="TextContrastCheck" />
 
             <Button
                 android:id="@+id/QR_mod_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="二维码识别" />
+                android:text="@string/QR_detect"
+                tools:ignore="TextContrastCheck" />
+
             <Button
                 android:id="@+id/dev_method_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="开发方法测试" />
+                android:text="@string/testing_method"
+                tools:ignore="TextContrastCheck" />
         </GridLayout>
     </ScrollView>
 
@@ -78,13 +86,14 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@drawable/bg_select_all"
-        android:contentDescription="What your detect"
+        android:contentDescription="@string/what_your_detect"
         android:padding="5dp"
         app:layout_constraintEnd_toStartOf="@+id/module_info"
         app:layout_constraintHeight_percent="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/module_info"
-        app:layout_constraintWidth_percent="0.375" />
+        app:layout_constraintWidth_percent="0.375"
+        tools:ignore="ImageContrastCheck" />
 
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/how_detect_btn"
@@ -92,7 +101,7 @@
         android:layout_height="0dp"
         android:checked="true"
         android:layoutDirection="rtl"
-        android:text="默认检测"
+        android:text="@string/default_detect"
         android:thumb="@drawable/switch_thumb"
         app:layout_constraintEnd_toEndOf="@+id/module_img"
         app:layout_constraintHeight_percent="0.12"
@@ -107,7 +116,6 @@
         android:layout_height="0dp"
         android:checked="false"
         android:layoutDirection="rtl"
-        android:text="关闭实时图片传入"
         android:thumb="@drawable/switch_thumb"
         app:layout_constraintEnd_toEndOf="@+id/how_detect_btn"
         app:layout_constraintHeight_percent="0.12"
@@ -120,11 +128,12 @@
         android:id="@+id/choose_detectPic_btn"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:text="选择检测图片"
+        android:text="@string/choose_detect_pic"
         app:layout_constraintEnd_toEndOf="@+id/get_img_btn"
         app:layout_constraintHeight_percent="0.12"
         app:layout_constraintStart_toStartOf="@+id/get_img_btn"
-        app:layout_constraintTop_toBottomOf="@+id/get_img_btn" />
+        app:layout_constraintTop_toBottomOf="@+id/get_img_btn"
+        tools:ignore="TextContrastCheck" />
 
     <Button
         android:id="@+id/cutter_bitmap_btn"

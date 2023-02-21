@@ -239,7 +239,7 @@ public class ConfigFragment extends Fragment {
         });
         mainViewModel.getDetect_trafficLight().observe(getViewLifecycleOwner(), i -> {
             if (i != null) {
-                binding.tvDetectTrafficLight.setText(i == 1 ? "长线" : "短线");
+                binding.tvTrafficLightLocation.setText(i == 1 ? "长线" : "短线");
                 binding.detectTrafficLightChooseBtn.check(i == 1 ? R.id.rb_detect_tl_l : R.id.rb_detect_tl_s);
             }
         });

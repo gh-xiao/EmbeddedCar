@@ -46,7 +46,7 @@
         android:background="@drawable/bg_select_all"
         android:padding="2dp"
         android:scrollbars="vertical"
-        android:text="Debug显示\n"
+        android:text="@string/Debug_display"
         android:textAlignment="center"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -75,7 +75,7 @@
                 android:gravity="center"
                 android:lines="2"
                 android:padding="5sp"
-                android:text="IP信息"
+                android:text="@string/IPInfo"
                 android:textAlignment="center"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintWidth_percent="0.54" />
@@ -88,7 +88,7 @@
                 android:background="@drawable/bg_select_all"
                 android:padding="6dp"
                 android:singleLine="true"
-                android:text="设备没有连接，这里空空如也哦~"
+                android:text="@string/rv_data_show"
                 android:textAlignment="center"
                 app:layout_constraintTop_toBottomOf="@id/showIP"
                 app:layout_constraintWidth_percent="0.54" />
@@ -102,7 +102,7 @@
                 android:gravity="center"
                 android:lines="2"
                 android:padding="6dp"
-                android:text="设备指令接收区"
+                android:text="@string/command_data_show"
                 android:textAlignment="center"
                 app:layout_constraintTop_toBottomOf="@id/rvData"
                 app:layout_constraintWidth_percent="0.54" />
@@ -116,7 +116,7 @@
                 android:columnCount="4"
                 android:orientation="horizontal"
                 android:rowCount="2"
-                app:layout_constraintTop_toBottomOf="@id/commandData"
+                app:layout_constraintTop_toBottomOf="@id/connect_control"
                 app:layout_constraintWidth_percent="0.54">
 
                 <TextView
@@ -138,6 +138,8 @@
                     android:layout_rowWeight="1"
                     android:layout_column="1"
                     android:layout_columnWeight="1"
+                    android:autofillHints="no"
+                    android:hint="@string/mp_data"
                     android:inputType="number"
                     android:minHeight="48dp"
                     android:text="@string/mp_data"
@@ -165,6 +167,8 @@
                     android:layout_rowWeight="1"
                     android:layout_column="3"
                     android:layout_columnWeight="1"
+                    android:autofillHints="no"
+                    android:hint="@string/line_data"
                     android:inputType="number"
                     android:minHeight="48dp"
                     android:text="@string/line_data"
@@ -190,6 +194,8 @@
                     android:layout_rowWeight="1"
                     android:layout_column="1"
                     android:layout_columnWeight="1"
+                    android:autofillHints="no"
+                    android:hint="@string/angle_data"
                     android:inputType="number"
                     android:minHeight="48dp"
                     android:text="@string/angle_data"
@@ -207,7 +213,7 @@
                 android:rowCount="3"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/gridLayout"
+                app:layout_constraintTop_toBottomOf="@id/commandData"
                 app:layout_constraintWidth_percent="0.54">
 
                 <Button
@@ -220,7 +226,7 @@
                     android:layout_columnWeight="1"
                     android:gravity="center"
                     android:text="@string/refresh"
-                    android:textSize="12sp" />
+                    tools:ignore="TextContrastCheck" />
 
                 <Button
                     android:id="@+id/clear_debug_area"
@@ -231,8 +237,9 @@
                     android:layout_column="0"
                     android:layout_columnWeight="1"
                     android:gravity="center"
-                    android:text="清空Debug区"
-                    android:textSize="8sp" />
+                    android:text="@string/clear_debug"
+                    android:textSize="8sp"
+                    tools:ignore="SmallSp,TextContrastCheck" />
 
                 <ImageButton
                     android:id="@+id/stop_button"
@@ -242,7 +249,9 @@
                     android:layout_rowWeight="1"
                     android:layout_column="1"
                     android:layout_columnWeight="1"
-                    android:background="@drawable/button_stop_img" />
+                    android:background="@drawable/button_stop_img"
+                    android:contentDescription="@string/stop"
+                    tools:ignore="ImageContrastCheck" />
 
                 <ImageButton
                     android:id="@+id/up_button"
@@ -252,7 +261,9 @@
                     android:layout_rowWeight="1"
                     android:layout_column="1"
                     android:layout_columnWeight="1"
-                    android:background="@drawable/button_up_img" />
+                    android:background="@drawable/button_up_img"
+                    android:contentDescription="@string/forward"
+                    tools:ignore="ImageContrastCheck" />
 
                 <ImageButton
                     android:id="@+id/below_button"
@@ -262,7 +273,9 @@
                     android:layout_rowWeight="1"
                     android:layout_column="1"
                     android:layout_columnWeight="1"
-                    android:background="@drawable/button_below_img" />
+                    android:background="@drawable/button_below_img"
+                    android:contentDescription="@string/back_off"
+                    tools:ignore="ImageContrastCheck" />
 
                 <ImageButton
                     android:id="@+id/left_button"
@@ -272,7 +285,9 @@
                     android:layout_rowWeight="1"
                     android:layout_column="0"
                     android:layout_columnWeight="1"
-                    android:background="@drawable/button_left_img" />
+                    android:background="@drawable/button_left_img"
+                    android:contentDescription="@string/turn_left"
+                    tools:ignore="ImageContrastCheck" />
 
                 <ImageButton
                     android:id="@+id/right_button"
@@ -282,11 +297,12 @@
                     android:layout_rowWeight="1"
                     android:layout_column="2"
                     android:layout_columnWeight="1"
-                    android:background="@drawable/button_right_img" />
+                    android:background="@drawable/button_right_img"
+                    android:contentDescription="@string/turn_right"
+                    tools:ignore="ImageContrastCheck" />
 
             </GridLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
-
     </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
