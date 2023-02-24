@@ -175,6 +175,8 @@ public class ModuleViewModel extends ViewModel {
                     cachedThreadPool.execute(ct::Q4);
                     break;
                 case 0xFF:
+                    cachedThreadPool.execute(() -> {
+                    });
                     break;
             }
             else moduleInfoTV.setValue("传入图片为空!");
@@ -213,10 +215,8 @@ public class ModuleViewModel extends ViewModel {
                     cachedThreadPool.execute(ct::Q4);
                     break;
                 case 0xFF:
-//                    cachedThreadPool.execute(() -> {
-//                        ct.trafficSign_mod();
-//                        ct.Shape_mod();
-//                    });
+                    cachedThreadPool.execute(() -> {
+                    });
                     break;
             }
             else moduleInfoTV.setValue("摄像头未发送图片!");

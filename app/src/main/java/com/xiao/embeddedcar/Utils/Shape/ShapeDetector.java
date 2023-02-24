@@ -180,6 +180,7 @@ public class ShapeDetector {
         MatOfPoint2f contour2f;
         //近似曲线(多边形拟合)
         MatOfPoint2f approxCurve;
+        /* 逼近的精度(阈值),设定的原始曲线与近似曲线之间的最大距离 */
         double epsilon;
         int tri, rect, circle, star, rhombus;
         tri = rect = circle = star = rhombus = 0;
