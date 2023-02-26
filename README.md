@@ -2,6 +2,12 @@ EmbeddedCar
 ===
 原创嵌入式智能小车Android控制终端
 
+## 版本号: 2.4.5
+
+### 2023/2/26
+
+    #添加发送给从车车牌的指令
+
 ## 版本号: 2.4.4
 
 ### 2023/2/21
@@ -18,10 +24,6 @@ EmbeddedCar
 
     #创建ABaseFragment抽象类以规范化Fragment中的方法实现
     #在ABaseFragment中创建abstract void init()抽象方法和abstract void observerDataStateUpdateAction()抽象方法
-
-### 2023/2/26
-    
-    #添加发送给从车车牌的指令
 
 ## 版本号: 2.4.3
 
