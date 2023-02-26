@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.Fragment;
 
 import com.bkrcl.control_car_video.camerautil.CameraCommandUtil;
 import com.xiao.embeddedcar.Activity.MainActivity;
@@ -17,7 +16,7 @@ import com.xiao.embeddedcar.Entity.LoginInfo;
 import com.xiao.embeddedcar.Utils.CameraUtil.XcApplication;
 import com.xiao.embeddedcar.databinding.FragmentOtherBinding;
 
-public class OtherFragment extends Fragment {
+public class OtherFragment extends ABaseFragment {
 
     private FragmentOtherBinding binding;
     private int state_camera = 0;
@@ -33,11 +32,8 @@ public class OtherFragment extends Fragment {
         return root;
     }
 
-
-    /**
-     * 控件动作初始化
-     */
-    private void init() {
+    @Override
+    void init() {
         binding.positionDialog.setOnClickListener(view -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
             builder.setTitle("摄像头角度预设位调节");
@@ -79,10 +75,8 @@ public class OtherFragment extends Fragment {
         });
     }
 
-    /**
-     * 观察者数据状态更新活动
-     */
-    private void observerDataStateUpdateAction() {
+    @Override
+    void observerDataStateUpdateAction() {
     }
 
     private void cameraState_control() {

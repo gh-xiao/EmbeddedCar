@@ -1,4 +1,4 @@
-package com.xiao.embeddedcar.Utils.Shape;
+package com.xiao.embeddedcar.Utils.GPTGenerate;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -27,10 +27,8 @@ public class ShapeDetectionByChatGPT {
         //提供原图像
         Mat source = new Mat();
 //        source = Imgproc.imread("input.jpg");
-
         Bitmap inputBitmap = BitmapFactory.decodeFile("");
         Utils.bitmapToMat(inputBitmap, source);
-
         //
         Mat destination = new Mat(source.rows(), source.cols(), source.type());
         //灰度化图像
@@ -91,6 +89,5 @@ public class ShapeDetectionByChatGPT {
             }
         }
 //        Imgproc.imwrite("output.jpg", source);
-
     }
 }

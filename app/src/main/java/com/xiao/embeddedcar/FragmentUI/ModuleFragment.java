@@ -12,7 +12,6 @@ import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.luck.picture.lib.basic.PictureSelectionSystemModel;
@@ -27,7 +26,7 @@ import com.xiao.embeddedcar.databinding.FragmentModuleBinding;
 
 import java.util.ArrayList;
 
-public class ModuleFragment extends Fragment {
+public class ModuleFragment extends ABaseFragment {
 
     private FragmentModuleBinding binding;
     public ModuleViewModel moduleViewModel;
@@ -54,10 +53,8 @@ public class ModuleFragment extends Fragment {
 //        binding = null;
     }
 
-    /**
-     * 控件动作初始化
-     */
-    private void init() {
+    @Override
+    void init() {
         binding.moduleInfo.setMovementMethod(ScrollingMovementMethod.getInstance());
         binding.trafficLightModBtn.setOnClickListener(v -> moduleViewModel.module(1));
         binding.plateOcrModBtn.setOnClickListener(v -> moduleViewModel.module(2));
@@ -95,10 +92,8 @@ public class ModuleFragment extends Fragment {
         pictureSelector = PictureSelector.create(this).openSystemGallery(SelectMimeType.ofImage()).setSelectionMode(1);
     }
 
-    /**
-     * 观察者数据状态更新活动
-     */
-    private void observerDataStateUpdateAction() {
+    @Override
+    void observerDataStateUpdateAction() {
         moduleViewModel.getModuleInfoTV().setValue(null);
         moduleViewModel.getModuleImgShow().observe(getViewLifecycleOwner(), b -> {
             if (b != null) binding.moduleImg.setImageBitmap(b);

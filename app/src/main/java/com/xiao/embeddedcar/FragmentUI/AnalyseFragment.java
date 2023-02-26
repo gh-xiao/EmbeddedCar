@@ -10,7 +10,6 @@ import android.widget.SeekBar;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.github.gzuliyujiang.wheelview.contract.OnWheelChangedListener;
@@ -28,7 +27,7 @@ import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
-public class AnalyseFragment extends Fragment {
+public class AnalyseFragment extends ABaseFragment {
     FragmentAnalyseBinding binding;
     AnalyseViewModel analyseViewModel;
 
@@ -42,10 +41,8 @@ public class AnalyseFragment extends Fragment {
         return root;
     }
 
-    /**
-     * 控件动作初始化
-     */
-    private void init() {
+    @Override
+    void init() {
         /* HSV参数设置 */
         RestoreHSV();
         /* 图片列表设置 */
@@ -244,10 +241,8 @@ public class AnalyseFragment extends Fragment {
         initPicker();
     }
 
-    /**
-     * 观察者数据状态更新活动
-     */
-    private void observerDataStateUpdateAction() {
+    @Override
+    void observerDataStateUpdateAction() {
         analyseViewModel.getDetectBitmap().observe(getViewLifecycleOwner(), b -> {
             if (b != null) binding.imgShow.setImageBitmap(b);
         });

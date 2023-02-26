@@ -6,13 +6,22 @@ EmbeddedCar
 
 ### 2023/2/21
 
-    #优化布局文件中硬编码的文本,现在使用strings.xml文件引用
+    #优化布局文件中硬编码的文本,现在使用strings.xml引用
     #修复某些控件因为跳转导致的bug
 
 ### 2023/2/24
 
     #添加由ChatGPT生成的内容并加以注释
     #在该页下方添加由ChatGPT生成的知识
+
+### 2023/2/25
+
+    #创建ABaseFragment抽象类以规范化Fragment中的方法实现
+    #在ABaseFragment中创建abstract void init()抽象方法和abstract void observerDataStateUpdateAction()抽象方法
+
+### 2023/2/26
+    
+    #添加发送给从车车牌的指令
 
 ## 版本号: 2.4.3
 

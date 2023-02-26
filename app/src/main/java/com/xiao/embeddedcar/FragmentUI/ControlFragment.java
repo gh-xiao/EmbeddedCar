@@ -9,7 +9,6 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.xiao.embeddedcar.R;
@@ -23,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ControlFragment extends Fragment {
+public class ControlFragment extends ABaseFragment {
 
     private FragmentControlBinding binding;
     private ControlViewModel controlViewModel;
@@ -67,10 +66,8 @@ public class ControlFragment extends Fragment {
         return root;
     }
 
-    /**
-     * 控件动作初始化
-     */
-    private void init() {
+    @Override
+    void init() {
         //设置TextView滚动
         binding.tvMsg.setMovementMethod(ScrollingMovementMethod.getInstance());
         /* 添加菜单选项 */
@@ -113,10 +110,8 @@ public class ControlFragment extends Fragment {
         });
     }
 
-    /**
-     * 观察者数据状态更新活动
-     */
-    private void observerDataStateUpdateAction() {
+    @Override
+    void observerDataStateUpdateAction() {
         controlViewModel.getShowMsg().setValue(null);
         controlViewModel.getSelectImage().observe(getViewLifecycleOwner(), i -> {
             ImageView iv = binding.ivControlChoose;

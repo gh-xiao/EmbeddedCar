@@ -939,7 +939,7 @@ public class ConnectTransport {
             case 1:
                 send((short) (0xA0 + carGoto++), (short) 0x00, (short) 0x00, (short) 0x00);
                 break;
-            //RFID解密后启动主车
+            //RFID解密后启动主车(不需要)
             case 2:
                 YanChi(500);
                 send((short) (0xA0 + carGoto++), (short) 0x00, (short) 0x00, (short) 0x00);
@@ -1027,6 +1027,8 @@ public class ConnectTransport {
      * C7图形识别结果发送
      * C8识别的车型发送
      * C9交通标志物识别编号发送
+     * D1发送给从车车牌数据前三位
+     * D2发送给从车车牌数据后三位
      */
     private void Q1() {
 
@@ -2143,14 +2145,28 @@ public class ConnectTransport {
         if (plate == null) plate = "A123B4";
         sendUIMassage(1, plate);
         //TODO 发送给指定设备
-        for (int J = 0; J < 5; J++) {
+        /* 以下发送给TFT */
+//        for (int J = 0; J < 5; J++) {
+//            YanChi(500);
+//            TFT_LCD(0x0B, 0x20, plate.charAt(0), plate.charAt(1), plate.charAt(2));
+//        }
+//        sendUIMassage(1, "第一次发送成功");
+//        YanChi(1500);
+//        for (int J = 0; J < 5; J++) {
+//            YanChi(500);
+//            TFT_LCD(0x0B, 0x21, plate.charAt(3), plate.charAt(4), plate.charAt(5));
+//        }
+//        sendUIMassage(1, "第二次发送成功");
+        /* 以下发送给从车 */
+        for (int J = 0; J < 3; J++) {
             YanChi(500);
-            TFT_LCD(0x0B, 0x20, plate.charAt(0), plate.charAt(1), plate.charAt(2));
+            sendOther((short) 0xD1, (byte) (int) plate.charAt(0), (byte) (int) plate.charAt(1), (byte) (int) plate.charAt(2));
         }
         sendUIMassage(1, "第一次发送成功");
-        YanChi(1500);
-        for (int J = 0; J < 5; J++)
-            TFT_LCD(0x0B, 0x21, plate.charAt(3), plate.charAt(4), plate.charAt(5));
+        for (int J = 0; J < 3; J++) {
+            YanChi(500);
+            sendOther((short) 0xD2, (byte) (int) plate.charAt(3), (byte) (int) plate.charAt(4), (byte) (int) plate.charAt(5));
+        }
         sendUIMassage(1, "第二次发送成功");
         YanChi(500);
     }

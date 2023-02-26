@@ -18,7 +18,6 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
@@ -33,7 +32,7 @@ import com.xiao.embeddedcar.databinding.FragmentConnectBinding;
 
 import java.util.Objects;
 
-public class ConnectFragment extends Fragment {
+public class ConnectFragment extends ABaseFragment {
 
     private static final String ACTION_USB_PERMISSION = "com.android.example.USB_PERMISSION";
     private FragmentConnectBinding binding;
@@ -56,11 +55,9 @@ public class ConnectFragment extends Fragment {
         return root;
     }
 
-    /**
-     * 控件动作初始化
-     */
     @SuppressLint("SetTextI18n")
-    private void init() {
+    @Override
+    void init() {
         /* 设置左侧TextView滚动 */
         binding.connectInfo.setMovementMethod(ScrollingMovementMethod.getInstance());
         /* 密码显示与隐藏 */
@@ -93,10 +90,8 @@ public class ConnectFragment extends Fragment {
         });
     }
 
-    /**
-     * 观察者数据状态更新活动
-     */
-    private void observerDataStateUpdateAction() {
+    @Override
+    void observerDataStateUpdateAction() {
         connectViewModel.getConnectInfo().observe(getViewLifecycleOwner(), s -> binding.connectInfo.append(s + "\n"));
         connectViewModel.getConnectMode().observe(getViewLifecycleOwner(), b -> {
             binding.connectionMode.setChecked(b);

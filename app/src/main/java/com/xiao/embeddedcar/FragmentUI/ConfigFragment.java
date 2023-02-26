@@ -11,7 +11,6 @@ import android.widget.SeekBar;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.github.gzuliyujiang.wheelview.contract.OnWheelChangedListener;
@@ -24,7 +23,7 @@ import com.xiao.embeddedcar.ViewModel.MainViewModel;
 import com.xiao.embeddedcar.ViewModel.ModuleViewModel;
 import com.xiao.embeddedcar.databinding.FragmentConfigBinding;
 
-public class ConfigFragment extends Fragment {
+public class ConfigFragment extends ABaseFragment {
     private FragmentConfigBinding binding;
     private MainViewModel mainViewModel;
     private ModuleViewModel moduleViewModel;
@@ -44,11 +43,9 @@ public class ConfigFragment extends Fragment {
         return root;
     }
 
-    /**
-     * 控件动作初始化
-     */
     @SuppressLint("SetTextI18n")
-    private void init() {
+    @Override
+    void init() {
         /* 二维码颜色选择 */
         binding.QRColorChooseRG.setOnCheckedChangeListener((group, id) -> {
             if (id == R.id.rb_QR_red)
@@ -208,10 +205,8 @@ public class ConfigFragment extends Fragment {
         });
     }
 
-    /**
-     * 观察者数据状态更新活动
-     */
-    private void observerDataStateUpdateAction() {
+    @Override
+    void observerDataStateUpdateAction() {
         mainViewModel.getQR_color().observe(getViewLifecycleOwner(), qrColor -> {
             QRBitmapCutter.color = qrColor;
             switch (qrColor) {

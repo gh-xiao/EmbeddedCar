@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bkrcl.control_car_video.camerautil.CameraCommandUtil;
@@ -33,7 +32,7 @@ import com.xiao.embeddedcar.databinding.FragmentHomeBinding;
 
 import java.util.Locale;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends ABaseFragment {
 
     private FragmentHomeBinding binding;
     private HomeViewModel homeViewModel;
@@ -61,11 +60,9 @@ public class HomeFragment extends Fragment {
         return root;
     }
 
-    /**
-     * 控件动作初始化
-     */
     @SuppressLint({"SetTextI18n", "ClickableViewAccessibility"})
-    private void init() {
+    @Override
+    void init() {
         //设置TextView滚动
         binding.Debug.setMovementMethod(ScrollingMovementMethod.getInstance());
         binding.commandData.setMovementMethod(ScrollingMovementMethod.getInstance());
@@ -162,11 +159,9 @@ public class HomeFragment extends Fragment {
 
     }
 
-    /**
-     * 观察者数据状态更新活动
-     */
     @SuppressLint("SetTextI18n")
-    private void observerDataStateUpdateAction() {
+    @Override
+    void observerDataStateUpdateAction() {
         homeViewModel.getDebugArea().setValue(null);
         //图片信息显示
         homeViewModel.getShowImg().observe(getViewLifecycleOwner(), showImg -> {
