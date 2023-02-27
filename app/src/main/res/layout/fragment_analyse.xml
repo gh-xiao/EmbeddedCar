@@ -26,99 +26,145 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent="0.5" />
 
-    <LinearLayout
-        android:id="@+id/ll_control"
+    <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:gravity="center"
-        app:layout_constraintEnd_toEndOf="@+id/img_show"
-        app:layout_constraintHeight_percent="0.2"
-        app:layout_constraintStart_toStartOf="@+id/img_show"
-        app:layout_constraintTop_toBottomOf="@+id/img_show">
+        app:layout_constraintHeight_percent="0.4"
+        app:layout_constraintStart_toEndOf="@+id/lv_list"
+        app:layout_constraintTop_toBottomOf="@+id/img_show"
+        app:layout_constraintWidth_percent="0.5">
 
-        <Button
-            android:id="@+id/get_hsv_mat_btn"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/analyse_HSV"
-            android:textSize="12sp" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <Button
-            android:id="@+id/choose_morphologyEx_btn"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/choose_morphologyEx"
-            android:textSize="12sp" />
+            <LinearLayout
+                android:id="@+id/ll_control1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                app:layout_constraintTop_toTopOf="parent">
 
-        <Button
-            android:id="@+id/morphologyEx_btn"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.8"
-            android:textSize="12sp"
-            tools:ignore="SpeakableTextPresentCheck" />
+                <Button
+                    android:id="@+id/get_hsv_mat_btn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/analyse_HSV"
+                    android:textSize="12sp" />
 
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/morphologyEx_mode"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:checked="true"
-            android:layoutDirection="rtl"
-            android:padding="5sp"
-            android:textSize="12sp"
-            android:thumb="@drawable/switch_thumb"
-            app:switchPadding="15dp"
-            app:track="@drawable/switch_track_selector" />
-    </LinearLayout>
+                <Button
+                    android:id="@+id/choose_morphologyEx_btn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/choose_morphologyEx"
+                    android:textSize="12sp" />
 
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:gravity="center"
-        app:layout_constraintEnd_toEndOf="@+id/ll_control"
-        app:layout_constraintHeight_percent="0.2"
-        app:layout_constraintStart_toStartOf="@+id/ll_control"
-        app:layout_constraintTop_toBottomOf="@+id/ll_control">
+                <Button
+                    android:id="@+id/morphologyEx_btn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.8"
+                    android:textSize="12sp"
+                    tools:ignore="SpeakableTextPresentCheck" />
 
-        <Button
-            android:id="@+id/TFTAutoCutter_btn"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/TFT_auto_cutter"
-            android:textSize="12sp"
-            tools:ignore="ButtonStyle" />
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/morphologyEx_mode"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:checked="true"
+                    android:layoutDirection="rtl"
+                    android:padding="5sp"
+                    android:textSize="12sp"
+                    android:thumb="@drawable/switch_thumb"
+                    app:switchPadding="15dp"
+                    app:track="@drawable/switch_track_selector" />
+            </LinearLayout>
 
-        <Button
-            android:id="@+id/restore_btn"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/reset_HSV"
-            android:textSize="12sp"
-            tools:ignore="ButtonStyle" />
+            <LinearLayout
+                android:id="@+id/ll_control2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                app:layout_constraintHeight_percent="0.2"
+                app:layout_constraintTop_toBottomOf="@+id/ll_control1">
 
-        <Button
-            android:id="@+id/import_btn"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/import_HSV"
-            android:textSize="12sp"
-            tools:ignore="ButtonStyle" />
+                <Button
+                    android:id="@+id/TFTAutoCutter_btn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/TFT_auto_cutter"
+                    android:textSize="12sp"
+                    tools:ignore="ButtonStyle" />
 
-        <Button
-            android:id="@+id/export_btn"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/export_HSV"
-            android:textSize="12sp"
-            tools:ignore="ButtonStyle" />
-    </LinearLayout>
+                <Button
+                    android:id="@+id/restore_btn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/reset_HSV"
+                    android:textSize="12sp"
+                    tools:ignore="ButtonStyle" />
+
+                <Button
+                    android:id="@+id/import_btn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/import_HSV"
+                    android:textSize="12sp"
+                    tools:ignore="ButtonStyle" />
+
+                <Button
+                    android:id="@+id/export_btn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/export_HSV"
+                    android:textSize="12sp"
+                    tools:ignore="ButtonStyle" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_control3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                app:layout_constraintHeight_percent="0.2"
+                app:layout_constraintTop_toBottomOf="@+id/ll_control2">
+
+                <Button
+                    android:id="@+id/get_shape_area"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="获取图形面积(TODO)"
+                    android:textSize="12sp"
+                    tools:ignore="ButtonStyle" />
+
+                <Button
+                    android:id="@+id/get_edgeLength"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="获取图形边长(TODO)"
+                    android:textSize="12sp"
+                    tools:ignore="ButtonStyle" />
+
+                <Button
+                    android:id="@+id/get_edgeLengths_angle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="获取两边夹角(TODO)"
+                    android:textSize="12sp"
+                    tools:ignore="ButtonStyle" />
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 
     <LinearLayout
         android:id="@+id/ll_hsvmin"

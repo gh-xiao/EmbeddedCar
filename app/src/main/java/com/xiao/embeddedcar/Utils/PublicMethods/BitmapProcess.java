@@ -114,7 +114,6 @@ public class BitmapProcess {
      * @return 是否保存成功
      */
     private String saveImageNew(String name, Bitmap bm) {
-        Log.d("Save Bitmap", "Ready to save picture");
         ContentValues contentValues = new ContentValues();
         contentValues.put("_display_name", name + format.format(new Date()));
         contentValues.put("description", name);
@@ -124,9 +123,11 @@ public class BitmapProcess {
                 .openOutputStream(mContext.getContentResolver()
                         .insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues))) {
             bm.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+            Log.d("Save Bitmap", "Save success!");
             return "保存完毕!";
         } catch (Exception e) {
             e.printStackTrace();
+            Log.d("Save Bitmap", "Save fail!");
             return "Exception!";
         }
     }
