@@ -1608,7 +1608,6 @@ public class ConnectTransport {
         sendUIMassage(1, "生成结果...");
         String color = TrafficLight.Identify(c.getResult(), mainViewModel.getDetect_trafficLight().getValue() != null ? mainViewModel.getDetect_trafficLight().getValue() : 1);
         sendUIMassage(2, c.getResult());
-        sendUIMassage(1, "识别的颜色: " + color);
         sendToTrafficLight(color, i);
         sendUIMassage(1, "发送给交通灯: " + (i == 1 ? "A" : "B"));
         sendUIMassage(1, "复位摄像头...");
@@ -1629,28 +1628,28 @@ public class ConnectTransport {
                     YanChi(100);
                     traffic_control(0x0D + i, 0x02, 0x01);
                 }
-                System.out.println("识别为红灯");
+                sendUIMassage(1, "识别为红灯");
                 break;
             case "绿灯":
                 for (int J = 0; J < 10; J++) {
                     YanChi(100);
                     traffic_control(0x0D + i, 0x02, 0x02);
                 }
-                System.out.println("识别为绿灯");
+                sendUIMassage(1, "识别为绿灯");
                 break;
             case "黄灯":
                 for (int J = 0; J < 10; J++) {
                     YanChi(100);
                     traffic_control(0x0D + i, 0x02, 0x03);
                 }
-                System.out.println("识别为黄灯");
+                sendUIMassage(1, "识别为黄灯");
                 break;
             default:
                 for (int J = 0; J < 10; J++) {
                     YanChi(100);
                     traffic_control(0x0D + i, 0x02, 0x03);
                 }
-                System.out.println("ERROR!默认黄灯!");
+                sendUIMassage(1, "ERROR!默认黄灯!");
                 break;
         }
         YanChi(1000);
@@ -1677,7 +1676,7 @@ public class ConnectTransport {
      * 形状识别模块
      */
     public synchronized void Shape_mod() {
-        sendUIMassage(1, "----------形状识别开始----------");
+        sendUIMassage(1, "==========形状识别开始==========");
         int totals;
         boolean fail = true;
         int fre = 1;
@@ -1702,7 +1701,7 @@ public class ConnectTransport {
             }
         } while (fail && fre++ < 5);
 //        sendUIMassage(1, "检测出的全部的图形数量: " + totals + "\n题意所需数据: " + shapeResult + "个" + mainViewModel.getShape_color().getValue() + mainViewModel.getShape_type().getValue());
-        sendUIMassage(1, "----------形状识别完成----------");
+        sendUIMassage(1, "==========形状识别完成==========");
         //TODO ==========发送给指定设备==========
 //        send((short) 0xC7, (short) shapeResult, (short) 0x00, (short) 0x00);
 //        YanChi(500);
@@ -1736,14 +1735,13 @@ public class ConnectTransport {
      * @param detect 待检测的bitmap
      */
     public synchronized void Shape(Bitmap detect) {
-        sendUIMassage(1, "----------形状识别开始----------");
+        sendUIMassage(1, "==========形状识别开始==========");
         ShapeDetector task = new ShapeDetector();
         sendUIMassage(2, detect);
         task.shapePicProcess(detect);
-        int totals = task.getTotals();
         shapeResult = Objects.requireNonNull(task.getColorCounts().get(mainViewModel.getShape_color().getValue())).getCounts(mainViewModel.getShape_type().getValue());
-        sendUIMassage(1, "检测出的全部的图形数量: " + totals + "\n题意所需数据: " + shapeResult + "个" + mainViewModel.getShape_color().getValue() + mainViewModel.getShape_type().getValue());
-        sendUIMassage(1, "----------形状识别完成----------");
+        sendUIMassage(1, "检测出的全部的图形数量: " + task.getTotals() + "\n题意所需数据: " + shapeResult + "个" + mainViewModel.getShape_color().getValue() + mainViewModel.getShape_type().getValue());
+        sendUIMassage(1, "==========形状识别完成==========");
     }
 
     /* ================================================== */
@@ -2042,16 +2040,28 @@ public class ConnectTransport {
         } while (plate == null && fre++ < 5);
         if (plate == null) plate = "A123B4";
         //TODO 发送给指定设备
-        YanChi(2000);
-        for (int J = 0; J < 5; J++) {
+        /* 以下发送给TFT */
+//        YanChi(2000);
+//        for (int J = 0; J < 5; J++) {
+//            YanChi(500);
+//            TFT_LCD(0x0B, 0x20, plate.charAt(0), plate.charAt(1), plate.charAt(2));
+//        }
+//        System.out.println("第一次发送成功");
+//        YanChi(1500);
+//        for (int J = 0; J < 5; J++)
+//            TFT_LCD(0x0B, 0x21, plate.charAt(3), plate.charAt(4), plate.charAt(5));
+//        System.out.println("第二次发送成功");
+        /* 以下发送给从车 */
+        for (int J = 0; J < 3; J++) {
             YanChi(500);
-            TFT_LCD(0x0B, 0x20, plate.charAt(0), plate.charAt(1), plate.charAt(2));
+            sendOther((short) 0xD1, (byte) (int) plate.charAt(0), (byte) (int) plate.charAt(1), (byte) (int) plate.charAt(2));
         }
-        System.out.println("第一次发送成功");
-        YanChi(1500);
-        for (int J = 0; J < 5; J++)
-            TFT_LCD(0x0B, 0x21, plate.charAt(3), plate.charAt(4), plate.charAt(5));
-        System.out.println("第二次发送成功");
+        sendUIMassage(1, "第一次发送成功");
+        for (int J = 0; J < 3; J++) {
+            YanChi(500);
+            sendOther((short) 0xD2, (byte) (int) plate.charAt(3), (byte) (int) plate.charAt(4), (byte) (int) plate.charAt(5));
+        }
+        sendUIMassage(1, "第二次发送成功");
         YanChi(500);
     }
 
@@ -2315,8 +2325,10 @@ public class ConnectTransport {
                 break;
         }
         //TODO 发送给指定设备
+//        /* 以下发送给主车 */
 //        send((short) 0xC9, getTrafficFlag, (short) 0x00, (short) 0x00);
         YanChi(500);
+        /* 以下发送给从车 */
         sendOther((short) 0xC9, getTrafficFlag, (short) 0x00, (short) 0x00);
     }
 

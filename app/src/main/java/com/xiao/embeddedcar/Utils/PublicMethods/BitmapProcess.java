@@ -50,14 +50,12 @@ public class BitmapProcess {
      *
      * @param name 图片名
      * @param mat  需要保存的mat
-     * @return 是否保存成功
      */
-    @SuppressWarnings("UnusedReturnValue")
-    public static String saveBitmap(String name, Mat mat) {
-        if (mat == null) return "错误,没有图片!";
+    public static void saveBitmap(String name, Mat mat) {
+        if (mat == null) return;
         Bitmap bm = Bitmap.createBitmap(mat.width(), mat.height(), Bitmap.Config.ARGB_8888);
         Utils.matToBitmap(mat, bm);
-        return saveBitmap(name, bm);
+        saveBitmap(name, bm);
     }
 
     /**

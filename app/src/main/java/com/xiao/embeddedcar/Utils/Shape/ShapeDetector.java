@@ -12,12 +12,13 @@ import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
-import org.opencv.core.Rect;
+import org.opencv.core.RotatedRect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -77,12 +78,9 @@ public class ShapeDetector {
      * @param inputBitmap 需要处理的图片
      */
     public void shapePicProcess(Bitmap inputBitmap) {
-
         if (inputBitmap == null) return;
-
         /* openCV创建用来存储图像信息的内存对象 */
         Mat srcMat = new Mat();
-
         /* 转化为Mat对象 */
         Utils.bitmapToMat(inputBitmap, srcMat);
         shapePicProcess(srcMat);
@@ -96,23 +94,8 @@ public class ShapeDetector {
     public void shapePicProcess(Mat srcMat) {
         if (srcMat == null) return;
         ColorCounts.clear();
-        /* 调整截图位置(图片截取方式2) */
-        //测试图片用
-//        Rect rect = new Rect(188, 81, 322, 192);
-        //???
-//        Rect rect = new Rect(188, 145, 290, 195);
-        //主车用
-//        Rect rect = new Rect(188, 175, 290, 175);
-//        Rect rect = new Rect(200, 160, 290, 175);
-
-//        Mat dstmat = new Mat(srcMat, rect);
-
-        /* 如果使用Utils.loadResource()加载图片资源,则需要转换为RGB */
-//        Imgproc.cvtColor(dstmat, dstmat, Imgproc.COLOR_BGR2RGB);
-
         /* 保存用 */
-        BitmapProcess.saveBitmap("shape_裁剪", srcMat);
-
+        BitmapProcess.saveBitmap("TFTAutoCutter", srcMat);
         /* 颜色形状分析 */
         Identify(srcMat, ColorHSV.yellowHSV1, "黄色");
         Identify(srcMat, ColorHSV.greenHSV1, "绿色");
@@ -163,13 +146,13 @@ public class ShapeDetector {
         Imgproc.findContours(hsvMat, contours, outMat, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
         /* 绘制轮廓,用于绘制找到的图像轮廓 */
         /*
-        函数参数详解:
-        第一个参数image表示目标图像
-        第二个参数contours表示输⼊的轮廓组，每⼀组轮廓由点vector构成
-        第三个参数contourIdx指明画第⼏个轮廓，如果该参数为负值，则画全部轮廓
-        第四个参数color为轮廓的颜色
-        第五个参数thickness为轮廓的线宽，如果为负值或CV_FILLED表⽰填充轮廓内部
-        */
+         * 函数参数详解:
+         * 第一个参数image表示目标图像
+         * 第二个参数contours表示输⼊的轮廓组，每⼀组轮廓由点vector构成
+         * 第三个参数contourIdx指明画第⼏个轮廓，如果该参数为负值，则画全部轮廓
+         * 第四个参数color为轮廓的颜色
+         * 第五个参数thickness为轮廓的线宽，如果为负值或CV_FILLED表⽰填充轮廓内部
+         */
         Imgproc.drawContours(mat, contours, -1, new Scalar(0, 255, 0), 2);
         /* 形状统计 */
         /* 核心统计代码,参数已调整 */
@@ -181,7 +164,7 @@ public class ShapeDetector {
         double epsilon;
         int tri, rect, circle, star, rhombus;
         tri = rect = circle = star = rhombus = 0;
-        Log.e(TAG, colorName + "总计轮廓: " + contours.size());
+        Log.e(TAG, "----------" + colorName + "总计轮廓: " + contours.size() + "----------");
         /* 遍历轮廓 */
         for (int i = 0; i < contours.size(); i++) {
             /* 判断面积是否大于阈值(有效图形) */
@@ -195,27 +178,35 @@ public class ShapeDetector {
                  * 它越小，近似多边形就越接近原始轮廓。它越大，近似多边形就越简单，有更少的顶点。你可以根据你的需要调整这个系数。
                  * by New Bing
                  */
-//                epsilon = 0.035 * Imgproc.arcLength(contour2f, true);
                 epsilon = 0.045 * Imgproc.arcLength(contour2f, true);
                 //多边形拟合后的轮廓
                 approxCurve = new MatOfPoint2f();
                 /* 多边形拟合 */
                 Imgproc.approxPolyDP(contour2f, approxCurve, epsilon, true);
-                /* 获取不带旋转角度的最小外接矩形 */
-                //minAreaRect可获得带旋转角度的最小外接矩形
-                Rect minRect = Imgproc.boundingRect(approxCurve);
-                /* 绘制外接矩形,并计算外接矩形的轮廓中心 */
-                Imgproc.rectangle(mat, minRect, new Scalar(255, 255, 0), 1);
-                Log.e(TAG, "包含角点数: " + approxCurve.rows());
+                /* boundingRect获取不带旋转角度的最小外接矩形 */
+//                Rect minRect = Imgproc.boundingRect(approxCurve);
+                /* 绘制不带旋转角度的外接矩形,并计算外接矩形的轮廓中心 */
+//                Imgproc.rectangle(mat, minRect, new Scalar(255, 255, 0), 1);
+                /* minAreaRect获得带旋转角度的最小外接矩形 */
+                RotatedRect minRotatedRect = Imgproc.minAreaRect(approxCurve);
+                /* 获取顶点数据 */
+                Point[] box = new Point[4];
+                minRotatedRect.points(box);
+                /* 将顶点转换为整数类型 */
+                MatOfPoint boxInt = new MatOfPoint();
+                boxInt.fromArray(box);
+                /* 绘制带旋转角度的外接矩形,并计算外接矩形的轮廓中心 */
+                Imgproc.polylines(mat, Collections.singletonList(boxInt), true, new Scalar(255, 255, 255));
+                Log.i(TAG, "包含角点数: " + approxCurve.rows());
                 if (approxCurve.rows() == 3) tri++;
                     /* 判断矩形和菱形 */
                     /* 面积判断法 - 旧 */
 //                else if (approxCurve.rows() == 4) {
 //                    double area, minArea;
 //                    /* 该图形(四边形)拟合的面积 */
-//                    area = Imgproc.contourArea(contour2f);
+//                    area = Imgproc.contourArea(approxCurve);
 //                    /* 包含旋转角度的最小外接矩形的面积 */
-//                    RotatedRect minAreaRect = Imgproc.minAreaRect(contour2f);
+//                    RotatedRect minAreaRect = Imgproc.minAreaRect(approxCurve);
 //                    minArea = minAreaRect.size.area();
 //                    /* 图形面积/外接矩形面积 */
 //                    double rec = area / minArea;
@@ -237,7 +228,6 @@ public class ShapeDetector {
 //                    else star++;
 //                }
                     /* 判断五角星和圆形 - 圆形度 */
-                    //TODO 继续优化
                 else if (approxCurve.rows() > 4) {
                     /* 该图形面积 */
                     double area = Imgproc.contourArea(contours.get(i));
@@ -245,7 +235,7 @@ public class ShapeDetector {
                     double len = Imgproc.arcLength(approxCurve, true);
                     /* 圆形度 */
                     double roundness = (4 * Math.PI * area) / (len * len);
-                    Log.e(TAG, "该图形的圆形度: " + roundness);
+                    Log.i(TAG, "该图形的圆形度: " + roundness);
                     if (roundness > 0.8) circle++;
                     else star++;
                 }
@@ -254,10 +244,11 @@ public class ShapeDetector {
         /* 引用ShapeCount对象存放识别数据 */
         SaveResult(colorName, circle, tri, rect, star, rhombus);
         /* 输出结果 */
-        String msg = colorName + "轮廓: " + contours.size() + "\n圆形: " + circle + " 三角形: " + tri + " 矩形: " + rect + " 菱形: " + rhombus + " 五角星: " + star;
-        Log.i(TAG, msg);
+        String msg = "圆形: " + circle + " 三角形: " + tri + " 矩形: " + rect + " 菱形: " + rhombus + " 五角星: " + star;
+        Log.e(TAG, msg);
         /* 保存图片 */
         BitmapProcess.saveBitmap(colorName, mat);
+        Log.e(TAG, "----------" + colorName + "识别完成----------");
     }
 
     /**
@@ -276,14 +267,13 @@ public class ShapeDetector {
             double l2 = getDistance(points[1], points[2]);
             double l3 = getDistance(points[2], points[3]);
             double l4 = getDistance(points[3], points[0]);
-            Log.i(TAG, "这是该轮廓四边边长:\n" + "■■■" + l1 + "■■■" + l3 + "■■■\n■■■" + l2 + "■■■" + l4 + "■■■");
+            Log.i(TAG, "该轮廓四边边长(顺时针):\n" + "■■■" + l1 + "■■■" + l2 + "■■■\n■■■" + l4 + "■■■" + l3 + "■■■");
             /* 轮廓的邻边边长在误差范围内相等则为菱形 */
             return Math.abs(l1 - l2) < 5 && Math.abs(l2 - l3) < 5 && Math.abs(l3 - l4) < 5 && Math.abs(l4 - l1) < 5;
         }
         // 不是菱形
         return false;
     }
-
 
     /**
      * 判断一个多边形是否为矩形

@@ -231,6 +231,29 @@ public class AnalyseFragment extends ABaseFragment {
             if (detectBitmap == null) return;
             binding.imgShow.setImageBitmap(TFTAutoCutter.TFTCutter(detectBitmap));
         });
+        /* 测试方法编写 */
+        binding.testMethod.setOnClickListener(v -> {
+            //图像检测 - 边缘检测
+//            /* 获取Bitmap */
+//            Bitmap detectBitmap = analyseViewModel.getDetectBitmap().getValue();
+//            if (detectBitmap == null) return;
+//            /* 转化为Mat对象 */
+//            Mat src = new Mat();
+//            Utils.bitmapToMat(detectBitmap, src);
+//            /* 获取grayMat */
+//            Mat grayMat = new Mat();
+//            Imgproc.cvtColor(src, grayMat, Imgproc.COLOR_BGR2GRAY);
+//            //Blurring the image using Gaussian blur
+//            Mat blurred = new Mat();
+//            Imgproc.GaussianBlur(grayMat, blurred, new Size(3, 3), 0);
+//            //Applying Canny edge detector with low threshold value 50 and high threshold value 150
+//            Mat edges = new Mat();
+//            Imgproc.Canny(blurred, edges, 0, 100);
+//            /* 输出 */
+//            Bitmap bitmap = Bitmap.createBitmap(edges.width(), edges.height(), Bitmap.Config.ARGB_8888);
+//            Utils.matToBitmap(edges, bitmap);
+//            binding.imgShow.setImageBitmap(bitmap);
+        });
         /* 导入参数到裁剪 */
         binding.importBtn.setOnClickListener(v -> importHSV());
         /* 导出裁剪参数 */
