@@ -46,11 +46,13 @@
     <string name="stop">停止</string>
 
     <!--    主页显示信息-->
-    <string name="Debug_display">Debug显示\n</string>
-    <string name="IPInfo">IP信息</string>
+    <string name="show_img">showImg</string>
+    <string name="debug_display">Debug显示\n</string>
+    <string name="ip_info">IP信息</string>
     <string name="rv_data_show">设备没有连接，这里空空如也哦~</string>
     <string name="command_data_show">设备指令接收区</string>
-    <string name="clear_debug">清空Debug区</string>
+    <string name="reset_home_data">重置主页信息</string>
+    <string name="module_img_show">模块图片展示</string>
 
     <!--    fragment_connect-->
     <string name="device_id">设备ID</string>

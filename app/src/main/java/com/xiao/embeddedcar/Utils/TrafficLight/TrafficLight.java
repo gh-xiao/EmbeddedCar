@@ -23,6 +23,12 @@ public class TrafficLight {
 
     private static final String TAG = TrafficLight.class.getSimpleName();
     private static Mat rAyMat, greenMat;
+    //已经处理好的图像
+    private static Bitmap detectROI;
+
+    public static Bitmap getDetectROI() {
+        return detectROI;
+    }
 
     /**
      * 识别传入的红绿灯图片
@@ -59,7 +65,9 @@ public class TrafficLight {
         /* 截取感兴趣区域 */
         Mat ROI = new Mat(srcMat, rect);
         /* 保存用 */
-        BitmapProcess.saveBitmap("红绿灯ROI区域", ROI);
+        detectROI = Bitmap.createBitmap(ROI.width(), ROI.height(), Bitmap.Config.ARGB_8888);
+        Utils.matToBitmap(ROI, detectROI);
+        BitmapProcess.saveBitmap("红绿灯ROI区域", detectROI);
         /* 创建用来存储图像信息的内存对象 */
         rAyMat = new Mat();
         greenMat = new Mat();

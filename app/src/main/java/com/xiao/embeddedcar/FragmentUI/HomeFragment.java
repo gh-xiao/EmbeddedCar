@@ -60,21 +60,26 @@ public class HomeFragment extends ABaseFragment {
         return root;
     }
 
-    @SuppressLint({"SetTextI18n", "ClickableViewAccessibility"})
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     void init() {
         //设置TextView滚动
         binding.Debug.setMovementMethod(ScrollingMovementMethod.getInstance());
         binding.commandData.setMovementMethod(ScrollingMovementMethod.getInstance());
-        //清空Debug区(重置)按钮监听事件
+        //清空重置按钮监听事件
         binding.clearDebugArea.setOnClickListener(view -> {
             binding.Debug.setText("Debug显示\n");
+            homeViewModel.getShowImg().setValue(null);
+            moduleViewModel.getModuleImgShow().setValue(null);
+            binding.commandData.setText(R.string.command_data_show);
             homeViewModel.getMp_n().setValue(100);
             homeViewModel.getAngle().setValue(50);
             homeViewModel.getSp_n().setValue(90);
-            binding.mpData.setText("100");
-            binding.angleData.setText("50");
-            binding.speedData.setText("90");
+            binding.mpData.setText(R.string.mp_data);
+            binding.angleData.setText(R.string.line_data);
+            binding.speedData.setText(R.string.angle_data);
+
+
         });
         //刷新连接操作
         binding.refreshBtn.setOnClickListener(view -> {
@@ -156,38 +161,15 @@ public class HomeFragment extends ABaseFragment {
         });
         //左侧图片监听事件
         binding.img.setOnTouchListener(new onTouchListener1());
-
     }
 
-    @SuppressLint("SetTextI18n")
     @Override
     void observerDataStateUpdateAction() {
         homeViewModel.getDebugArea().setValue(null);
         //图片信息显示
-        homeViewModel.getShowImg().observe(getViewLifecycleOwner(), showImg -> {
-            if (showImg != null) binding.img.setImageBitmap(showImg);
-            else binding.img.setImageResource(R.drawable.ic_no_pic);
-        });
-        //IP信息设置与图片显示
-        connectViewModel.getLoginInfo().observe(getViewLifecycleOwner(), loginInfo -> {
-            if (loginInfo == null || loginInfo.getIP() == null) return;
-            if (XcApplication.isSerial == XcApplication.Mode.SOCKET && !(loginInfo.getIPCamera() == null || loginInfo.getIPCamera().equals("null:81"))) {
-                //开启接收网络传入图片
-                homeViewModel.getCameraPicture();
-                //开启接收设备传入数据
-                homeViewModel.refreshConnect();
-                homeViewModel.getIpShow().setValue("WiFi连接成功! " + "IP地址: " + loginInfo.getIP() + "\n"
-                        + "摄像头连接成功! " + "Camera-IP: " + loginInfo.getPureCameraIP());
-            } else if (XcApplication.isSerial == XcApplication.Mode.SOCKET && loginInfo.getIP().equals("0.0.0.0")) {
-                homeViewModel.getIpShow().setValue("WiFi连接失败!请重新连接\n" + "摄像头连接失败! " + "请重启您的平台设备!");
-            } else if (XcApplication.isSerial == XcApplication.Mode.SOCKET) {
-                //开始接收网络传入图片 - 测试用
-//                homeViewModel.getCameraPicture();
-                homeViewModel.getIpShow().setValue("WiFi连接成功! " + "IP地址: " + loginInfo.getIP() + "\n"
-                        + "摄像头连接失败! " + "请重启您的平台设备!");
-            }
-        });
-        homeViewModel.getIpShow().observe(getViewLifecycleOwner(), s -> binding.showIP.setText(s));
+        homeViewModel.getShowImg().observe(getViewLifecycleOwner(), showImg -> binding.img.setImageBitmap(showImg));
+        //模块图片信息显示
+        moduleViewModel.getModuleImgShow().observe(getViewLifecycleOwner(), moduleShowImg -> binding.moduleImgShow.setImageBitmap(moduleShowImg));
         //设备数据接收
         homeViewModel.getDataShow().observe(getViewLifecycleOwner(), s -> {
             binding.rvData.setTextColor(chief_status_flag ? getResources().getColor(R.color.white) : getResources().getColor(R.color.black));
@@ -199,9 +181,9 @@ public class HomeFragment extends ABaseFragment {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < 50; i++) {
                 sb.append("0x").append(BaseConversion.decToHex(bytes[i]).substring(6)).append(",");
-                if (sb.toString().contains("0xbb") || sb.toString().contains("0xBB")) break;
+                if (sb.toString().contains("bb") || sb.toString().contains("BB")) break;
             }
-            binding.commandData.setText(sb.toString().toLowerCase(Locale.ROOT));
+            binding.commandData.setText(sb.toString().toUpperCase(Locale.ROOT));
         });
         //debug显示
         homeViewModel.getDebugArea().observe(getViewLifecycleOwner(), s -> {
@@ -235,6 +217,26 @@ public class HomeFragment extends ABaseFragment {
         //速度(转弯)
         homeViewModel.getAngle().observe(getViewLifecycleOwner(), i -> {
             if (i != null) angle = i;
+        });
+        //IP信息设置与图片显示
+        homeViewModel.getIpShow().observe(getViewLifecycleOwner(), s -> binding.showIP.setText(s));
+        connectViewModel.getLoginInfo().observe(getViewLifecycleOwner(), loginInfo -> {
+            if (loginInfo == null || loginInfo.getIP() == null) return;
+            if (XcApplication.isSerial == XcApplication.Mode.SOCKET && !(loginInfo.getIPCamera() == null || loginInfo.getIPCamera().equals("null:81"))) {
+                //开启接收网络传入图片
+                homeViewModel.getCameraPicture();
+                //开启接收设备传入数据
+                homeViewModel.refreshConnect();
+                homeViewModel.getIpShow().setValue("WiFi连接成功! " + "IP地址: " + loginInfo.getIP() + "\n"
+                        + "摄像头连接成功! " + "Camera-IP: " + loginInfo.getPureCameraIP());
+            } else if (XcApplication.isSerial == XcApplication.Mode.SOCKET && loginInfo.getIP().equals("0.0.0.0")) {
+                homeViewModel.getIpShow().setValue("WiFi连接失败!请重新连接\n" + "摄像头连接失败! " + "请重启您的平台设备!");
+            } else if (XcApplication.isSerial == XcApplication.Mode.SOCKET) {
+                //开始接收网络传入图片 - 测试用
+//                homeViewModel.getCameraPicture();
+                homeViewModel.getIpShow().setValue("WiFi连接成功! " + "IP地址: " + loginInfo.getIP() + "\n"
+                        + "摄像头连接失败! " + "请重启您的平台设备!");
+            }
         });
         //
         moduleViewModel.getModuleInfoTV().observe(getViewLifecycleOwner(), s -> {

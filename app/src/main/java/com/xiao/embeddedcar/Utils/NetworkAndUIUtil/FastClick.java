@@ -1,8 +1,8 @@
 package com.xiao.embeddedcar.Utils.NetworkAndUIUtil;
 
 public class FastClick {
-    // 两次点击按钮之间的点击间隔不能少于500毫秒(5秒)
-    private static final int MIN_CLICK_DELAY_TIME = 5000;
+    // 两次点击按钮之间的点击间隔不能少于300毫秒(3秒)
+    private static final int MIN_CLICK_DELAY_TIME = 3000;
     private static long lastClickTime;
 
     public static boolean isFastClick() {

@@ -1607,7 +1607,7 @@ public class ConnectTransport {
         c.PictureProcessing(stream);
         sendUIMassage(1, "生成结果...");
         String color = TrafficLight.Identify(c.getResult(), mainViewModel.getDetect_trafficLight().getValue() != null ? mainViewModel.getDetect_trafficLight().getValue() : 1);
-        sendUIMassage(2, c.getResult());
+        sendUIMassage(2, TrafficLight.getDetectROI());
         sendToTrafficLight(color, i);
         sendUIMassage(1, "发送给交通灯: " + (i == 1 ? "A" : "B"));
         sendUIMassage(1, "复位摄像头...");
@@ -1703,9 +1703,13 @@ public class ConnectTransport {
 //        sendUIMassage(1, "检测出的全部的图形数量: " + totals + "\n题意所需数据: " + shapeResult + "个" + mainViewModel.getShape_color().getValue() + mainViewModel.getShape_type().getValue());
         sendUIMassage(1, "==========形状识别完成==========");
         //TODO ==========发送给指定设备==========
+//        /* 以下发送给主车 */
 //        send((short) 0xC7, (short) shapeResult, (short) 0x00, (short) 0x00);
 //        YanChi(500);
+//        /* 以下发送给从车 */
 //        sendOther((short) 0xC7, (short) shapeResult, (short) 0x00, (short) 0x00);
+//        YanChi(500);
+        /* 以下发送给TFT_B */
         String toTFT_B = "F" +
                 task.getShapeCounts("矩形") +
                 task.getShapeCounts("圆形") +
@@ -1722,11 +1726,11 @@ public class ConnectTransport {
             TFT_LCD(0x0B, 0x21, toTFT_B.charAt(3), toTFT_B.charAt(4), toTFT_B.charAt(5));
         sendUIMassage(1, "第二次发送成功");
         YanChi(500);
+        /* 以下发送给LED数码显示管 */
         String toLED_one = "F" + Objects.requireNonNull(task.getColorCounts().get("红色")).getCounts("总计");
-        StringBuilder toLED_two = new StringBuilder();
-        toLED_two.append(Objects.requireNonNull(task.getColorCounts().get("绿色")).getCounts("总计"))
-                .append(Objects.requireNonNull(task.getColorCounts().get("蓝色")).getCounts("总计"));
-        digital(0x02, Integer.parseInt(toLED_one, 16), Integer.parseInt(toLED_two.toString(), 16), Integer.parseInt("0" + getTrafficFlag, 16));
+        String toLED_two = String.valueOf(Objects.requireNonNull(task.getColorCounts().get("绿色")).getCounts("总计")) +
+                Objects.requireNonNull(task.getColorCounts().get("蓝色")).getCounts("总计");
+        digital(0x02, Integer.parseInt(toLED_one, 16), Integer.parseInt(toLED_two, 16), Integer.parseInt("0" + getTrafficFlag, 16));
     }
 
     /**
@@ -1794,6 +1798,7 @@ public class ConnectTransport {
         qrResult = GetCode.parsing(qrStr);
         sendUIMassage(1, "最终结果: ■■■" + qrResult + "■■■");
         //TODO 发送给指定设备
+        /* 以下发送给从车 */
         YanChi(500);
         short n;
         try {

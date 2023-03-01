@@ -19,6 +19,7 @@ import com.xiao.embeddedcar.Utils.PublicMethods.BaseConversion;
 import java.lang.ref.WeakReference;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Locale;
 
 @SuppressWarnings("unused")
 public class HomeViewModel extends ViewModel {
@@ -203,7 +204,7 @@ public class HomeViewModel extends ViewModel {
              * 验证是否为自定义发送数据启动 */
             if (mByte[0] == (byte) 0xAA) {
                 /* 验证是否为自定义发送数据启动 */
-                if (mByte[1] == (byte) 0x11) {
+                if (mByte[1] == (byte) 0x12) {
                     debugArea.setValue("Android获取RFID卡成功!");
                     //RFID卡识别数据传入
                     char[] data = new char[16];
@@ -226,6 +227,7 @@ public class HomeViewModel extends ViewModel {
                     return true;
                 }
                 /* 启动全自动 */
+                debugArea.setValue("接收到主车传入0xAA指令: " + BaseConversion.decToHex(mByte[3]).substring(6).toUpperCase(Locale.ROOT));
                 ConnectTransport.setMark(mByte[3]);
                 XcApplication.cachedThreadPool.execute(() -> ConnectTransport.getInstance().half_Android());
                 commandData.setValue(mByte);
