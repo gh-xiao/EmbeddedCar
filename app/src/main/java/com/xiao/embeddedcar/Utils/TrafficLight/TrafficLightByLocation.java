@@ -19,9 +19,9 @@ import org.opencv.imgproc.Imgproc;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TrafficLight {
+public class TrafficLightByLocation {
 
-    private static final String TAG = TrafficLight.class.getSimpleName();
+    private static final String TAG = TrafficLightByLocation.class.getSimpleName();
     private static Mat rAyMat, greenMat;
     //已经处理好的图像
     private static Bitmap detectROI;

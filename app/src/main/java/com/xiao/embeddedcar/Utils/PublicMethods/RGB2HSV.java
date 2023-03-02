@@ -23,12 +23,8 @@ public class RGB2HSV {
         float min = all[0];
         //循环查找最大值和最小值
         for (float v : all) {
-            if (max <= v) {
-                max = v;
-            }
-            if (min >= v) {
-                min = v;
-            }
+            if (max <= v) max = v;
+            if (min >= v) min = v;
         }
         float C_max = max;
         float C_min = min;
@@ -50,5 +46,4 @@ public class RGB2HSV {
         //明度V - C_max
         return new float[]{hue, saturation, C_max};
     }
-
 }

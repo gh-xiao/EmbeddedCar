@@ -1,4 +1,4 @@
-package com.xiao.embeddedcar.Utils.NetworkAndUIUtil;
+package com.xiao.embeddedcar.Utils.PublicMethods;
 
 public class FastClick {
     // 两次点击按钮之间的点击间隔不能少于300毫秒(3秒)

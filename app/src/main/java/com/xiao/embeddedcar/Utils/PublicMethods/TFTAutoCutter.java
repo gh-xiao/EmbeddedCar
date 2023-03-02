@@ -21,17 +21,17 @@ import java.util.List;
 public class TFTAutoCutter {
 
     private static final String TAG = TFTAutoCutter.class.getSimpleName();
-    //裁剪参数
+    /* HSV裁剪参数 */
+    //原始参数(不建议调整)
     private static final int[] OriginPara = {0, 0, 180, 46, 175, 115, 255};
-    //    private static final int[] CutterPara = {0, 180, 0, 255, 75, 255, 100};
-    //    private static final int[] CutterPara = {0, 180, 0, 179, 46, 255, 86};
-    //    public static final int[] CutterPara = {0, 180, 0, 175, 46, 255, 115};
-    //    private static int[] CutterPara = {0, 0, 180, 46, 175, 115, 255};
-    /* 可用 */
+    //测试
+//    private static final int[] CutterPara = {0, 180, 0, 255, 75, 255, 100};
+//    private static final int[] CutterPara = {0, 180, 0, 179, 46, 255, 86};
+//    public static final int[] CutterPara = {0, 180, 0, 175, 46, 255, 115};
+//    private static int[] CutterPara = {0, 0, 180, 46, 175, 115, 255};
+    // 可用
 //    private static int[] CutterPara = {0, 0, 180, 10, 255, 200, 255};
     private static int[] CutterPara = {0, 0, 180, 10, 255, 160, 255};
-    //轮廓统计
-    private static final List<MatOfPoint> contours = new ArrayList<>();
 
     public static int[] getOriginPara() {
         return OriginPara;
@@ -67,8 +67,8 @@ public class TFTAutoCutter {
         Imgproc.morphologyEx(hsvMat, hsvMat, Imgproc.MORPH_OPEN, kernel);
         /* 膨胀操作(扩大白色联通区域) */
         Imgproc.morphologyEx(hsvMat, hsvMat, Imgproc.MORPH_DILATE, kernel);
-
-        contours.clear();
+        //轮廓统计
+        List<MatOfPoint> contours = new ArrayList<>();
         /* 获取轮廓 */
         //无用但必要的Mat对象
         Mat hierarchy = new Mat();
@@ -86,7 +86,6 @@ public class TFTAutoCutter {
         Imgproc.findContours(hsvMat, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
         /* (保险起见,加入判断)如果存在轮廓 */
         if (contours.size() > 0) {
-
             MatOfPoint contour = null;
             //最大面积
             double maxArea = 0;
@@ -101,7 +100,6 @@ public class TFTAutoCutter {
                     contour = wrapper;
                 }
             }
-
             if (contour != null) {
                 /* 最小外接矩形 */
                 Rect rect = Imgproc.boundingRect(contour);
@@ -115,7 +113,6 @@ public class TFTAutoCutter {
                     Log.e(TAG, "裁剪长度越界!");
                     result = new Mat(imgSource, rect);
                 }
-
                 //裁剪后的图片
                 Bitmap rectBitmap = Bitmap.createBitmap(result.width(), result.height(), Bitmap.Config.ARGB_8888);
                 Utils.matToBitmap(result, rectBitmap);

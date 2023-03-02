@@ -7,6 +7,16 @@
     tools:context=".FragmentUI.HomeFragment">
 
     <ImageView
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:background="@drawable/ic_no_pic"
+        android:contentDescription="@string/no_pic"
+        app:layout_constraintBottom_toBottomOf="@+id/img"
+        app:layout_constraintEnd_toEndOf="@+id/img"
+        app:layout_constraintStart_toStartOf="@+id/img"
+        app:layout_constraintTop_toTopOf="@+id/img" />
+
+    <ImageView
         android:id="@+id/img"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -19,16 +29,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent="0.45" />
-
-    <ImageView
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:contentDescription="@string/no_pic"
-        android:src="@drawable/ic_no_pic"
-        app:layout_constraintBottom_toBottomOf="@+id/img"
-        app:layout_constraintEnd_toEndOf="@+id/img"
-        app:layout_constraintStart_toStartOf="@+id/img"
-        app:layout_constraintTop_toTopOf="@+id/img" />
 
     <TextView
         android:id="@+id/Debug"
@@ -84,6 +84,16 @@
                 app:layout_constraintTop_toBottomOf="@id/showIP" />
 
             <ImageView
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:background="@drawable/ic_no_pic"
+                android:contentDescription="@string/no_pic"
+                app:layout_constraintBottom_toBottomOf="@+id/module_img_show"
+                app:layout_constraintEnd_toEndOf="@+id/module_img_show"
+                app:layout_constraintStart_toStartOf="@+id/module_img_show"
+                app:layout_constraintTop_toTopOf="@+id/module_img_show" />
+
+            <ImageView
                 android:id="@+id/module_img_show"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
@@ -92,16 +102,6 @@
                 android:contentDescription="@string/module_img_show"
                 android:padding="2dp"
                 app:layout_constraintTop_toBottomOf="@id/rvData" />
-
-            <ImageView
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:contentDescription="@string/no_pic"
-                android:src="@drawable/ic_no_pic"
-                app:layout_constraintBottom_toBottomOf="@+id/module_img_show"
-                app:layout_constraintEnd_toEndOf="@+id/module_img_show"
-                app:layout_constraintStart_toStartOf="@+id/module_img_show"
-                app:layout_constraintTop_toTopOf="@+id/module_img_show" />
 
             <TextView
                 android:id="@+id/commandData"
@@ -116,6 +116,83 @@
                 android:textAlignment="center"
                 app:layout_constraintTop_toBottomOf="@id/module_img_show" />
 
+            <Button
+                android:id="@+id/refresh_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/refresh"
+                app:layout_constraintBottom_toTopOf="@+id/right_button"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/up_button"
+                app:layout_constraintTop_toTopOf="@+id/up_button"
+                tools:ignore="TextContrastCheck" />
+
+            <Button
+                android:id="@+id/clear_debug_area"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/reset_home_data"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toTopOf="@+id/left_button"
+                app:layout_constraintEnd_toStartOf="@+id/up_button"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/up_button"
+                tools:ignore="TextContrastCheck" />
+
+            <ImageButton
+                android:id="@+id/stop_button"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:background="@drawable/button_stop_img"
+                android:contentDescription="@string/stop"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/up_button"
+                tools:ignore="ImageContrastCheck" />
+
+            <ImageButton
+                android:id="@+id/up_button"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/button_up_img"
+                android:contentDescription="@string/forward"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/commandData"
+                tools:ignore="ImageContrastCheck" />
+
+            <ImageButton
+                android:id="@+id/below_button"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:background="@drawable/button_below_img"
+                android:contentDescription="@string/back_off"
+                app:layout_constraintEnd_toEndOf="@+id/stop_button"
+                app:layout_constraintStart_toStartOf="@+id/stop_button"
+                app:layout_constraintTop_toBottomOf="@+id/stop_button"
+                tools:ignore="ImageContrastCheck" />
+
+            <ImageButton
+                android:id="@+id/left_button"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:background="@drawable/button_left_img"
+                android:contentDescription="@string/turn_left"
+                app:layout_constraintEnd_toStartOf="@+id/stop_button"
+                app:layout_constraintTop_toTopOf="@+id/stop_button"
+                tools:ignore="ImageContrastCheck" />
+
+            <ImageButton
+                android:id="@+id/right_button"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:background="@drawable/button_right_img"
+                android:contentDescription="@string/turn_right"
+                app:layout_constraintStart_toEndOf="@+id/stop_button"
+                app:layout_constraintTop_toTopOf="@+id/stop_button"
+                tools:ignore="ImageContrastCheck" />
+
             <GridLayout
                 android:id="@+id/gridLayout"
                 android:layout_width="match_parent"
@@ -124,7 +201,7 @@
                 android:columnCount="4"
                 android:orientation="horizontal"
                 android:rowCount="2"
-                app:layout_constraintTop_toBottomOf="@id/connect_control">
+                app:layout_constraintTop_toBottomOf="@id/below_button">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -208,104 +285,6 @@
                     android:text="@string/angle_data"
                     android:textAlignment="center"
                     android:textSize="14sp" />
-
-            </GridLayout>
-
-            <GridLayout
-                android:id="@+id/connect_control"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:columnCount="3"
-                android:rowCount="3"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/commandData">
-
-                <Button
-                    android:id="@+id/refresh_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_row="0"
-                    android:layout_rowWeight="1"
-                    android:layout_column="2"
-                    android:layout_columnWeight="1"
-                    android:gravity="center"
-                    android:text="@string/refresh"
-                    tools:ignore="TextContrastCheck" />
-
-                <Button
-                    android:id="@+id/clear_debug_area"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_row="0"
-                    android:layout_rowWeight="1"
-                    android:layout_column="0"
-                    android:layout_columnWeight="1"
-                    android:gravity="center"
-                    android:text="@string/reset_home_data"
-                    android:textSize="8sp"
-                    tools:ignore="SmallSp,TextContrastCheck" />
-
-                <ImageButton
-                    android:id="@+id/stop_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_row="1"
-                    android:layout_rowWeight="1"
-                    android:layout_column="1"
-                    android:layout_columnWeight="1"
-                    android:background="@drawable/button_stop_img"
-                    android:contentDescription="@string/stop"
-                    tools:ignore="ImageContrastCheck" />
-
-                <ImageButton
-                    android:id="@+id/up_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_row="0"
-                    android:layout_rowWeight="1"
-                    android:layout_column="1"
-                    android:layout_columnWeight="1"
-                    android:background="@drawable/button_up_img"
-                    android:contentDescription="@string/forward"
-                    tools:ignore="ImageContrastCheck" />
-
-                <ImageButton
-                    android:id="@+id/below_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_row="2"
-                    android:layout_rowWeight="1"
-                    android:layout_column="1"
-                    android:layout_columnWeight="1"
-                    android:background="@drawable/button_below_img"
-                    android:contentDescription="@string/back_off"
-                    tools:ignore="ImageContrastCheck" />
-
-                <ImageButton
-                    android:id="@+id/left_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_row="1"
-                    android:layout_rowWeight="1"
-                    android:layout_column="0"
-                    android:layout_columnWeight="1"
-                    android:background="@drawable/button_left_img"
-                    android:contentDescription="@string/turn_left"
-                    tools:ignore="ImageContrastCheck" />
-
-                <ImageButton
-                    android:id="@+id/right_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_row="1"
-                    android:layout_rowWeight="1"
-                    android:layout_column="2"
-                    android:layout_columnWeight="1"
-                    android:background="@drawable/button_right_img"
-                    android:contentDescription="@string/turn_right"
-                    tools:ignore="ImageContrastCheck" />
 
             </GridLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>

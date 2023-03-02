@@ -1,7 +1,7 @@
-package com.xiao.embeddedcar.Collate;
+package com.xiao.embeddedcar.Utils.Collate;
 
 
-import static com.xiao.embeddedcar.Collate.Fast.swap;
+import static com.xiao.embeddedcar.Utils.Collate.Fast.swap;
 
 //堆排序
 public class Heap {

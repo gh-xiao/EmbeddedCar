@@ -10,10 +10,10 @@ public class MainViewModel extends ViewModel {
     private final MutableLiveData<Boolean> chief_state_flag = new MutableLiveData<>(true);
     //二维码检测色彩
     private final MutableLiveData<QRBitmapCutter.QRColor> QR_color = new MutableLiveData<>(QRBitmapCutter.color);
-    //智能交通灯设备发送选择
+    //智能交通灯设备发送选择: 1/2 - A/B
     private final MutableLiveData<Integer> send_trafficLight = new MutableLiveData<>(1);
-    //智能交通灯设备位置检测选择
-    private final MutableLiveData<Integer> detect_trafficLight = new MutableLiveData<>(1);
+    //智能交通灯设备位置检测选择: 1/2 - 长线/短线
+    private final MutableLiveData<Integer> detect_trafficLight = new MutableLiveData<>(2);
     //图形统计 - 颜色选择
     private final MutableLiveData<String> shape_color = new MutableLiveData<>("红色");
     //图形统计 - 形状类别

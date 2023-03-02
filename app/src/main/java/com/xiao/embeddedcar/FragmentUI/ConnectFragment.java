@@ -24,9 +24,9 @@ import androidx.navigation.Navigation;
 import com.xiao.embeddedcar.Activity.MainActivity;
 import com.xiao.embeddedcar.R;
 import com.xiao.embeddedcar.Utils.CameraUtil.XcApplication;
-import com.xiao.embeddedcar.Utils.NetworkAndUIUtil.FastClick;
-import com.xiao.embeddedcar.Utils.NetworkAndUIUtil.ToastUtil;
-import com.xiao.embeddedcar.Utils.NetworkAndUIUtil.USBToSerialUtil;
+import com.xiao.embeddedcar.Utils.PublicMethods.FastClick;
+import com.xiao.embeddedcar.Utils.PublicMethods.ToastUtil;
+import com.xiao.embeddedcar.Utils.Network.USBToSerialUtil;
 import com.xiao.embeddedcar.ViewModel.ConnectViewModel;
 import com.xiao.embeddedcar.databinding.FragmentConnectBinding;
 

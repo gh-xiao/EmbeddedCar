@@ -28,8 +28,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
-//修改自
-//https://blog.csdn.net/chenyouledashen/article/details/118067702
+/**
+ * 修改自: <a href="https://blog.csdn.net/chenyouledashen/article/details/118067702">这里</a>.
+ * 仅供参考
+ */
 public class PlateDetector {
 
     private static final String TAG = PlateDetector.class.getSimpleName();

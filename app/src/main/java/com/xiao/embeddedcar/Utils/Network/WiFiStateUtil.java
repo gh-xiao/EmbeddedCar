@@ -1,4 +1,4 @@
-package com.xiao.embeddedcar.Utils.NetworkAndUIUtil;
+package com.xiao.embeddedcar.Utils.Network;
 
 import static android.net.wifi.WifiManager.EXTRA_WIFI_STATE;
 import static android.net.wifi.WifiManager.WIFI_STATE_CHANGED_ACTION;
@@ -14,6 +14,7 @@ import android.text.format.Formatter;
 import android.util.Log;
 
 import com.xiao.embeddedcar.Entity.LoginInfo;
+import com.xiao.embeddedcar.Utils.PublicMethods.ToastUtil;
 import com.xiao.embeddedcar.ViewModel.ConnectViewModel;
 
 import java.util.Objects;

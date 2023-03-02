@@ -4,10 +4,10 @@ import android.graphics.Bitmap;
 
 import com.xiao.embeddedcar.Utils.PublicMethods.RGB2HSV;
 
-
 /**
  * 简易车牌反干扰模块
  */
+@Deprecated
 public class Antijamming {
     //红、绿、蓝、黄、品、青、黑色个数
     private static final int[] colorNum = new int[8];

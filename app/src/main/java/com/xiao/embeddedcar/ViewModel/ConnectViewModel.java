@@ -6,8 +6,8 @@ import androidx.lifecycle.ViewModel;
 import com.xiao.embeddedcar.Entity.LoginInfo;
 import com.xiao.embeddedcar.Utils.CameraUtil.CameraConnectUtil;
 import com.xiao.embeddedcar.Utils.CameraUtil.XcApplication;
-import com.xiao.embeddedcar.Utils.NetworkAndUIUtil.USBToSerialUtil;
-import com.xiao.embeddedcar.Utils.NetworkAndUIUtil.WiFiStateUtil;
+import com.xiao.embeddedcar.Utils.Network.USBToSerialUtil;
+import com.xiao.embeddedcar.Utils.Network.WiFiStateUtil;
 
 import java.util.Objects;
 

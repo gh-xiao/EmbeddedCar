@@ -11,9 +11,9 @@ import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
-public class TrafficLight_old {
+public class TrafficLightByColor {
 
-    private static final String TAG = TrafficLight_old.class.getSimpleName();
+    private static final String TAG = TrafficLightByColor.class.getSimpleName();
     private static Mat redMat, greenMat, yellowMat;
 
     /**

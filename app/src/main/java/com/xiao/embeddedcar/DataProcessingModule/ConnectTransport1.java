@@ -23,9 +23,9 @@
 //import car.bkrc.com.car2021.FragmentView.LeftFragment;
 //import car.bkrc.com.car2021.MessageBean.DataRefreshBean;
 //import car.bkrc.com.car2021.Utils.CameraUtil.XcApplication;
-//import car.bkrc.com.car2021.Utils.NetworkAndUIUtil.SerialPort;
+//import car.bkrc.com.car2021.Utils.Network.SerialPort;
 //import car.bkrc.com.car2021.Utils.Shape.ShapeDetector;
-//import car.bkrc.com.car2021.Utils.TrafficLight_old.TrafficLight_old;
+//import car.bkrc.com.car2021.Utils.TrafficLightByColor.TrafficLightByColor;
 //
 //
 ///**
@@ -340,9 +340,9 @@
 //    /******************************************************************************************/
 //    //红绿灯识别模块测试
 //    public void autoDrive_trafficLight() {
-//        String color = TrafficLight_old.getImageColorPixel(LeftFragment.bitmap);
+//        String color = TrafficLightByColor.getImageColorPixel(LeftFragment.bitmap);
 //        System.out.println(color);
-//        TrafficLight_old.saveBitmap();
+//        TrafficLightByColor.saveBitmap();
 //    }
 //
 //    //车牌识别/OCR文字识别模块测试
@@ -377,7 +377,7 @@
 //                    (bitmap.getHeight() / 100) * 60);
 //
 ////            String result = FirstActivity.TrafficFlag.TrafficFlag(bmap);
-////            TrafficLight_old.saveBitmap("test" + ".jpg", bmap);
+////            TrafficLightByColor.saveBitmap("test" + ".jpg", bmap);
 ////            FirstActivity.toastUtil.ShowToast(result);
 //        } catch (Exception e) {
 //            e.printStackTrace();

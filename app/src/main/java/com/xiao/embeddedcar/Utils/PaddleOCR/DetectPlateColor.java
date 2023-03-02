@@ -12,8 +12,17 @@ import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
+/**
+ * 检测车牌颜色
+ */
 public class DetectPlateColor {
-
+    /**
+     * 获取颜色
+     *
+     * @param inputBitmap 原始图片
+     * @param result      车牌坐标数据
+     * @return 车牌颜色(类型)
+     */
     public static String getColor(Bitmap inputBitmap, OcrResultModel result) {
         /* 获取左上角最小的点 */
         int MIN_X = Integer.MAX_VALUE;
@@ -72,22 +81,22 @@ public class DetectPlateColor {
 
         int green = 0;
         int blue = 0;
-
+        /* 获取蓝色数据 */
         for (int rows = 0; rows < blueMat.rows(); rows++) {
             for (int cols = 0; cols < blueMat.cols(); cols++) {
                 double[] scalarVal = blueMat.get(rows, cols);
                 if (scalarVal[0] > 1) blue++;
             }
         }
-
+        /* 获取绿色数据 */
         for (int rows = 0; rows < greenMat.rows(); rows++) {
             for (int cols = 0; cols < greenMat.cols(); cols++) {
                 double[] scalarVal = greenMat.get(rows, cols);
                 if (scalarVal[0] > 1) green++;
             }
         }
-//        Log.i(TAG, "Green: " + green + "\n" + "Blue" + blue);
 
+//        Log.i(TAG, "Green: " + green + "\nBlue: " + blue);
         if (green < 100 && blue < 100) return "No Plate";
         return green >= blue ? "green" : "blue";
     }

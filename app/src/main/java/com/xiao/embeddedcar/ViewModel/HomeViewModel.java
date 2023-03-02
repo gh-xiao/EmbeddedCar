@@ -12,8 +12,8 @@ import androidx.lifecycle.ViewModel;
 import com.xiao.embeddedcar.Activity.MainActivity;
 import com.xiao.embeddedcar.DataProcessingModule.ConnectTransport;
 import com.xiao.embeddedcar.Utils.CameraUtil.XcApplication;
-import com.xiao.embeddedcar.Utils.NetworkAndUIUtil.FastClick;
-import com.xiao.embeddedcar.Utils.NetworkAndUIUtil.ToastUtil;
+import com.xiao.embeddedcar.Utils.PublicMethods.FastClick;
+import com.xiao.embeddedcar.Utils.PublicMethods.ToastUtil;
 import com.xiao.embeddedcar.Utils.PublicMethods.BaseConversion;
 
 import java.lang.ref.WeakReference;

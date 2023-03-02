@@ -17,8 +17,8 @@ import com.google.gson.reflect.TypeToken;
 import com.xiao.baiduocr.TestInferOcrTask;
 import com.xiao.embeddedcar.Activity.MainActivity;
 import com.xiao.embeddedcar.Utils.CameraUtil.XcApplication;
-import com.xiao.embeddedcar.Utils.NetworkAndUIUtil.SerialPort;
-import com.xiao.embeddedcar.Utils.NetworkAndUIUtil.USBToSerialUtil;
+import com.xiao.embeddedcar.Utils.Network.SerialPort;
+import com.xiao.embeddedcar.Utils.Network.USBToSerialUtil;
 import com.xiao.embeddedcar.Utils.PaddleOCR.DetectPlateColor;
 import com.xiao.embeddedcar.Utils.PaddleOCR.PlateDetector;
 import com.xiao.embeddedcar.Utils.PublicMethods.BitmapProcess;
@@ -28,7 +28,7 @@ import com.xiao.embeddedcar.Utils.QRcode.QRBitmapCutter;
 import com.xiao.embeddedcar.Utils.QRcode.WeChatQRCodeDetector;
 import com.xiao.embeddedcar.Utils.Shape.ShapeDetector;
 import com.xiao.embeddedcar.Utils.TrafficLight.ColorProcess;
-import com.xiao.embeddedcar.Utils.TrafficLight.TrafficLight;
+import com.xiao.embeddedcar.Utils.TrafficLight.TrafficLightByLocation;
 import com.xiao.embeddedcar.ViewModel.MainViewModel;
 
 import org.opencv.android.Utils;
@@ -157,11 +157,6 @@ public class ConnectTransport {
                 bOutputStream.close();
             }
         } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            TestInferOcrTask.getInstance().destroy();
-        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -946,8 +941,15 @@ public class ConnectTransport {
                 break;
             //二维码识别 + 超声波测距数据
             case 3:
+                YanChi(500);
+                cameraCommandUtil.postHttp(MainActivity.getLoginInfo().getIPCamera(), 2, 1);
+                YanChi(1000);
+
                 WeChatQR_mod();
                 ultraSonic = getUltraSonic();
+
+                YanChi(500);
+                cameraCommandUtil.postHttp(MainActivity.getLoginInfo().getIPCamera(), 0, 1);
                 YanChi(500);
                 send((short) (0xA0 + carGoto++), (short) 0x00, (short) 0x00, (short) 0x00);
                 break;
@@ -1606,8 +1608,8 @@ public class ConnectTransport {
         sendUIMassage(1, "对图片进行加工...");
         c.PictureProcessing(stream);
         sendUIMassage(1, "生成结果...");
-        String color = TrafficLight.Identify(c.getResult(), mainViewModel.getDetect_trafficLight().getValue() != null ? mainViewModel.getDetect_trafficLight().getValue() : 1);
-        sendUIMassage(2, TrafficLight.getDetectROI());
+        String color = TrafficLightByLocation.Identify(c.getResult(), mainViewModel.getDetect_trafficLight().getValue() != null ? mainViewModel.getDetect_trafficLight().getValue() : 1);
+        sendUIMassage(2, TrafficLightByLocation.getDetectROI());
         sendToTrafficLight(color, i);
         sendUIMassage(1, "发送给交通灯: " + (i == 1 ? "A" : "B"));
         sendUIMassage(1, "复位摄像头...");
@@ -1665,7 +1667,7 @@ public class ConnectTransport {
         sendUIMassage(1, "对图片进行加工...");
         c.PictureProcessing(detect);
         sendUIMassage(1, "生成结果...");
-        String color = TrafficLight.Identify(c.getResult(), mainViewModel.getDetect_trafficLight().getValue() != null ? mainViewModel.getDetect_trafficLight().getValue() : 1);
+        String color = TrafficLightByLocation.Identify(c.getResult(), mainViewModel.getDetect_trafficLight().getValue() != null ? mainViewModel.getDetect_trafficLight().getValue() : 1);
         sendUIMassage(2, c.getResult());
         sendUIMassage(1, "识别的颜色: " + color);
     }

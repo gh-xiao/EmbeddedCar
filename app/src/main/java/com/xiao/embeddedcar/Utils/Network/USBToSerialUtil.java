@@ -1,4 +1,4 @@
-package com.xiao.embeddedcar.Utils.NetworkAndUIUtil;
+package com.xiao.embeddedcar.Utils.Network;
 
 import static android.content.Context.USB_SERVICE;
 
@@ -21,6 +21,7 @@ import com.hoho.android.usbserial.driver.UsbSerialProber;
 import com.hoho.android.usbserial.util.HexDump;
 import com.hoho.android.usbserial.util.SerialInputOutputManager;
 import com.xiao.embeddedcar.Utils.CameraUtil.XcApplication;
+import com.xiao.embeddedcar.Utils.PublicMethods.ToastUtil;
 import com.xiao.embeddedcar.ViewModel.ConnectViewModel;
 import com.xiao.embeddedcar.ViewModel.HomeViewModel;
 

@@ -1,4 +1,4 @@
-package com.xiao.embeddedcar.Collate;
+package com.xiao.embeddedcar.Utils.Collate;
 //桶排序
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package com.xiao.embeddedcar.Collate;
+package com.xiao.embeddedcar.Utils.Collate;
 //快速排序
 public class Fast {
     /**

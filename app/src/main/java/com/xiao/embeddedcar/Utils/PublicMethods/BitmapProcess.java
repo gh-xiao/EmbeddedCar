@@ -24,12 +24,13 @@ import java.util.Date;
 import java.util.Locale;
 
 public class BitmapProcess {
-    // 指定我们想要存储文件的地址
-    public static final String TargetPath = Environment.getExternalStorageDirectory() + "/" + Environment.DIRECTORY_DCIM + "/Tess/";
-    private static final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss", Locale.CHINA);
     @SuppressLint("StaticFieldLeak")
     private static BitmapProcess mInstance;
     private Context mContext;
+    // 指定我们想要存储文件的地址
+    public static final String TargetPath = Environment.getExternalStorageDirectory() + "/" + Environment.DIRECTORY_DCIM + "/Tess/";
+    // 获取时间
+    private static final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss", Locale.CHINA);
 
     private BitmapProcess() {
     }

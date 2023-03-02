@@ -1,4 +1,4 @@
-package com.xiao.embeddedcar.Utils.NetworkAndUIUtil;
+package com.xiao.embeddedcar.Utils.Network;
 
 import android.util.Log;
 

@@ -37,9 +37,9 @@ import com.xiao.embeddedcar.DataProcessingModule.CrashHandler;
 import com.xiao.embeddedcar.Entity.LoginInfo;
 import com.xiao.embeddedcar.R;
 import com.xiao.embeddedcar.Utils.CameraUtil.CameraConnectUtil;
-import com.xiao.embeddedcar.Utils.NetworkAndUIUtil.ToastUtil;
-import com.xiao.embeddedcar.Utils.NetworkAndUIUtil.USBToSerialUtil;
-import com.xiao.embeddedcar.Utils.NetworkAndUIUtil.WiFiStateUtil;
+import com.xiao.embeddedcar.Utils.PublicMethods.ToastUtil;
+import com.xiao.embeddedcar.Utils.Network.USBToSerialUtil;
+import com.xiao.embeddedcar.Utils.Network.WiFiStateUtil;
 import com.xiao.embeddedcar.Utils.PublicMethods.BitmapProcess;
 import com.xiao.embeddedcar.Utils.QRcode.WeChatQRCodeDetector;
 import com.xiao.embeddedcar.Utils.TrafficSigns.YoloV5_tfLite_TSDetector;
@@ -255,6 +255,11 @@ public class MainActivity extends AppCompatActivity {
         ConnectTransport.getInstance().destroy();
         CameraConnectUtil.getInstance().destroy();
         USBToSerialUtil.getInstance().onDestroy();
+        try {
+            TestInferOcrTask.getInstance().destroy();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**

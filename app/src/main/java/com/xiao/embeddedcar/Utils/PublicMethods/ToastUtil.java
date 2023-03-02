@@ -1,4 +1,4 @@
-package com.xiao.embeddedcar.Utils.NetworkAndUIUtil;
+package com.xiao.embeddedcar.Utils.PublicMethods;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
