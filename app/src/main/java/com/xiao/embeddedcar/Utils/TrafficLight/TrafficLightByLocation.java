@@ -54,7 +54,6 @@ public class TrafficLightByLocation {
     public static String Identify(Mat srcMat, int location) {
 
         if (srcMat == null) return "ERROR";
-        /*TODO 调整截图位置(图片截取方式2) */
         Rect rect;
         /* 长线 */
         if (location == 1)

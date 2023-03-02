@@ -20,9 +20,10 @@ public class TrafficLightByColor {
      * 识别传入的红绿灯图片
      *
      * @param inputBitmap 传入需要识别的红绿灯图片
+     * @param location    交通灯位置
      * @return String – 红绿灯识别结果
      */
-    public static String Identify(Bitmap inputBitmap) {
+    public static String Identify(Bitmap inputBitmap, int location) {
         if (inputBitmap == null) return "ERROR";
         /* 在这里调整传入的图片以方便红绿灯的识别(不建议) */
 //        Btmp = Bitmap.createBitmap(inputBitmap,
@@ -36,23 +37,26 @@ public class TrafficLightByColor {
 //                (inputBitmap.getHeight() / 100) * 45);
         Mat srcMat = new Mat();
         Utils.bitmapToMat(inputBitmap, srcMat);
-        return Identify(srcMat);
+        return Identify(srcMat, location);
     }
 
     /**
      * 识别传入的红绿灯图片
      *
-     * @param srcMat 传入需要识别的Mat
+     * @param srcMat   传入需要识别的Mat
+     * @param location 交通灯位置
      * @return String – 红绿灯识别结果
      */
-    public static String Identify(Mat srcMat) {
+    public static String Identify(Mat srcMat, int location) {
 
         if (srcMat == null) return "ERROR";
-        /*TODO 调整截图位置(图片截取方式2) */
-        /* 短线 */
-//        Rect rect = new Rect((srcMat.width() / 100 * 20), (srcMat.height() / 100 * 2), (srcMat.width() / 100 * 52), (srcMat.height() / 100 * 45));
+        Rect rect;
         /* 长线 */
-        Rect rect = new Rect((srcMat.width() / 100 * 20), (srcMat.height() / 100 * 10), (srcMat.width() / 100 * 50), (srcMat.height() / 100 * 45));
+        if (location == 1)
+            rect = new Rect((srcMat.width() / 100 * 20), (srcMat.height() / 100 * 10), (srcMat.width() / 100 * 50), (srcMat.height() / 100 * 45));
+            /* 短线 */
+        else
+            rect = new Rect((srcMat.width() / 100 * 20), (srcMat.height() / 100 * 2), (srcMat.width() / 100 * 52), (srcMat.height() / 100 * 45));
         Mat ROI = new Mat(srcMat, rect);
         /* 保存用 */
 //        BitmapProcess.saveBitmap("红绿灯ROI区域", ROI);

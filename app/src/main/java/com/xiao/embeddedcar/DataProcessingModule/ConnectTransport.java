@@ -886,16 +886,6 @@ public class ConnectTransport {
 //        ReadCard_short2crossroads();
     }
 
-    /**
-     * <p>程序自动执行</p>
-     * 官方原方法 - 弃用
-     */
-    @Deprecated
-    public void Deprecated_autoDrive() {
-        short MAJOR = 0xA0;
-        send(MAJOR, (short) 0x00, (short) 0x00, (short) 0x00);
-    }
-
     /* ================================================== */
 
     //半安卓控制的处理模块值
@@ -1104,7 +1094,7 @@ public class ConnectTransport {
          * OCR识别/车牌识别
          */
         //----------
-//        plate_mod_branch1();
+//        plate_mod_branch3();
         //----------
         System.out.println("右转->前进到D2->OCR识别/车牌识别-----模块完成");
 
@@ -1758,15 +1748,13 @@ public class ConnectTransport {
      */
     @Deprecated
     private void openCVQR() {
-        Bitmap Btmp;
         String qrStr = null;
         int i = 1;
         while ((qrStr == null || qrStr.isEmpty()) && i <= 10) {
             YanChi(2500);
-            Btmp = QRBitmapCutter.bitmap2Gray(stream);
             QRCodeDetector qrCodeDetector = new QRCodeDetector();
             Mat mat = new Mat();
-            Utils.bitmapToMat(Btmp, mat);
+            Utils.bitmapToMat(QRBitmapCutter.bitmap2Gray(stream), mat);
             qrStr = qrCodeDetector.detectAndDecode(mat);
             System.out.println("第" + i + "次识别二维码: \n");
             System.out.println(qrStr);
@@ -1856,48 +1844,6 @@ public class ConnectTransport {
         int total = 0;
         for (char c : s.toCharArray()) if (c == '0') total++;
         return total >= 4;
-    }
-
-    /**
-     * <p>车牌识别模块 - 分支1</p>
-     * <p>使用颜色识别 - 可能不稳定</p>
-     * <p>针对于赛场使用干扰颜色车牌</p>
-     * <p>建议使用3分支</p>
-     */
-    @Deprecated
-    private void plate_mod_branch1() {
-//        //重新识别车牌号的次数
-//        int fre = 1;
-//        //翻页次数
-//        int flip = 1;
-//        YanChi(1500);
-//        do {
-//            //做基本判断,输入图片主题色是否为蓝色
-//            while (Antijamming.ColorTask(stream) && flip++ <= 8) {
-//                //TFT_A
-//                for (int J = 0; J < 3; J++) {
-//                    YanChi(500);
-//                    TFT_LCD(0x0B, 0x10, 0x02, 0x00, 0x00);
-//                }
-//                System.out.println("TFT_A翻页成功");
-//                YanChi(6000);
-//            }
-//            plate = DetectPlate(stream);
-//            plate = completion(plate);
-//            System.out.print("*****这里是车牌号*****" + plate + "\n");
-//        } while (all0(plate, fre++));
-//        //发送车牌给TFT
-//        YanChi(2000);
-////        for (int J = 0; J < 5; J++) {
-////            YanChi(500);
-////            TFT_LCD(0x0B, 0x20, plate.charAt(0), plate.charAt(1), plate.charAt(2));
-////        }
-////        System.out.println("第一次发送成功");
-////        YanChi(1500);
-////        for (int J = 0; J < 5; J++)
-////            TFT_LCD(0x0B, 0x21, plate.charAt(3), plate.charAt(4), plate.charAt(5));
-////        System.out.println("第二次发送成功");
-//        YanChi(500);
     }
 
     /**
@@ -2231,7 +2177,8 @@ public class ConnectTransport {
                 if (results.size() > 0) for (Classifier.Recognition result : results) {
                     /* 将识别结果添加到TreeMap */
                     if (!total.containsKey(result.getTitle())) total.put(result.getTitle(), 1);
-                    else total.put(result.getTitle(), total.get(result.getTitle()) + 1);
+                    else //noinspection ConstantConditions
+                        total.put(result.getTitle(), total.get(result.getTitle()) + 1);
                     /* 如果包含指定检测车型 */
                     if (detectNeed.contains(result.getTitle())) has = true;
                     if (need.equals("all"))
@@ -2261,7 +2208,7 @@ public class ConnectTransport {
     /* ================================================== */
 
     /**
-     * TODO 交通标志物识别
+     * 交通标志物识别模块
      */
     public synchronized void trafficSign_mod() {
         //重新识别次数
@@ -2284,7 +2231,8 @@ public class ConnectTransport {
                 /* 获得统计结果 */
                 if (results.size() > 0) for (Classifier.Recognition result : results) {
                     if (!total.containsKey(result.getTitle())) total.put(result.getTitle(), 1);
-                    else total.put(result.getTitle(), total.get(result.getTitle()) + 1);
+                    else //noinspection ConstantConditions
+                        total.put(result.getTitle(), total.get(result.getTitle()) + 1);
                 }
             }
             /* 结果获取失败处理 */
@@ -2342,7 +2290,7 @@ public class ConnectTransport {
     /* ================================================== */
 
     /**
-     * TODO RFID1解密
+     * RFID1解密
      */
     public void RFID1(byte toMark) {
         //TODO 解密
@@ -2351,7 +2299,7 @@ public class ConnectTransport {
     }
 
     /**
-     * TODO RFID2解密
+     * RFID2解密
      */
     public void RFID2(byte toMark) {
         //TODO 解密
