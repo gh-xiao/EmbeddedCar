@@ -21,10 +21,10 @@ import com.xiao.embeddedcar.DataProcessingModule.ConnectTransport;
 import com.xiao.embeddedcar.Entity.LoginInfo;
 import com.xiao.embeddedcar.R;
 import com.xiao.embeddedcar.Utils.CameraUtil.XcApplication;
-import com.xiao.embeddedcar.Utils.PublicMethods.FastClick;
-import com.xiao.embeddedcar.Utils.PublicMethods.ToastUtil;
 import com.xiao.embeddedcar.Utils.Network.WiFiStateUtil;
 import com.xiao.embeddedcar.Utils.PublicMethods.BaseConversion;
+import com.xiao.embeddedcar.Utils.PublicMethods.FastClick;
+import com.xiao.embeddedcar.Utils.PublicMethods.ToastUtil;
 import com.xiao.embeddedcar.ViewModel.ConnectViewModel;
 import com.xiao.embeddedcar.ViewModel.HomeViewModel;
 import com.xiao.embeddedcar.ViewModel.ModuleViewModel;
@@ -90,6 +90,8 @@ public class HomeFragment extends ABaseFragment {
                 } else ToastUtil.getInstance().ShowToast("还未进行连接操作!", 10);
             } else ToastUtil.getInstance().ShowToast("请勿快速连按!", 10);
         });
+        //模块接收图片设置
+        binding.getModuleImgBtn.setOnCheckedChangeListener((buttonView, b) -> homeViewModel.getModuleImgMode().setValue(b));
         //方向按钮操作监听事件
         binding.upButton.setOnClickListener(view -> {
             ToastUtil.getInstance().ShowToast("码盘" + mp_n + "\n前进速度" + sp_n + "\n转弯速度" + angle, 10);
@@ -168,8 +170,18 @@ public class HomeFragment extends ABaseFragment {
         homeViewModel.getDebugArea().setValue(null);
         //图片信息显示
         homeViewModel.getShowImg().observe(getViewLifecycleOwner(), showImg -> binding.img.setImageBitmap(showImg));
-        //模块图片信息显示
-        moduleViewModel.getModuleImgShow().observe(getViewLifecycleOwner(), moduleShowImg -> binding.moduleImgShow.setImageBitmap(moduleShowImg));
+        //模块图片接收设置
+        homeViewModel.getModuleImgMode().observe(getViewLifecycleOwner(), b -> {
+            binding.getModuleImgBtn.setChecked(b);
+            //模块图片信息显示
+            if (b) {
+                binding.getModuleImgBtn.setText(R.string.get_mod_detect_pic_true);
+                moduleViewModel.getModuleImgShow().observe(getViewLifecycleOwner(), moduleShowImg -> binding.moduleImgShow.setImageBitmap(moduleShowImg));
+            } else {
+                binding.getModuleImgBtn.setText(R.string.get_mod_detect_pic_false);
+                moduleViewModel.getModuleImgShow().removeObservers(getViewLifecycleOwner());
+            }
+        });
         //设备数据接收
         homeViewModel.getDataShow().observe(getViewLifecycleOwner(), s -> {
             binding.rvData.setTextColor(chief_status_flag ? getResources().getColor(R.color.white) : getResources().getColor(R.color.black));
@@ -187,7 +199,12 @@ public class HomeFragment extends ABaseFragment {
         });
         //debug显示
         homeViewModel.getDebugArea().observe(getViewLifecycleOwner(), s -> {
-            if (s != null) binding.Debug.append(s + "\n");
+            if (s != null) {
+                binding.Debug.append(s + "\n");
+                int offset = binding.Debug.getLineCount() * binding.Debug.getLineHeight();
+                if (offset > binding.Debug.getHeight())
+                    binding.Debug.scrollTo(0, offset - binding.Debug.getHeight());
+            }
         });
         //连接状态
         homeViewModel.getConnectState().observe(getViewLifecycleOwner(), integer -> {

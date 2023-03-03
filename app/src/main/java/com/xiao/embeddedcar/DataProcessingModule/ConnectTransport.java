@@ -986,7 +986,7 @@ public class ConnectTransport {
                 break;
             //-----
             case 8:
-                YanChi(500);
+                YanChi(100);
                 send((short) (0xA0 + carGoto++), (short) 0x00, (short) 0x00, (short) 0x00);
                 break;
             case 9:

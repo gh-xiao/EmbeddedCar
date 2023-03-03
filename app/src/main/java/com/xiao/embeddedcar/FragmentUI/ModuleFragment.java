@@ -99,7 +99,12 @@ public class ModuleFragment extends ABaseFragment {
             if (b != null) binding.moduleImg.setImageBitmap(b);
         });
         moduleViewModel.getModuleInfoTV().observe(getViewLifecycleOwner(), s -> {
-            if (s != null) binding.moduleInfo.append(s + "\n");
+            if (s != null) {
+                binding.moduleInfo.append(s + "\n");
+                int offset = binding.moduleInfo.getLineCount() * binding.moduleInfo.getLineHeight();
+                if (offset > binding.moduleInfo.getHeight())
+                    binding.moduleInfo.scrollTo(0, offset - binding.moduleInfo.getHeight());
+            }
         });
         moduleViewModel.getDetectMode().observe(getViewLifecycleOwner(), b -> {
             binding.howDetectBtn.setText(b ? "默认检测" : "使用自定义图片");
@@ -108,9 +113,7 @@ public class ModuleFragment extends ABaseFragment {
         moduleViewModel.getGetImgMode().observe(getViewLifecycleOwner(), b -> {
             if (b) {
                 binding.getImgBtn.setText("开启实时图片传入");
-                homeViewModel.getShowImg().observe(getViewLifecycleOwner(), bitmap -> {
-                    if (bitmap != null) binding.moduleImg.setImageBitmap(bitmap);
-                });
+                homeViewModel.getShowImg().observe(getViewLifecycleOwner(), bitmap -> binding.moduleImg.setImageBitmap(bitmap));
             } else {
                 binding.getImgBtn.setText("关闭实时图片传入");
                 homeViewModel.getShowImg().removeObservers(getViewLifecycleOwner());

@@ -20,7 +20,7 @@ android {
         //项目版本号
         versionCode 1
         //版本名
-        versionName "2.4.8"
+        versionName "2.4.9"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         //设置支持的so库架构(开发者可以根据需要，选择一个或多个平台的so)
         ndk {
@@ -71,9 +71,9 @@ dependencies {
 
     //远程依赖声明
     //微信二维码识别以及基本的openCV库
-    implementation 'com.github.jenly1314.WeChatQRCode:opencv:1.2.0'
-    implementation 'com.github.jenly1314.WeChatQRCode:opencv-armv64:1.2.0'
-    implementation 'com.github.jenly1314.WeChatQRCode:wechat-qrcode:1.2.0'
+    implementation 'com.github.jenly1314.WeChatQRCode:opencv:1.2.1'
+    implementation 'com.github.jenly1314.WeChatQRCode:opencv-armv64:1.2.1'
+    implementation 'com.github.jenly1314.WeChatQRCode:wechat-qrcode:1.2.1'
     //
     implementation 'org.tensorflow:tensorflow-lite:2.4.0'
     implementation 'org.tensorflow:tensorflow-lite-gpu:2.4.0'
@@ -81,7 +81,7 @@ dependencies {
     implementation 'androidx.activity:activity:1.6.1'
     implementation 'io.github.lucksiege:pictureselector:v3.10.7'
     //pictureSelector插件
-    implementation 'com.github.bumptech.glide:glide:4.14.2'
+    implementation 'com.github.bumptech.glide:glide:4.15.0'
     //数字选择器 https://github.com/gzu-liyujiang/AndroidPicker/blob/master/API.md
     implementation 'com.github.gzu-liyujiang.AndroidPicker:WheelPicker:4.1.11'
     //Gson

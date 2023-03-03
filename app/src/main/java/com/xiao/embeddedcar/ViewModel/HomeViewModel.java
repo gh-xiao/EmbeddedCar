@@ -12,9 +12,9 @@ import androidx.lifecycle.ViewModel;
 import com.xiao.embeddedcar.Activity.MainActivity;
 import com.xiao.embeddedcar.DataProcessingModule.ConnectTransport;
 import com.xiao.embeddedcar.Utils.CameraUtil.XcApplication;
+import com.xiao.embeddedcar.Utils.PublicMethods.BaseConversion;
 import com.xiao.embeddedcar.Utils.PublicMethods.FastClick;
 import com.xiao.embeddedcar.Utils.PublicMethods.ToastUtil;
-import com.xiao.embeddedcar.Utils.PublicMethods.BaseConversion;
 
 import java.lang.ref.WeakReference;
 import java.nio.charset.StandardCharsets;
@@ -26,6 +26,8 @@ public class HomeViewModel extends ViewModel {
 
     private static boolean ready = true;
     /* 视图ViewModel */
+    //模块接收图片设置
+    private final MutableLiveData<Boolean> moduleImgMode = new MutableLiveData<>(true);
     //图片显示
     private final MutableLiveData<Bitmap> showImg = new MutableLiveData<>();
     //IP信息区
@@ -56,6 +58,11 @@ public class HomeViewModel extends ViewModel {
     public MutableLiveData<Long> codedDisk = new MutableLiveData<>();
 
     /* getter */
+
+    public MutableLiveData<Boolean> getModuleImgMode() {
+        return moduleImgMode;
+    }
+
     public MutableLiveData<Bitmap> getShowImg() {
         return showImg;
     }

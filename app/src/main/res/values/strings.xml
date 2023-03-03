@@ -34,7 +34,10 @@
     <string name="line_disc">前进速度:</string>
     <string name="angle_disc">转弯速度:</string>
 
-    <string name="refresh">刷  新</string>
+    <string name="refresh">刷新设备连接</string>
+    <string name="reset_home_data">重置主页信息</string>
+    <string name="get_mod_detect_pic_true">开启接收模块图片</string>
+    <string name="get_mod_detect_pic_false">关闭接收模块图片</string>
     <string name="full_auto">自动驾驶</string>
     <string name="edit_password">BKRC20210520</string>
     <string name="no_choose">未选择</string>
@@ -51,7 +54,6 @@
     <string name="ip_info">IP信息</string>
     <string name="rv_data_show">设备没有连接，这里空空如也哦~</string>
     <string name="command_data_show">设备指令接收区</string>
-    <string name="reset_home_data">重置主页信息</string>
     <string name="module_img_show">模块图片展示</string>
 
     <!--    fragment_connect-->
