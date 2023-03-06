@@ -60,7 +60,7 @@ public class TrafficLightByLocation {
             rect = new Rect((srcMat.width() / 100 * 25), (srcMat.height() / 100 * 10), (srcMat.width() / 100 * 60), (srcMat.height() / 100 * 45));
             /* 短线 */
         else
-            rect = new Rect((srcMat.width() / 100 * 20), (srcMat.height() / 100 * 2), (srcMat.width() / 100 * 52), (srcMat.height() / 100 * 45));
+            rect = new Rect((srcMat.width() / 100 * 20), (srcMat.height() / 100 * 2), (srcMat.width() / 100 * 60), (srcMat.height() / 100 * 45));
         /* 截取感兴趣区域 */
         Mat ROI = new Mat(srcMat, rect);
         /* 保存用 */
@@ -87,7 +87,7 @@ public class TrafficLightByLocation {
 //        Core.inRange(greenMat, new Scalar(70, 0, 230), new Scalar(100, 255, 255), greenMat);
 
         Core.inRange(rAyMat, new Scalar(0, 50, 230), new Scalar(180, 255, 255), rAyMat);
-        Core.inRange(greenMat, new Scalar(70, 0, 255), new Scalar(90, 255, 255), greenMat);
+        Core.inRange(greenMat, new Scalar(60, 0, 255), new Scalar(90, 255, 255), greenMat);
 
         /* 强光下使用 */
 //            Core.inRange(rAyMat, new Scalar(0, 80, 255), new Scalar(50, 255, 255), rAyMat);

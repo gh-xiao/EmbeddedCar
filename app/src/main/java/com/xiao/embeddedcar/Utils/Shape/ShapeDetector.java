@@ -3,6 +3,7 @@ package com.xiao.embeddedcar.Utils.Shape;
 import android.graphics.Bitmap;
 import android.util.Log;
 
+import com.xiao.embeddedcar.Entity.ShapeStatistics;
 import com.xiao.embeddedcar.Utils.PublicMethods.BitmapProcess;
 import com.xiao.embeddedcar.Utils.PublicMethods.ColorHSV;
 

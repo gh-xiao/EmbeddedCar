@@ -425,8 +425,8 @@ public class MainActivity extends AppCompatActivity {
             initMsg.append(TestInferOcrTask.getInstance().init(this) ? "车牌识别模型初始化成功\n" : "车牌识别模型初始化失败\n");
             /* YoloV5s-tfLite模型初始化 */
             /* TODO 在此更改模型加载参数 */
-            initMsg.append(TS_Detector.LoadModel("GPU", 4, this.getAssets()) ? "交通标志物识别模型创建成功\n" : "交通标志物识别模型创建失败\n");
-            initMsg.append(VID_Detector.LoadModel("GPU", 4, this.getAssets()) ? "车型识别模型创建成功" : "车型识别模型创建失败");
+            initMsg.append(TS_Detector.LoadModel("CPU", 4, this.getAssets()) ? "交通标志物识别模型创建成功\n" : "交通标志物识别模型创建失败\n");
+            initMsg.append(VID_Detector.LoadModel("CPU", 4, this.getAssets()) ? "车型识别模型创建成功" : "车型识别模型创建失败");
         } catch (Exception e) {
             e.printStackTrace();
         }

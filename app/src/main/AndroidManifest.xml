@@ -53,6 +53,9 @@
             android:exported="true"
             android:screenOrientation="sensorLandscape"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+        <activity
+            android:name="com.luck.picture.lib.basic.PictureSelectorTransparentActivity"
+            android:exported="true" />
         <service
             android:name=".Utils.CameraUtil.CameraSearchService"
             android:exported="false" />

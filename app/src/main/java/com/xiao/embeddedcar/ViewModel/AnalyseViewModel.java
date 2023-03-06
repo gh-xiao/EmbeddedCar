@@ -10,6 +10,17 @@ import org.opencv.imgproc.Imgproc;
 
 public class AnalyseViewModel extends ViewModel {
 
+    private void MorphTypes() {
+        int MORPH_ERODE = 0, //腐蚀
+                MORPH_DILATE = 1, //膨胀
+                MORPH_OPEN = 2, //开操作
+                MORPH_CLOSE = 3, //闭操作
+                MORPH_GRADIENT = 4, //梯度操作
+                MORPH_TOPHAT = 5, //顶帽操作
+                MORPH_BLACKHAT = 6, //黑帽操作
+                MORPH_HITMISS = 7;
+    }
+
     private final MutableLiveData<Integer> HMin = new MutableLiveData<>();
     private final MutableLiveData<Integer> HMax = new MutableLiveData<>();
     private final MutableLiveData<Integer> SMin = new MutableLiveData<>();

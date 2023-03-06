@@ -31,7 +31,8 @@ public class TFTAutoCutter {
 //    private static int[] CutterPara = {0, 0, 180, 46, 175, 115, 255};
     // 可用
 //    private static int[] CutterPara = {0, 0, 180, 10, 255, 200, 255};
-    private static int[] CutterPara = {0, 0, 180, 10, 255, 160, 255};
+//    private static int[] CutterPara = {0, 0, 180, 10, 255, 160, 255};
+    private static int[] CutterPara = {0, 0, 180, 46, 255, 115, 255};
 
     public static int[] getOriginPara() {
         return OriginPara;
@@ -67,6 +68,12 @@ public class TFTAutoCutter {
         Imgproc.morphologyEx(hsvMat, hsvMat, Imgproc.MORPH_OPEN, kernel);
         /* 膨胀操作(扩大白色联通区域) */
         Imgproc.morphologyEx(hsvMat, hsvMat, Imgproc.MORPH_DILATE, kernel);
+        Imgproc.morphologyEx(hsvMat, hsvMat, Imgproc.MORPH_DILATE, kernel);
+        Imgproc.morphologyEx(hsvMat, hsvMat, Imgproc.MORPH_DILATE, kernel);
+        /* 腐蚀操作(减少白色联通区域) */
+        Imgproc.morphologyEx(hsvMat, hsvMat, Imgproc.MORPH_ERODE, kernel);
+        Imgproc.morphologyEx(hsvMat, hsvMat, Imgproc.MORPH_ERODE, kernel);
+        Imgproc.morphologyEx(hsvMat, hsvMat, Imgproc.MORPH_ERODE, kernel);
         //轮廓统计
         List<MatOfPoint> contours = new ArrayList<>();
         /* 获取轮廓 */
@@ -106,13 +113,7 @@ public class TFTAutoCutter {
                 /* 绘图 */
                 Mat imgSource = mat.clone();
                 /* 微调裁剪矩形大小 */
-                Mat result;
-                try {
-                    result = new Mat(imgSource, new Rect(new double[]{rect.x - 10, rect.width + 28, rect.y - 10, rect.height + 25}));
-                } catch (Exception e) {
-                    Log.e(TAG, "裁剪长度越界!");
-                    result = new Mat(imgSource, rect);
-                }
+                Mat result = new Mat(imgSource, rect);
                 //裁剪后的图片
                 Bitmap rectBitmap = Bitmap.createBitmap(result.width(), result.height(), Bitmap.Config.ARGB_8888);
                 Utils.matToBitmap(result, rectBitmap);

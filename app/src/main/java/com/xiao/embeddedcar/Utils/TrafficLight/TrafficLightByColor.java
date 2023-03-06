@@ -56,7 +56,7 @@ public class TrafficLightByColor {
             rect = new Rect((srcMat.width() / 100 * 20), (srcMat.height() / 100 * 10), (srcMat.width() / 100 * 50), (srcMat.height() / 100 * 45));
             /* 短线 */
         else
-            rect = new Rect((srcMat.width() / 100 * 20), (srcMat.height() / 100 * 2), (srcMat.width() / 100 * 52), (srcMat.height() / 100 * 45));
+            rect = new Rect((srcMat.width() / 100 * 20), (srcMat.height() / 100 * 2), (srcMat.width() / 100 * 60), (srcMat.height() / 100 * 45));
         Mat ROI = new Mat(srcMat, rect);
         /* 保存用 */
 //        BitmapProcess.saveBitmap("红绿灯ROI区域", ROI);
@@ -79,7 +79,7 @@ public class TrafficLightByColor {
         /* 赛场上专用 */
         Core.inRange(redMat, new Scalar(0, 80, 230), new Scalar(15, 255, 255), redMat);
         Core.inRange(yellowMat, new Scalar(25, 0, 230), new Scalar(70, 255, 255), yellowMat);
-        Core.inRange(greenMat, new Scalar(70, 0, 230), new Scalar(100, 255, 255), greenMat);
+        Core.inRange(greenMat, new Scalar(60, 0, 230), new Scalar(100, 255, 255), greenMat);
 
 //        Core.inRange(redMat, new Scalar(0, 50, 230), new Scalar(180, 255, 255), redMat);
 //        Core.inRange(yellowMat, new Scalar(0, 50, 230), new Scalar(180, 255, 255), yellowMat);
