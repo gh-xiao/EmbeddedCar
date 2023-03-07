@@ -117,6 +117,7 @@
     <string name="log">通讯日志\n</string>
 
     <!--    fragment_module-->
+    <string name="clean_module_info_area">清空模块显示信息</string>
     <string name="trafficLight_detect">红绿灯识别</string>
     <string name="plate_detect_by_color">车牌识别(色彩)</string>
     <string name="shape_detect">形状识别</string>

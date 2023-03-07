@@ -2,12 +2,16 @@ package com.xiao.embeddedcar.Utils.TrafficSigns;
 
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.RectF;
 import android.os.SystemClock;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.xiao.embeddedcar.Utils.PublicMethods.BitmapProcess;
 
 import org.tensorflow.lite.examples.detection.env.Logger;
 import org.tensorflow.lite.examples.detection.tflite.Classifier;
@@ -31,13 +35,20 @@ public class YoloV5_tfLite_TSDetector {
     private static final Logger LOGGER = new Logger();
     //枚举常量 - 检测模式
 //    private static final DetectorMode MODE = DetectorMode.TF_OD_API;
-    public static final float MINIMUM_CONFIDENCE_TF_OD_API = 0.5f;
+    public static final float MINIMUM_CONFIDENCE_TF_OD_API = 0.35f;
     //最小置信度
     public static float minimumConfidence;
     //核心检测对象
     private YoloV5Classifier detector;
-
+    //模型列表
+    private final String[] models = new String[]{"TSyolov5s-fp16.tflite", "TSyolov5s-fp16-3.tflite", "TSyolov5s-fp16-byGray.tflite"};
+    //检测图片
+    private Bitmap SaveBitmap;
     private long timestamp = 0;
+
+    public Bitmap getSaveBitmap() {
+        return SaveBitmap;
+    }
 
     /**
      * 加载模型配置
@@ -49,7 +60,7 @@ public class YoloV5_tfLite_TSDetector {
     public boolean LoadModel(String device, int numThreads, AssetManager assetManager) {
 
         //模型文件
-        String modelString = "TSyolov5s-fp16.tflite";
+        String modelString = models[2];
         //检测类别(标签)
         String labelFilename = "TSclass.txt";
         /* 线程数(不推荐超过9线程数) */
@@ -111,6 +122,10 @@ public class YoloV5_tfLite_TSDetector {
 
         /* 将输入图片通过矩阵变换得到416*416大小的新图片 */
         Bitmap croppedBitmap = Bitmap.createBitmap(inputBitmap, 0, 0, width, height, matrix, true);
+        /* 灰度化图像 */
+        croppedBitmap = BitmapProcess.GrayscaleImage(croppedBitmap);
+        /* 设置输出结果图像(在该图像上绘制识别结果) */
+        Bitmap draw = croppedBitmap.copy(Bitmap.Config.ARGB_8888, true);
 
         ++timestamp;
         final long currTimestamp = timestamp;
@@ -139,9 +154,20 @@ public class YoloV5_tfLite_TSDetector {
                 mappedRecognitions.add(result);
                 //识别结果
                 Log.e("result: ", result.getTitle() + result.getConfidence());
+                drawBitmap(result, draw);
             }
         }
 
-        return gson.toJson(mappedRecognitions.size() > 0 ? mappedRecognitions :recognitions);
+        return gson.toJson(mappedRecognitions.size() > 0 ? mappedRecognitions : recognitions);
+    }
+
+    private void drawBitmap(Classifier.Recognition result, Bitmap resultBitmap) {
+        final Canvas canvas = new Canvas(resultBitmap);
+        final Paint paint = new Paint();
+        paint.setColor(Color.RED);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(2.0f);
+        canvas.drawRect(result.getLocation(), paint);
+        SaveBitmap = resultBitmap.copy(Bitmap.Config.ARGB_8888, true);
     }
 }

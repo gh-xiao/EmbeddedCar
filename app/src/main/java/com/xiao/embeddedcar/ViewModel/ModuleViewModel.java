@@ -132,7 +132,6 @@ public class ModuleViewModel extends ViewModel {
                 case 4:
                     cachedThreadPool.execute(() -> {
                         Bitmap b = TFTAutoCutter.TFTCutter(detect);
-                        ct.sendUIMassage(2, b);
                         String TSResult = MainActivity.getTS_Detector().processImage(b);
                         /* 反序列化 */
                         Type typeMap = new TypeToken<List<Classifier.Recognition>>() {}.getType();
@@ -140,8 +139,10 @@ public class ModuleViewModel extends ViewModel {
                         /* 反序列化结果 */
                         List<Classifier.Recognition> TSResults = gson.fromJson(TSResult, typeMap);
                         /* 最终结果 */
-                        if (TSResults.size() > 0) for (Classifier.Recognition result : TSResults)
+                        if (TSResults.size() > 0) for (Classifier.Recognition result : TSResults) {
                             ct.sendUIMassage(1, result.getTitle() + ": " + result.getConfidence());
+                            ct.sendUIMassage(2, MainActivity.getTS_Detector().getSaveBitmap());
+                        }
                         else ct.sendUIMassage(1, "No result!");
                     });
                     break;

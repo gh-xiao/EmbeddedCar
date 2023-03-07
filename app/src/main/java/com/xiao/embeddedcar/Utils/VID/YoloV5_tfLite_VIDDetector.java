@@ -2,7 +2,10 @@ package com.xiao.embeddedcar.Utils.VID;
 
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.RectF;
 import android.os.SystemClock;
 import android.util.Log;
@@ -36,6 +39,8 @@ public class YoloV5_tfLite_VIDDetector {
     public static float minimumConfidence;
     //核心检测对象
     private YoloV5Classifier detector;
+    //模型列表
+    private final String[] models = new String[]{"VIDyolov5s-fp16.tflite", "VIDyolov5s-fp16-2.tflite"};
     //检测图片
     private Bitmap SaveBitmap;
     private long timestamp = 0;
@@ -53,18 +58,17 @@ public class YoloV5_tfLite_VIDDetector {
      */
     public boolean LoadModel(String device, int numThreads, AssetManager assetManager) {
         //模型文件
-        String modelString1 = "VIDyolov5s-fp16.tflite";
-        String modelString2 = "VIDyolov5s-fp16_new.tflite";
+        String modelString = models[0];
         //检测类别(标签)
         String labelFilename = "VIDclass.txt";
         /* 线程数(不推荐超过9线程数) */
         if (numThreads > 9) numThreads = 4;
-        LOGGER.i("Changing model to ***" + modelString1 + "*** device ***" + device + "***");
+        LOGGER.i("Changing model to ***" + modelString + "*** device ***" + device + "***");
 
         /* Try to load model. */
         /* 尝试加载模型 */
         try {
-            detector = DetectorFactory.getDetector(assetManager, modelString1, labelFilename);
+            detector = DetectorFactory.getDetector(assetManager, modelString, labelFilename);
             // Customize the interpreter to the type of device we want to use.
         } catch (IOException e) {
             e.printStackTrace();
@@ -116,7 +120,7 @@ public class YoloV5_tfLite_VIDDetector {
 
         /* 将输入图片通过矩阵变换得到416*416大小的新图片 */
         Bitmap croppedBitmap = Bitmap.createBitmap(inputBitmap, 0, 0, width, height, matrix, true);
-        this.SaveBitmap = croppedBitmap;
+        Bitmap draw = croppedBitmap.copy(Bitmap.Config.ARGB_8888, true);
 
         ++timestamp;
         final long currTimestamp = timestamp;
@@ -145,6 +149,7 @@ public class YoloV5_tfLite_VIDDetector {
                 mappedRecognitions.add(result);
                 //识别结果
                 Log.e("result: ", result.getTitle() + result.getConfidence());
+                drawBitmap(result, draw);
             }
         }
 
@@ -159,5 +164,15 @@ public class YoloV5_tfLite_VIDDetector {
 //            Log.e("ERROR", "识别错误");
 //            return "car";
 //        }
+    }
+
+    private void drawBitmap(Classifier.Recognition result, Bitmap resultBitmap) {
+        final Canvas canvas = new Canvas(resultBitmap);
+        final Paint paint = new Paint();
+        paint.setColor(Color.RED);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(2.0f);
+        canvas.drawRect(result.getLocation(), paint);
+        SaveBitmap = resultBitmap.copy(Bitmap.Config.ARGB_8888, true);
     }
 }

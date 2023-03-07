@@ -25,7 +25,7 @@ public class MainViewModel extends ViewModel {
     //车型所需种类
     private final MutableLiveData<String> car_type = new MutableLiveData<>("all");
     //交通标志物识别最低置信度
-    private final MutableLiveData<Float> traffic_sign_minimumConfidence = new MutableLiveData<>(0.5f);
+    private final MutableLiveData<Float> traffic_sign_minimumConfidence = new MutableLiveData<>(0.35f);
     //车型识别最低置信度
     private final MutableLiveData<Float> VID_minimumConfidence = new MutableLiveData<>(0.3f);
 

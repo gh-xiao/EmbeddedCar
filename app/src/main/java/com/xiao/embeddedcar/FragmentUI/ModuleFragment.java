@@ -55,6 +55,10 @@ public class ModuleFragment extends ABaseFragment {
 
     @Override
     void init() {
+        binding.cleanBtn.setOnClickListener(v -> {
+            moduleViewModel.getModuleInfoTV().setValue(null);
+            binding.moduleInfo.setText(null);
+        });
         binding.moduleInfo.setMovementMethod(ScrollingMovementMethod.getInstance());
         binding.trafficLightModBtn.setOnClickListener(v -> moduleViewModel.module(1));
         binding.plateOcrModBtn.setOnClickListener(v -> moduleViewModel.module(2));

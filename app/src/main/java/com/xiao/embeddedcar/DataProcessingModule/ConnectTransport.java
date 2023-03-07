@@ -1916,7 +1916,6 @@ public class ConnectTransport {
                 //生成结果
                 //TODO 车牌处理2,灰度化处理,将黑字替换成白字
 
-
                 plate = DetectPlate(plateDetector.getRectBitmap());
                 /* 保存图片 */
                 BitmapProcess.saveBitmap("裁剪后的车牌", plateDetector.getRectBitmap());
@@ -1992,30 +1991,7 @@ public class ConnectTransport {
             }
         } while (plate == null && fre++ < 5);
         if (plate == null) plate = "A123B4";
-        //TODO 发送给指定设备
-        /* 以下发送给TFT */
-//        YanChi(2000);
-//        for (int J = 0; J < 5; J++) {
-//            YanChi(500);
-//            TFT_LCD(0x0B, 0x20, plate.charAt(0), plate.charAt(1), plate.charAt(2));
-//        }
-//        System.out.println("第一次发送成功");
-//        YanChi(1500);
-//        for (int J = 0; J < 5; J++)
-//            TFT_LCD(0x0B, 0x21, plate.charAt(3), plate.charAt(4), plate.charAt(5));
-//        System.out.println("第二次发送成功");
-        /* 以下发送给从车 */
-        for (int J = 0; J < 3; J++) {
-            YanChi(500);
-            sendOther((short) 0xD1, (byte) (int) plate.charAt(0), (byte) (int) plate.charAt(1), (byte) (int) plate.charAt(2));
-        }
-        sendUIMassage(1, "第一次发送成功");
-        for (int J = 0; J < 3; J++) {
-            YanChi(500);
-            sendOther((short) 0xD2, (byte) (int) plate.charAt(3), (byte) (int) plate.charAt(4), (byte) (int) plate.charAt(5));
-        }
-        sendUIMassage(1, "第二次发送成功");
-        YanChi(500);
+        plateSend();
     }
 
     /**
@@ -2031,7 +2007,7 @@ public class ConnectTransport {
         //车型识别使用的Bitmap
         Bitmap getCarLocal = MainActivity.getVID_Detector().getSaveBitmap();
         //是否处理成功
-        boolean process = true;
+        boolean fail = true;
         if (recognition != null) {
             sendUIMassage(1, "需要识别" + recognition.getTitle() + "上的车牌");
             //TODO 将识别到的车型发送给从车
@@ -2070,7 +2046,7 @@ public class ConnectTransport {
                     plate = result.getLabel();
                     /* 过滤与补全 */
                     plate = completion(plate);
-                    process = false;
+                    fail = false;
                     break;
                 }
             } catch (Exception e) {
@@ -2078,34 +2054,19 @@ public class ConnectTransport {
                 Log.e(TAG, "ROI区域创建失败!");
             }
         }
-        if (process && getCarLocal != null) {
-            //重新识别车牌号的次数
-            int fre = 1;
-            plate = null;
-            do {
-                /* 获得序列化的结果 */
-                String serialize = DetectPlate(getCarLocal);
-                /* 反序列化 */
-                Type typeMap = new TypeToken<List<OcrResultModel>>() {}.getType();
-                Gson gson = new GsonBuilder().enableComplexMapKeySerialization().setPrettyPrinting().create();
-                /* 获得结果 */
-                List<OcrResultModel> results = gson.fromJson(serialize, typeMap);
-                /* 如果OCR成功 */
-                if (results.size() > 0) for (OcrResultModel result : results) {
-                    /* 色彩判断 */
-                    String detectColor = DetectPlateColor.getColor(getCarLocal, result);
-                    String needColor = mainViewModel.getPlate_color().getValue() != null ? mainViewModel.getPlate_color().getValue() : "green";
-                    if (needColor.equals(detectColor)) {
-                        /* 最终结果 */
-                        plate = result.getLabel();
-                        /* 过滤与补全 */
-                        plate = completion(plate);
-                        break;
-                    }
-                }
-            } while (plate == null && fre++ < 5);
+        if (fail && getCarLocal != null) {
+            /* 备用方案 */
+            plate_DetectByColor();
+            return;
         }
         if (plate == null) plate = "A123B4";
+        plateSend();
+    }
+
+    /**
+     * 车牌信息发送
+     */
+    private void plateSend() {
         sendUIMassage(1, plate);
         //TODO 发送给指定设备
         /* 以下发送给TFT */
@@ -2175,17 +2136,21 @@ public class ConnectTransport {
                 List<Classifier.Recognition> results = gson.fromJson(serialize, typeMap);
                 /* 获得统计结果 */
                 if (results.size() > 0) for (Classifier.Recognition result : results) {
+                    /* 将结果返回至模块ImageView */
+                    sendUIMassage(2, MainActivity.getVID_Detector().getSaveBitmap());
                     /* 将识别结果添加到TreeMap */
                     if (!total.containsKey(result.getTitle())) total.put(result.getTitle(), 1);
                     else //noinspection ConstantConditions
                         total.put(result.getTitle(), total.get(result.getTitle()) + 1);
                     /* 如果包含指定检测车型 */
-                    if (detectNeed.contains(result.getTitle())) has = true;
-                    if (need.equals("all"))
-                        /* 检测到非需要识别的车型 */
-                        if (!detectNeed.contains(result.getTitle())) recognition = result;
-                    /* 指定需要识别车型 */
-                    if (need.contains(result.getTitle())) recognition = result;
+                    if (detectNeed.contains(result.getTitle())) {
+                        has = true;
+                        if (need.equals("all"))
+                            /* 检测到非需要识别的车型 */
+                            if (!detectNeed.contains(result.getTitle())) recognition = result;
+                        /* 指定需要识别车型 */
+                        if (need.contains(result.getTitle())) recognition = result;
+                    }
                 }
             }
             /* 结果获取失败处理 */
@@ -2230,6 +2195,8 @@ public class ConnectTransport {
                 List<Classifier.Recognition> results = gson.fromJson(serialize, typeMap);
                 /* 获得统计结果 */
                 if (results.size() > 0) for (Classifier.Recognition result : results) {
+                    /* 将结果返回至模块ImageView */
+                    sendUIMassage(2, MainActivity.getTS_Detector().getSaveBitmap());
                     if (!total.containsKey(result.getTitle())) total.put(result.getTitle(), 1);
                     else //noinspection ConstantConditions
                         total.put(result.getTitle(), total.get(result.getTitle()) + 1);

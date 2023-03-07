@@ -14,6 +14,8 @@ import android.util.Log;
 
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
+import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.imgproc.Imgproc;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -165,5 +167,96 @@ public class BitmapProcess {
      */
     public static Bitmap getRealPathImages(String realPath) {
         return new File(realPath).exists() ? BitmapFactory.decodeFile(realPath) : null;
+    }
+
+    /**
+     * 灰度化图像
+     *
+     * @param inputBitmap 需要灰度化图像的Bitmap
+     * @return 灰度化后的Bitmap
+     */
+    public static Bitmap GrayscaleImage(Bitmap inputBitmap) {
+        if (inputBitmap == null) return null;
+        Mat mat = new Mat();
+        Utils.bitmapToMat(inputBitmap, mat);
+        return GrayscaleImage(mat);
+    }
+
+    /**
+     * 灰度化图像
+     *
+     * @param colorImage 需要灰度化图像的Bitmap
+     * @return 灰度化后的Bitmap
+     */
+    public static Bitmap GrayscaleImage(Mat colorImage) {
+        if (colorImage == null) return null;
+        // 创建一个空的灰度图像
+        Mat grayscaleImage = new Mat();
+        // 调用cvtColor函数，将彩色图像转换为灰度图像
+        Imgproc.cvtColor(colorImage, grayscaleImage, Imgproc.COLOR_RGB2GRAY);
+        Bitmap result = Bitmap.createBitmap(colorImage.width(), colorImage.height(), Bitmap.Config.ARGB_8888);
+        Utils.matToBitmap(grayscaleImage, result);
+        return result;
+    }
+
+    /**
+     * 灰度化图像并保存
+     */
+    private void GrayscaleImage() {
+        // 定义源文件夹和目标文件夹的路径
+        String sourcePath = Environment.getExternalStorageDirectory() + "/" + Environment.DIRECTORY_DCIM + "/srcImg/";
+        String targetPath = Environment.getExternalStorageDirectory() + "/" + Environment.DIRECTORY_DCIM + "/dstImg/";
+        // 创建File对象，表示源文件夹和目标文件夹
+        File sourceFolder = new File(sourcePath);
+        File targetFolder = new File(targetPath);
+        // 检查源文件夹是否存在，如果不存在，打印错误信息并退出
+        if (!sourceFolder.exists()) {
+            System.out.println("Source folder does not exist.");
+            return;
+        }
+        // 检查目标文件夹是否存在，如果不存在，就创建一个
+        if (!targetFolder.exists()) if (!targetFolder.mkdir()) return;
+        // 获取源文件夹中的所有文件，存放在一个File数组中
+        File[] files = sourceFolder.listFiles();
+        if (files == null) return;
+        // 遍历File数组，对每个文件进行灰度化处理
+        for (File file : files) {
+            // 获取文件
+            Bitmap bitmap = BitmapProcess.getRealPathImages(sourcePath + file.getName());
+            if (bitmap == null) continue;
+            // 加载原始图像
+            Mat colorImage = new Mat();
+            Utils.bitmapToMat(bitmap, colorImage);
+            // 创建一个空的灰度图像
+            Mat grayscaleImage = new Mat();
+            // 调用cvtColor函数，将彩色图像转换为灰度图像
+            Imgproc.cvtColor(colorImage, grayscaleImage, Imgproc.COLOR_RGB2GRAY);
+            Utils.matToBitmap(grayscaleImage, bitmap);
+            // 获取文件的名称，不包括扩展名
+            StringBuilder fileName = new StringBuilder();
+            for (int j = 0; j < file.getName().split("\\.").length - 1; j++) {
+                fileName.append(file.getName().split("\\.")[j]).append(".");
+            }
+            Imgcodecs.imwrite(file.getName(), grayscaleImage);
+            if (file.getName().split("\\.")[file.getName().split("\\.").length - 1].equals("jpg")) {
+                try {
+                    FileOutputStream saveImgOut = new FileOutputStream(new File(targetPath, fileName + "jpg"));
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 80, saveImgOut);
+                    saveImgOut.flush();
+                    Log.d("Save Bitmap", "The picture is save to your phone!");
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            } else {
+                try {
+                    FileOutputStream saveImgOut = new FileOutputStream(new File(targetPath, fileName + "png"));
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 80, saveImgOut);
+                    saveImgOut.flush();
+                    Log.d("Save Bitmap", "The picture is save to your phone!");
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
     }
 }

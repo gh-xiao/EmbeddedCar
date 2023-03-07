@@ -19,6 +19,13 @@
             android:columnCount="1">
 
             <Button
+                android:id="@+id/clean_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/clean_module_info_area"
+                tools:ignore="TextContrastCheck" />
+
+            <Button
                 android:id="@+id/traffic_light_mod_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
