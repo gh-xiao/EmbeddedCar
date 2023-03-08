@@ -344,7 +344,6 @@
                 app:layout_constraintTop_toTopOf="@+id/line_carModels"
                 tools:ignore="TextContrastCheck" />
 
-
             <Button
                 android:id="@+id/car_model_choose_btn"
                 android:layout_width="wrap_content"
@@ -354,7 +353,6 @@
                 app:layout_constraintStart_toEndOf="@+id/detect_car_model_choose_btn"
                 app:layout_constraintTop_toTopOf="@+id/detect_car_model_choose_btn"
                 tools:ignore="TextContrastCheck" />
-
 
             <LinearLayout
                 android:id="@+id/line_TS_Confidence"

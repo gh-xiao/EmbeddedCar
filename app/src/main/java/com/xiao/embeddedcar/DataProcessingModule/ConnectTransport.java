@@ -1694,8 +1694,16 @@ public class ConnectTransport {
         } while (fail && fre++ < 5);
 //        sendUIMassage(1, "检测出的全部的图形数量: " + totals + "\n题意所需数据: " + shapeResult + "个" + mainViewModel.getShape_color().getValue() + mainViewModel.getShape_type().getValue());
         sendUIMassage(1, "==========形状识别完成==========");
-        //TODO ==========发送给指定设备==========
-//        /* 以下发送给主车 */
+        sendShapeInfo(task);
+    }
+
+    /**
+     * TODO 图形识别信息发送
+     *
+     * @param task 图形统计对象
+     */
+    private void sendShapeInfo(ShapeDetector task) {
+        /* 以下发送给主车 */
 //        send((short) 0xC7, (short) shapeResult, (short) 0x00, (short) 0x00);
 //        YanChi(500);
 //        /* 以下发送给从车 */
@@ -1787,7 +1795,13 @@ public class ConnectTransport {
         if (qrStr == null || qrStr.isEmpty()) qrStr = "A1B2C3D4E5";
         qrResult = GetCode.parsing(qrStr);
         sendUIMassage(1, "最终结果: ■■■" + qrResult + "■■■");
-        //TODO 发送给指定设备
+        sendQRInfo();
+    }
+
+    /**
+     * TODO 二维码信息发送
+     */
+    private void sendQRInfo() {
         /* 以下发送给从车 */
         YanChi(500);
         short n;
@@ -1989,7 +2003,7 @@ public class ConnectTransport {
                 sendUIMassage(1, "翻页中...");
                 YanChi(6000);
             }
-        } while (plate == null && fre++ < 5);
+        } while (plate == null && fre++ < 8);
         if (plate == null) plate = "A123B4";
         plateSend();
     }
@@ -2010,7 +2024,7 @@ public class ConnectTransport {
         boolean fail = true;
         if (recognition != null) {
             sendUIMassage(1, "需要识别" + recognition.getTitle() + "上的车牌");
-            //TODO 将识别到的车型发送给从车
+            /* TODO 将识别到的车型发送给从车 */
             switch (recognition.getTitle()) {
                 case "motor":
                     car_type = 0x01;
@@ -2064,11 +2078,10 @@ public class ConnectTransport {
     }
 
     /**
-     * 车牌信息发送
+     * TODO 车牌信息发送
      */
     private void plateSend() {
         sendUIMassage(1, plate);
-        //TODO 发送给指定设备
         /* 以下发送给TFT */
 //        for (int J = 0; J < 5; J++) {
 //            YanChi(500);
@@ -2108,9 +2121,9 @@ public class ConnectTransport {
         //所有识别结果
         TreeMap<String, Integer> total = new TreeMap<>();
         Type typeMap = new TypeToken<List<Classifier.Recognition>>() {}.getType();
-        //指定检测车型
+        //TODO 指定检测车型
         String detectNeed = mainViewModel.getDetect_car_type().getValue() != null ? mainViewModel.getDetect_car_type().getValue() : "bike";
-        //指定所需车型
+        //TODO 指定所需车型
         String need = mainViewModel.getCar_type().getValue() != null ? mainViewModel.getCar_type().getValue() : "truck";
         //处理卡车车型
         if (need.equals("truck")) need += "/van";
@@ -2119,9 +2132,9 @@ public class ConnectTransport {
         Classifier.Recognition recognition = null;
         //是否包含指定结果
         boolean has = false;
-        //TODO 更改为使用List存储结果,并按时间进行统计取得最终结果
+        /* 使用List存储结果,按时间进行统计取得最终结果 */
         do {
-            sendUIMassage(1, "第" + fre + "次识别车型");
+            sendUIMassage(1, "=====第" + fre + "次识别车型=====");
             total.clear();
             sendUIMassage(1, "等待图像稳定...");
             YanChi(6000);
@@ -2143,14 +2156,14 @@ public class ConnectTransport {
                     else //noinspection ConstantConditions
                         total.put(result.getTitle(), total.get(result.getTitle()) + 1);
                     /* 如果包含指定检测车型 */
-                    if (detectNeed.contains(result.getTitle())) {
-                        has = true;
-                        if (need.equals("all"))
-                            /* 检测到非需要识别的车型 */
-                            if (!detectNeed.contains(result.getTitle())) recognition = result;
-                        /* 指定需要识别车型 */
-                        if (need.contains(result.getTitle())) recognition = result;
+                    if (detectNeed.contains(result.getTitle())) has = true;
+                    /* 检测到任意需要识别车牌的车型 */
+                    if (need.equals("all")) {
+                        if (!detectNeed.contains(result.getTitle())) recognition = result;
                     }
+                    /* 指定需要识别车型 */
+                    else if (need.contains(result.getTitle()))
+                        recognition = result;
                 }
             }
             /* 结果获取失败处理 */
@@ -2162,10 +2175,10 @@ public class ConnectTransport {
                     TFT_LCD(0x0B, 0x10, 0x02, 0x00, 0x00);
                 }
                 sendUIMassage(1, "翻页中...");
-                continue;
             }
-            sendUIMassage(1, "检测到可能包含车牌的指定车型: " + (recognition != null ? recognition.getTitle() : null) + "\n结果出现次数: " + total.get(recognition != null ? recognition.getTitle() : null));
-        } while (!has && fre++ < 5);
+        } while (!has && fre++ < 8);
+        if (!has) recognition = null;
+        sendUIMassage(1, "检测到可能包含车牌的指定车型: " + (recognition != null ? recognition.getTitle() : "ERROR!") + "\n结果出现次数: " + total.get(recognition != null ? recognition.getTitle() : "0"));
         sendUIMassage(1, "车型识别" + (has ? "成功" : "失败"));
         return recognition;
     }
@@ -2183,7 +2196,7 @@ public class ConnectTransport {
         Type typeMap = new TypeToken<List<Classifier.Recognition>>() {}.getType();
         //最终结果
         String finalResult = null;
-        //TODO 更改为使用List存储结果,并按时间进行统计取得最终结果
+        //使用List存储结果,按时间进行统计取得最终结果
         do {
             YanChi(6000);
             total.clear();
@@ -2222,7 +2235,7 @@ public class ConnectTransport {
             /* 出现次数不足/出现次数过多,重置结果 */
             sendUIMassage(1, "交通标志物识别结果: " + finalResult + "\n识别结果出现次数: " + maxvalue);
             if (maxvalue <= 2 || maxvalue >= 16) finalResult = null;
-        } while (finalResult == null && fre++ < 5);
+        } while (finalResult == null && fre++ < 8);
         if (finalResult == null) finalResult = "ERROR";
         sendUIMassage(1, "交通标志物识别结果: " + finalResult);
         switch (finalResult) {
@@ -2246,8 +2259,13 @@ public class ConnectTransport {
                 getTrafficFlag = 3;
                 break;
         }
-        //TODO 发送给指定设备
-//        /* 以下发送给主车 */
+    }
+
+    /**
+     * TODO 交通标志物信息发送
+     */
+    private void sendTSInfo() {
+        //        /* 以下发送给主车 */
 //        send((short) 0xC9, getTrafficFlag, (short) 0x00, (short) 0x00);
         YanChi(500);
         /* 以下发送给从车 */

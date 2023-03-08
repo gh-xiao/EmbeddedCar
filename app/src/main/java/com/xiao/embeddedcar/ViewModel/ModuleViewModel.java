@@ -132,6 +132,7 @@ public class ModuleViewModel extends ViewModel {
                 case 4:
                     cachedThreadPool.execute(() -> {
                         Bitmap b = TFTAutoCutter.TFTCutter(detect);
+                        ct.sendUIMassage(2, b);
                         String TSResult = MainActivity.getTS_Detector().processImage(b);
                         /* 反序列化 */
                         Type typeMap = new TypeToken<List<Classifier.Recognition>>() {}.getType();
@@ -141,6 +142,7 @@ public class ModuleViewModel extends ViewModel {
                         /* 最终结果 */
                         if (TSResults.size() > 0) for (Classifier.Recognition result : TSResults) {
                             ct.sendUIMassage(1, result.getTitle() + ": " + result.getConfidence());
+                            /* 将结果返回至模块ImageView */
                             ct.sendUIMassage(2, MainActivity.getTS_Detector().getSaveBitmap());
                         }
                         else ct.sendUIMassage(1, "No result!");
@@ -158,8 +160,12 @@ public class ModuleViewModel extends ViewModel {
                         /* 反序列化结果 */
                         List<Classifier.Recognition> VIDResults = gson.fromJson(VIDResult, typeMap);
                         /* 最终结果 */
-                        if (VIDResults.size() > 0) for (Classifier.Recognition result : VIDResults)
-                            ct.sendUIMassage(1, result.getTitle() + ": " + result.getConfidence());
+                        if (VIDResults.size() > 0)
+                            for (Classifier.Recognition result : VIDResults) {
+                                ct.sendUIMassage(1, result.getTitle() + ": " + result.getConfidence());
+                                /* 将结果返回至模块ImageView */
+                                ct.sendUIMassage(2, MainActivity.getVID_Detector().getSaveBitmap());
+                            }
                         else ct.sendUIMassage(1, "No result!");
                     });
                     break;
@@ -201,7 +207,7 @@ public class ModuleViewModel extends ViewModel {
                     break;
                 //车牌(车型)
                 case 5:
-                    cachedThreadPool.execute(ct::plate_DetectByVID);
+                    cachedThreadPool.execute(ct::VID_mod);
                     break;
                 //二维码
                 case 6:

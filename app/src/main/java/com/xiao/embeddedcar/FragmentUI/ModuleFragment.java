@@ -57,6 +57,7 @@ public class ModuleFragment extends ABaseFragment {
     void init() {
         binding.cleanBtn.setOnClickListener(v -> {
             moduleViewModel.getModuleInfoTV().setValue(null);
+            moduleViewModel.getModuleImgShow().setValue(null);
             binding.moduleInfo.setText(null);
         });
         binding.moduleInfo.setMovementMethod(ScrollingMovementMethod.getInstance());
@@ -99,9 +100,7 @@ public class ModuleFragment extends ABaseFragment {
     @Override
     void observerDataStateUpdateAction() {
         moduleViewModel.getModuleInfoTV().setValue(null);
-        moduleViewModel.getModuleImgShow().observe(getViewLifecycleOwner(), b -> {
-            if (b != null) binding.moduleImg.setImageBitmap(b);
-        });
+        moduleViewModel.getModuleImgShow().observe(getViewLifecycleOwner(), b -> binding.moduleImg.setImageBitmap(b));
         moduleViewModel.getModuleInfoTV().observe(getViewLifecycleOwner(), s -> {
             if (s != null) {
                 binding.moduleInfo.append(s + "\n");

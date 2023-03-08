@@ -1,11 +1,14 @@
-package com.xiao.embeddedcar.Utils.Regex;
+package com.xiao.embeddedcar.Utils.PublicMethods;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * 正则匹配
+ */
 public class Matching {
 
-    private static void study(){
+    private static void study() {
         //在 Java 中，\\ 表示：我要插入一个正则表达式的反斜线，所以其后的字符具有特殊的意义。
         System.out.print("\\");    // 输出为 \
         System.out.print("\\\\");  // 输出为 \\
@@ -45,6 +48,6 @@ public class Matching {
      * 从字符串str中提取数字部分的内容(匹配一次)
      */
     public static void methods2(String str) {
-        Pattern p =Pattern.compile(" /[0-9]+/");
+        Pattern p = Pattern.compile(" /[0-9]+/");
     }
 }

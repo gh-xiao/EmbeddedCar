@@ -44,7 +44,7 @@ public class AnalyseFragment extends ABaseFragment {
     @Override
     void init() {
         /* HSV参数设置 */
-        RestoreHSV();
+        exportHSV();
         /* 图片列表设置 */
         AnalyseAdapter analyseAdapter = new AnalyseAdapter(getContext());
         binding.lvList.setAdapter(analyseAdapter);
