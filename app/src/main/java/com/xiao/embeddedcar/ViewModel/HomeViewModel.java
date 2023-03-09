@@ -13,9 +13,11 @@ import com.xiao.embeddedcar.Activity.MainActivity;
 import com.xiao.embeddedcar.DataProcessingModule.ConnectTransport;
 import com.xiao.embeddedcar.Utils.CameraUtil.XcApplication;
 import com.xiao.embeddedcar.Utils.PublicMethods.BaseConversion;
-import com.xiao.embeddedcar.Utils.PublicMethods.FastClick;
+import com.xiao.embeddedcar.Utils.PublicMethods.FastDo;
 import com.xiao.embeddedcar.Utils.PublicMethods.ToastUtil;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.ref.WeakReference;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -216,8 +218,16 @@ public class HomeViewModel extends ViewModel {
                     //RFID卡识别数据传入
                     char[] data = new char[16];
                     /* 获取RFID卡原数据 */
-                    for (int i = 0; i < 16; i++)
-                        data[i] = (char) Integer.parseInt(BaseConversion.decToHex(mByte[i + 4]).substring(6));
+                    for (int i = 0; i < 16; i++) {
+                        try {
+                            data[i] = (char) Integer.parseInt(BaseConversion.decToHex(mByte[i + 4]).substring(6));
+                        } catch (Exception e) {
+                            StringWriter sw = new StringWriter();
+                            e.printStackTrace(new PrintWriter(sw));
+                            ConnectTransport.getInstance().sendUIMassage(1, "数据解析错误!ERROR:\n" + sw);
+                            data = new char[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+                        }
+                    }
                     /* 检测到卡1处理 */
                     if (mByte[2] == (byte) 0x0A) {
                         debugArea.setValue("卡(1)数据:\n" + Arrays.toString(data));
@@ -235,8 +245,10 @@ public class HomeViewModel extends ViewModel {
                 }
                 /* 启动全自动 */
                 debugArea.setValue("接收到主车传入0xAA指令: " + BaseConversion.decToHex(mByte[3]).substring(6).toUpperCase(Locale.ROOT));
-                ConnectTransport.setMark(mByte[3]);
-                XcApplication.cachedThreadPool.execute(() -> ConnectTransport.getInstance().half_Android());
+                if (FastDo.isFastSend()) {
+                    ConnectTransport.setMark(mByte[3]);
+                    XcApplication.cachedThreadPool.execute(() -> ConnectTransport.getInstance().half_Android());
+                }
                 commandData.setValue(mByte);
             }
             return true;
@@ -264,7 +276,7 @@ public class HomeViewModel extends ViewModel {
             showImg.setValue((Bitmap) msg.obj);
             return true;
         } else if (msg.what == 0) {
-            if (FastClick.isFastClick()) refreshConnect();
+            if (FastDo.isFastClick()) refreshConnect();
         } else connectState.setValue(msg.what);
 
         return false;

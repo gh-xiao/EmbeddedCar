@@ -23,7 +23,7 @@ import com.xiao.embeddedcar.R;
 import com.xiao.embeddedcar.Utils.CameraUtil.XcApplication;
 import com.xiao.embeddedcar.Utils.Network.WiFiStateUtil;
 import com.xiao.embeddedcar.Utils.PublicMethods.BaseConversion;
-import com.xiao.embeddedcar.Utils.PublicMethods.FastClick;
+import com.xiao.embeddedcar.Utils.PublicMethods.FastDo;
 import com.xiao.embeddedcar.Utils.PublicMethods.ToastUtil;
 import com.xiao.embeddedcar.ViewModel.ConnectViewModel;
 import com.xiao.embeddedcar.ViewModel.HomeViewModel;
@@ -83,7 +83,7 @@ public class HomeFragment extends ABaseFragment {
         });
         //刷新连接操作
         binding.refreshBtn.setOnClickListener(view -> {
-            if (FastClick.isFastClick()) {
+            if (FastDo.isFastClick()) {
                 if (WiFiStateUtil.getInstance().wifiInit() || XcApplication.isSerial != XcApplication.Mode.SOCKET) {
                     homeViewModel.refreshConnect();
                     HomeViewModel.setReady(true);

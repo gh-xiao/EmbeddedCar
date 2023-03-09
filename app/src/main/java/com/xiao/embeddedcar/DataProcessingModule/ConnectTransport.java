@@ -604,9 +604,9 @@ public class ConnectTransport {
 
     /**
      * 从车二维码识别
-     * TODO 注意查看从车重新修改过的指令
-     *  当前0x91为二维码识别,0x92为红绿灯识别
-     *  当前命令发现问题!
+     * 注意查看从车重新修改过的指令
+     * 当前0x91为二维码识别,0x92为红绿灯识别
+     * 当前命令发现问题!
      *
      * @param state 开启/关闭识别
      */
@@ -959,7 +959,7 @@ public class ConnectTransport {
                 YanChi(500);
                 send((short) (0xA0 + carGoto++), (short) 0x00, (short) 0x00, (short) 0x00);
                 break;
-            //TODO TFT(A)合并项目 - 车型和车牌(注意TFT发送指令)
+            //TFT(A)合并项目 - 车型和车牌(注意TFT发送指令)
             case 6:
                 YanChi(500);
                 go(50, 100);
@@ -975,7 +975,7 @@ public class ConnectTransport {
                 YanChi(500);
                 send((short) (0xA0 + carGoto++), (short) 0x00, (short) 0x00, (short) 0x00);
                 break;
-            //TODO TFT合并项目 - 图形和交通标志物(注意TFT发送指令)
+            //TFT合并项目 - 图形和交通标志物(注意TFT发送指令)
             case 7:
 
                 trafficSign_mod();
@@ -1249,7 +1249,6 @@ public class ConnectTransport {
 //        ReadCard_longLine();
 //        YanChi(2500);
 //        ReadCard_short2crossroads();
-
 
         System.out.println("B4->寻卡->F4-----模块完成");
 
@@ -1799,7 +1798,7 @@ public class ConnectTransport {
     }
 
     /**
-     * TODO 二维码信息发送
+     * 二维码信息发送
      */
     private void sendQRInfo() {
         /* 以下发送给从车 */
@@ -2078,7 +2077,7 @@ public class ConnectTransport {
     }
 
     /**
-     * TODO 车牌信息发送
+     * 车牌信息发送
      */
     private void plateSend() {
         sendUIMassage(1, plate);
@@ -2167,7 +2166,7 @@ public class ConnectTransport {
                 }
             }
             /* 结果获取失败处理 */
-            /*TODO 根据题意设置约束数量 */
+            /*■■■根据题意设置约束数量■■■注意修改TFT发送■■■ */
             if (total.size() <= 0 || !has) {
                 sendUIMassage(1, "识别车型失败!");
                 for (int J = 0; J < 3; J++) {

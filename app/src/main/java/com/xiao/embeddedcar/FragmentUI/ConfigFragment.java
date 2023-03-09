@@ -17,6 +17,7 @@ import com.github.gzuliyujiang.wheelview.contract.OnWheelChangedListener;
 import com.github.gzuliyujiang.wheelview.widget.WheelView;
 import com.xiao.embeddedcar.R;
 import com.xiao.embeddedcar.Utils.QRcode.QRBitmapCutter;
+import com.xiao.embeddedcar.Utils.TrafficLight.TrafficLightByLocation;
 import com.xiao.embeddedcar.Utils.TrafficSigns.YoloV5_tfLite_TSDetector;
 import com.xiao.embeddedcar.Utils.VID.YoloV5_tfLite_VIDDetector;
 import com.xiao.embeddedcar.ViewModel.MainViewModel;
@@ -75,6 +76,23 @@ public class ConfigFragment extends ABaseFragment {
         binding.trafficLightChooseBtn.setOnCheckedChangeListener((group, id) -> mainViewModel.getSend_trafficLight().setValue(id == R.id.rb_tl_a ? 1 : 2));
         /* 红绿灯检测位置选择 */
         binding.detectTrafficLightChooseBtn.setOnCheckedChangeListener((group, id) -> mainViewModel.getDetect_trafficLight().setValue(id == R.id.rb_detect_tl_l ? 1 : 2));
+        /* 红绿灯位置阈值设置 */
+        binding.sbLightLocationConfidence.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                mainViewModel.getLight_location_confidence().setValue(progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
         /* 车牌检测颜色选择 */
         binding.plateColorChooseRG.setOnCheckedChangeListener((group, id) -> {
             if (id == R.id.rb_plate_all) {
@@ -145,6 +163,7 @@ public class ConfigFragment extends ABaseFragment {
         /* 重置置信度 */
         binding.resetTSBtn.setOnClickListener(v -> mainViewModel.getTraffic_sign_minimumConfidence().setValue(YoloV5_tfLite_TSDetector.MINIMUM_CONFIDENCE_TF_OD_API));
         binding.resetVIDBtn.setOnClickListener(v -> mainViewModel.getVID_minimumConfidence().setValue(YoloV5_tfLite_VIDDetector.MINIMUM_CONFIDENCE_TF_OD_API));
+        binding.resetLightLocationConfidenceDataBtn.setOnClickListener(v -> mainViewModel.getLight_location_confidence().setValue(TrafficLightByLocation.getOriginLocation()));
         binding.tvVersion.setText("当前软件版本: " + getVersionName());
     }
 
@@ -203,6 +222,32 @@ public class ConfigFragment extends ABaseFragment {
 
             }
         });
+
+        binding.lightLocationConfidenceData.setRange(0, 200, 1);
+        binding.lightLocationConfidenceData.setTextSize(0);
+        binding.lightLocationConfidenceData.setCyclicEnabled(true);
+        binding.lightLocationConfidenceData.setIndicatorEnabled(false);
+        binding.lightLocationConfidenceData.setOnWheelChangedListener(new OnWheelChangedListener() {
+            @Override
+            public void onWheelScrolled(WheelView view, int offset) {
+
+            }
+
+            @Override
+            public void onWheelSelected(WheelView view, int position) {
+                mainViewModel.getLight_location_confidence().setValue(position);
+            }
+
+            @Override
+            public void onWheelScrollStateChanged(WheelView view, int state) {
+
+            }
+
+            @Override
+            public void onWheelLoopFinished(WheelView view) {
+
+            }
+        });
     }
 
     @Override
@@ -237,6 +282,12 @@ public class ConfigFragment extends ABaseFragment {
                 binding.tvTrafficLightLocation.setText(i == 1 ? "长线" : "短线");
                 binding.detectTrafficLightChooseBtn.check(i == 1 ? R.id.rb_detect_tl_l : R.id.rb_detect_tl_s);
             }
+        });
+        mainViewModel.getLight_location_confidence().observe(getViewLifecycleOwner(), i -> {
+            binding.tvLightLocationConfidence.setText(String.valueOf(i));
+            binding.sbLightLocationConfidence.setProgress(i);
+            binding.lightLocationConfidenceData.setDefaultValue(i);
+            TrafficLightByLocation.setLightLocation(i);
         });
         mainViewModel.getPlate_color().observe(getViewLifecycleOwner(), s -> {
             switch (s) {

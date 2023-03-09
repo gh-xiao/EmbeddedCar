@@ -94,6 +94,7 @@
     <string name="trafficLight_location">红绿灯检测位置:</string>
     <string name="long_line">长线</string>
     <string name="short_long">短线</string>
+    <string name="set_light_location_confidence">设置红绿灯位置阈值:</string>
     <string name="plate_color_detect">车牌颜色检测:</string>
     <string name="all">任意</string>
     <string name="new_energy">新能源</string>

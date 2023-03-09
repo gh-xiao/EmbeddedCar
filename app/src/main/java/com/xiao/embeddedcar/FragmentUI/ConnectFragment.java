@@ -24,7 +24,7 @@ import androidx.navigation.Navigation;
 import com.xiao.embeddedcar.Activity.MainActivity;
 import com.xiao.embeddedcar.R;
 import com.xiao.embeddedcar.Utils.CameraUtil.XcApplication;
-import com.xiao.embeddedcar.Utils.PublicMethods.FastClick;
+import com.xiao.embeddedcar.Utils.PublicMethods.FastDo;
 import com.xiao.embeddedcar.Utils.PublicMethods.ToastUtil;
 import com.xiao.embeddedcar.Utils.Network.USBToSerialUtil;
 import com.xiao.embeddedcar.ViewModel.ConnectViewModel;
@@ -82,7 +82,7 @@ public class ConnectFragment extends ABaseFragment {
         /* 连接Button */
         binding.connect.setOnClickListener(view -> {
             //禁止快速连按
-            if (FastClick.isFastClick()) {
+            if (FastDo.isFastClick()) {
                 if (XcApplication.isSerial != XcApplication.Mode.SOCKET) tryGetUsbPermission();
                 connectViewModel.requestConnect();
                 Navigation.findNavController(binding.getRoot()).navigate(R.id.action_nav_connect_to_nav_home);

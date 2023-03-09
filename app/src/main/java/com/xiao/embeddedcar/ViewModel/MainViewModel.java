@@ -14,6 +14,8 @@ public class MainViewModel extends ViewModel {
     private final MutableLiveData<Integer> send_trafficLight = new MutableLiveData<>(1);
     //智能交通灯设备位置检测选择: 1/2 - 长线/短线
     private final MutableLiveData<Integer> detect_trafficLight = new MutableLiveData<>(2);
+    //智能交通灯设备位置阈值设置
+    private final MutableLiveData<Integer> light_location_confidence = new MutableLiveData<>(65);
     //图形统计 - 颜色选择
     private final MutableLiveData<String> shape_color = new MutableLiveData<>("红色");
     //图形统计 - 形状类别
@@ -43,6 +45,10 @@ public class MainViewModel extends ViewModel {
 
     public MutableLiveData<Integer> getDetect_trafficLight() {
         return detect_trafficLight;
+    }
+
+    public MutableLiveData<Integer> getLight_location_confidence() {
+        return light_location_confidence;
     }
 
     public MutableLiveData<String> getShape_color() {

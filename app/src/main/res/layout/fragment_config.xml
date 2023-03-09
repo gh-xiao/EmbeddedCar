@@ -232,12 +232,74 @@
             </RadioGroup>
 
             <LinearLayout
-                android:id="@+id/line_plateColor_detect"
+                android:id="@+id/light_location_Confidence"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:padding="15dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/line_detect_trafficLight"
+                app:layout_constraintWidth_percent="0.45">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/set_light_location_confidence"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_light_location_confidence"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <SeekBar
+                android:id="@+id/sb_light_location_confidence"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="4"
+                android:max="200"
+                android:maxHeight="2dp"
+                android:minHeight="2dp"
+                app:layout_constraintBottom_toBottomOf="@+id/light_location_Confidence"
+                app:layout_constraintStart_toEndOf="@+id/light_location_Confidence"
+                app:layout_constraintTop_toTopOf="@+id/light_location_Confidence"
+                app:layout_constraintWidth_percent="0.25" />
+
+            <com.github.gzuliyujiang.wheelview.widget.NumberWheelView
+                android:id="@+id/light_location_confidence_data"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                app:layout_constraintBottom_toBottomOf="@+id/sb_light_location_confidence"
+                app:layout_constraintStart_toEndOf="@+id/sb_light_location_confidence"
+                app:layout_constraintTop_toTopOf="@+id/sb_light_location_confidence"
+                app:layout_constraintWidth_percent="0.15" />
+
+            <Button
+                android:id="@+id/reset_light_location_confidence_data_btn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/reset"
+                app:layout_constraintBottom_toBottomOf="@+id/light_location_confidence_data"
+                app:layout_constraintStart_toEndOf="@+id/light_location_confidence_data"
+                app:layout_constraintTop_toTopOf="@+id/light_location_confidence_data"
+                app:layout_constraintWidth_percent="0.15"
+                tools:ignore="TextContrastCheck" />
+
+            <LinearLayout
+                android:id="@+id/line_plateColor_detect"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="15dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/light_location_Confidence"
                 app:layout_constraintWidth_percent="0.5">
 
                 <TextView
@@ -475,8 +537,6 @@
                 app:layout_constraintTop_toTopOf="@+id/VID_min_data"
                 app:layout_constraintWidth_percent="0.15"
                 tools:ignore="TextContrastCheck" />
-
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>
@@ -491,5 +551,4 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHeight_percent="0.08" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

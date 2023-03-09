@@ -22,12 +22,24 @@ import java.util.List;
 public class TrafficLightByLocation {
 
     private static final String TAG = TrafficLightByLocation.class.getSimpleName();
+    //原始位置阈值
+    private static final int ORIGIN_LOCATION = 65;
+    //红绿灯位置阈值调整
+    private static int LIGHT_LOCATION = 65;
     private static Mat rAyMat, greenMat;
     //已经处理好的图像
     private static Bitmap detectROI;
 
+    public static int getOriginLocation() {
+        return ORIGIN_LOCATION;
+    }
+
     public static Bitmap getDetectROI() {
         return detectROI;
+    }
+
+    public static void setLightLocation(int lightLocation) {
+        LIGHT_LOCATION = lightLocation;
     }
 
     /**
@@ -134,7 +146,7 @@ public class TrafficLightByLocation {
 
         /* 赛场上专用配套 */
         if (Ig > 750) return "绿灯";
-        return rAy_X <= 65 ? "红灯" : "黄灯";
+        return rAy_X <= LIGHT_LOCATION ? "红灯" : "黄灯";
     }
 
     /**

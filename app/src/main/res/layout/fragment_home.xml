@@ -83,27 +83,36 @@
                 android:textAlignment="center"
                 app:layout_constraintTop_toBottomOf="@id/showIP" />
 
-            <Button
-                android:id="@+id/clear_debug_area"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/ll_control_btn"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:text="@string/reset_home_data"
-                app:layout_constraintEnd_toStartOf="@id/refresh_btn"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/rvData"
-                tools:ignore="TextContrastCheck" />
-
-            <Button
-                android:id="@+id/refresh_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:text="@string/refresh"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/clear_debug_area"
-                app:layout_constraintTop_toBottomOf="@id/rvData"
-                tools:ignore="TextContrastCheck" />
+                app:layout_constraintTop_toBottomOf="@+id/rvData">
+
+                <Button
+                    android:id="@+id/clear_debug_area"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:text="@string/reset_home_data"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/rvData"
+                    tools:ignore="TextContrastCheck" />
+
+                <Button
+                    android:id="@+id/refresh_btn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:text="@string/refresh"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/rvData"
+                    tools:ignore="TextContrastCheck" />
+            </LinearLayout>
 
             <ImageView
                 android:layout_width="40dp"
@@ -124,7 +133,7 @@
                 android:contentDescription="@string/module_img_show"
                 android:padding="2dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/clear_debug_area"
+                app:layout_constraintTop_toBottomOf="@id/ll_control_btn"
                 app:layout_constraintWidth_percent="0.48" />
 
             <TextView
@@ -145,7 +154,7 @@
                 android:layout_height="100dp"
                 android:layout_margin="5dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/refresh_btn"
+                app:layout_constraintTop_toBottomOf="@+id/ll_control_btn"
                 app:layout_constraintWidth_percent="0.48">
 
                 <androidx.appcompat.widget.SwitchCompat
