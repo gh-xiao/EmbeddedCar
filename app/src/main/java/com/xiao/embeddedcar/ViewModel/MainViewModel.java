@@ -5,8 +5,6 @@ import androidx.lifecycle.ViewModel;
 
 import com.xiao.embeddedcar.Utils.QRcode.QRBitmapCutter;
 
-import java.util.ArrayList;
-
 public class MainViewModel extends ViewModel {
     //主从状态
     private final MutableLiveData<Boolean> chief_state_flag = new MutableLiveData<>(true);
@@ -33,8 +31,6 @@ public class MainViewModel extends ViewModel {
     //车型识别最低置信度
     private final MutableLiveData<Float> VID_minimumConfidence = new MutableLiveData<>(0.3f);
     /* 实验性 */
-    //保存到的所有车牌
-    private final MutableLiveData<ArrayList<String>> save_plate_data = new MutableLiveData<>(new ArrayList<>());
     //自定义的车牌
     private final MutableLiveData<String> plate_data = new MutableLiveData<>("A123B4");
     //自定义的车型
@@ -102,11 +98,6 @@ public class MainViewModel extends ViewModel {
     }
 
     /* 自定义getter */
-
-    public MutableLiveData<ArrayList<String>> getSave_plate_data() {
-        return save_plate_data;
-    }
-
     public MutableLiveData<String> getPlate_data() {
         return plate_data;
     }

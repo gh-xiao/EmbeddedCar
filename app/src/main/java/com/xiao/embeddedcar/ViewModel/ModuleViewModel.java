@@ -108,7 +108,9 @@ public class ModuleViewModel extends ViewModel {
                         List<OcrResultModel> results = gson.fromJson(serialize, typeMap);
                         /* 最终结果 */
                         String finalResult;
+                        ct.getPlate_list().clear();
                         if (results.size() > 0) for (OcrResultModel result : results) {
+                            ct.getPlate_list().add(result.getLabel());
                             /* 色彩判断 */
                             String color = DetectPlateColor.getColor(bitmap, result);
                             if ("green".equals(color))

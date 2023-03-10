@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.github.gzuliyujiang.wheelview.contract.OnWheelChangedListener;
 import com.github.gzuliyujiang.wheelview.widget.WheelView;
+import com.xiao.embeddedcar.DataProcessingModule.ConnectTransport;
 import com.xiao.embeddedcar.R;
 import com.xiao.embeddedcar.Utils.QRcode.QRBitmapCutter;
 import com.xiao.embeddedcar.Utils.TrafficLight.TrafficLightByLocation;
@@ -196,8 +197,8 @@ public class ConfigFragment extends ABaseFragment {
         binding.sendPlateChooseBtn.setOnClickListener(v -> {
             AlertDialog.Builder save_plate_choose_builder = new AlertDialog.Builder(requireActivity());
             save_plate_choose_builder.setTitle("选择已保存的车牌");
-            String[] item = Objects.requireNonNull(mainViewModel.getSave_plate_data().getValue()).toArray(new String[0]);
-            save_plate_choose_builder.setSingleChoiceItems(item, -1, (dialog, which) -> mainViewModel.getPlate_data().setValue(item[which]));
+            String[] item = Objects.requireNonNull(ConnectTransport.getInstance().getPlate_list()).toArray(new String[0]);
+            save_plate_choose_builder.setSingleChoiceItems(item, -1, (dialog, which) ->  binding.etPlateData.setText(item[which]));
             save_plate_choose_builder.create().show();
         });
         binding.cbPlateSendMode.setOnCheckedChangeListener((buttonView, isChecked) -> mainViewModel.getSend_plate_mode().setValue(isChecked));

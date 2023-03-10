@@ -46,8 +46,8 @@ import java.lang.reflect.Type;
 import java.net.Socket;
 import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
@@ -91,6 +91,7 @@ public class ConnectTransport {
     //从车与其他道具交互类型指令
     public short TYPE1 = 0x02;
     /* ================================================== */
+    private final ArrayList<String> plate_list = new ArrayList<>();
     //RFID1卡
     private static char[] RFID1;
     //RFID2卡
@@ -110,6 +111,10 @@ public class ConnectTransport {
 
     public Bitmap getStream() {
         return stream;
+    }
+
+    public ArrayList<String> getPlate_list() {
+        return plate_list;
     }
 
     public static void setRFID1(char[] RFID1) {
@@ -1966,6 +1971,7 @@ public class ConnectTransport {
     public synchronized void plate_DetectByColor() {
         //重新识别车牌号的次数
         int fre = 1;
+        plate_list.clear();
         plate = null;
         String needColor = mainViewModel.getPlate_color().getValue() != null ? mainViewModel.getPlate_color().getValue() : "green";
         if (needColor.equals("all")) needColor = needColor + "green" + "blue";
@@ -1982,6 +1988,7 @@ public class ConnectTransport {
             List<OcrResultModel> results = gson.fromJson(serialize, typeMap);
             /* 如果OCR成功 */
             if (results.size() > 0) for (OcrResultModel result : results) {
+                plate_list.add(result.getLabel());
                 /* 色彩判断 */
                 String detectColor = DetectPlateColor.getColor(detect, result);
                 if (needColor.contains(detectColor)) {
@@ -2016,6 +2023,7 @@ public class ConnectTransport {
             sendUIMassage(1, "摄像头连接异常!");
             return;
         }
+        plate_list.clear();
         //车型识别结果
         Classifier.Recognition recognition = VID_mod();
         //车型识别使用的Bitmap
@@ -2043,6 +2051,7 @@ public class ConnectTransport {
                 List<OcrResultModel> results = gson.fromJson(serialize, typeMap);
                 /* 如果OCR成功 */
                 if (results.size() > 0) for (OcrResultModel result : results) {
+                    plate_list.add(result.getLabel());
                     /* 最终结果 */
                     plate = result.getLabel();
                     /* 过滤与补全 */
@@ -2069,8 +2078,9 @@ public class ConnectTransport {
      */
     private void plateSend() {
         if (Boolean.TRUE.equals(mainViewModel.getSend_plate_mode().getValue())) {
-            String send = (mainViewModel.getPlate_data().getValue() == null || mainViewModel.getPlate_data().getValue().length() < 6) ? "A123B4" : mainViewModel.getPlate_data().getValue();
-            send = send.toUpperCase(Locale.ROOT);
+            String send = mainViewModel.getPlate_data().getValue() == null ? "A123B4" : mainViewModel.getPlate_data().getValue();
+            /* 过滤与补全 */
+            send = completion(send);
             sendUIMassage(1, send.substring(0, 6));
             /* 以下发送给TFT */
 //        for (int J = 0; J < 5; J++) {
