@@ -3,6 +3,8 @@ package com.xiao.embeddedcar.FragmentUI;
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +25,8 @@ import com.xiao.embeddedcar.Utils.VID.YoloV5_tfLite_VIDDetector;
 import com.xiao.embeddedcar.ViewModel.MainViewModel;
 import com.xiao.embeddedcar.ViewModel.ModuleViewModel;
 import com.xiao.embeddedcar.databinding.FragmentConfigBinding;
+
+import java.util.Objects;
 
 public class ConfigFragment extends ABaseFragment {
     private FragmentConfigBinding binding;
@@ -109,7 +113,7 @@ public class ConfigFragment extends ABaseFragment {
             }
         });
         /* 车型检测选择 */
-        binding.detectCarModelChooseBtn.setOnClickListener(v -> {
+        binding.detectCarTypeChooseBtn.setOnClickListener(v -> {
             AlertDialog.Builder car_model_choose_builder = new AlertDialog.Builder(requireActivity());
             car_model_choose_builder.setTitle("指定检测车型");
             String[] item = {"bike", "motor", "car", "truck", "van", "bus"};
@@ -118,7 +122,7 @@ public class ConfigFragment extends ABaseFragment {
             car_model_choose_builder.create().show();
         });
         /* 车型识别选择 */
-        binding.carModelChooseBtn.setOnClickListener(v -> {
+        binding.carTypeChooseBtn.setOnClickListener(v -> {
             AlertDialog.Builder car_model_choose_builder = new AlertDialog.Builder(requireActivity());
             car_model_choose_builder.setTitle("指定识别车型");
             String[] item = {"all", "bike", "motor", "car", "truck", "van", "bus"};
@@ -160,11 +164,65 @@ public class ConfigFragment extends ABaseFragment {
 
             }
         });
+        custom_btn_init();
         /* 重置置信度 */
         binding.resetTSBtn.setOnClickListener(v -> mainViewModel.getTraffic_sign_minimumConfidence().setValue(YoloV5_tfLite_TSDetector.MINIMUM_CONFIDENCE_TF_OD_API));
         binding.resetVIDBtn.setOnClickListener(v -> mainViewModel.getVID_minimumConfidence().setValue(YoloV5_tfLite_VIDDetector.MINIMUM_CONFIDENCE_TF_OD_API));
-        binding.resetLightLocationConfidenceDataBtn.setOnClickListener(v -> mainViewModel.getLight_location_confidence().setValue(TrafficLightByLocation.getOriginLocation()));
+        binding.resetLightLocationConfidenceDataBtn.setOnClickListener(v -> mainViewModel.getLight_location_confidence().setValue(TrafficLightByLocation.ORIGIN_LOCATION));
         binding.tvVersion.setText("当前软件版本: " + getVersionName());
+    }
+
+    /**
+     * 实验性自定义发送数据
+     */
+    private void custom_btn_init() {
+        /* 车牌自定义发送数据选择 */
+        binding.etPlateData.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                mainViewModel.getPlate_data().setValue(s.toString());
+            }
+        });
+        binding.sendPlateChooseBtn.setOnClickListener(v -> {
+            AlertDialog.Builder save_plate_choose_builder = new AlertDialog.Builder(requireActivity());
+            save_plate_choose_builder.setTitle("选择已保存的车牌");
+            String[] item = Objects.requireNonNull(mainViewModel.getSave_plate_data().getValue()).toArray(new String[0]);
+            save_plate_choose_builder.setSingleChoiceItems(item, -1, (dialog, which) -> mainViewModel.getPlate_data().setValue(item[which]));
+            save_plate_choose_builder.create().show();
+        });
+        binding.cbPlateSendMode.setOnCheckedChangeListener((buttonView, isChecked) -> mainViewModel.getSend_plate_mode().setValue(isChecked));
+        /* 车型自定义发送数据选择 */
+        binding.sendCarTypeChooseBtn.setOnClickListener(v -> {
+            AlertDialog.Builder car_model_choose_builder = new AlertDialog.Builder(requireActivity());
+            car_model_choose_builder.setTitle("选择发送车型");
+            String[] item = {"bike", "motor", "car", "truck"};
+            String[] showItem = {"自行车", "摩托", "汽车", "卡车"};
+            car_model_choose_builder.setSingleChoiceItems(showItem, -1, (dialog, which) -> mainViewModel.getCar_type_data().setValue(item[which]));
+            car_model_choose_builder.create().show();
+        });
+        binding.cbCarTypeSendMode.setOnCheckedChangeListener((buttonView, isChecked) -> mainViewModel.getSend_car_type_mode().setValue(isChecked));
+        /* 交通标志物自定义发送数据选择 */
+        binding.sendTSChooseBtn.setOnClickListener(v -> {
+            AlertDialog.Builder car_model_choose_builder = new AlertDialog.Builder(requireActivity());
+            car_model_choose_builder.setTitle("选择发送交通标志物");
+            String[] item = {"go_straight", "turn_left", "turn_around", "no_straight", "no_turn", "turn_right"};
+            String[] showItem = {"直行", "左转", "掉头", "禁止直行", "禁止通行", "右转"};
+            car_model_choose_builder.setSingleChoiceItems(showItem, -1, (dialog, which) -> mainViewModel.getTraffic_sign_data().setValue(item[which]));
+            car_model_choose_builder.create().show();
+        });
+        binding.cbTSSendMode.setOnCheckedChangeListener((buttonView, isChecked) -> mainViewModel.getSend_TS_mode().setValue(isChecked));
+        /* 车牌检测模式选择 */
+        binding.detectPlateMethodMode.setOnCheckedChangeListener((buttonView, isChecked) -> mainViewModel.getDetect_methods_choose().setValue(isChecked));
     }
 
     /**
@@ -351,6 +409,34 @@ public class ConfigFragment extends ABaseFragment {
             binding.sbVIDMin.setProgress((int) (f * 100));
             binding.VIDMinData.setDefaultValue((int) (f * 100));
             YoloV5_tfLite_VIDDetector.minimumConfidence = f;
+        });
+
+        /* 自定义数据 */
+        mainViewModel.getPlate_data().observe(getViewLifecycleOwner(), s -> {
+            if (s != null) binding.plateData.setText(s);
+        });
+        mainViewModel.getCar_type_data().observe(getViewLifecycleOwner(), s -> {
+            if (s != null) binding.tvSendCarType.setText(s);
+        });
+        mainViewModel.getTraffic_sign_data().observe(getViewLifecycleOwner(), s -> {
+            if (s != null) binding.tvSendTSData.setText(s);
+        });
+        /* 自定义数据发送方式 */
+        mainViewModel.getSend_plate_mode().observe(getViewLifecycleOwner(), b -> {
+            binding.cbPlateSendMode.setChecked(b);
+            binding.cbPlateSendMode.setText(b ? R.string.use_input_plate : R.string.dont_use_input_plate);
+        });
+        mainViewModel.getSend_car_type_mode().observe(getViewLifecycleOwner(), b -> {
+            binding.cbCarTypeSendMode.setChecked(b);
+            binding.cbCarTypeSendMode.setText(b ? R.string.use_choose_car_type : R.string.dont_use_choose_car_type);
+        });
+        mainViewModel.getSend_TS_mode().observe(getViewLifecycleOwner(), b -> {
+            binding.cbTSSendMode.setChecked(b);
+            binding.cbTSSendMode.setText(b ? R.string.use_choose_TS : R.string.dont_use_choose_TS);
+        });
+        mainViewModel.getDetect_methods_choose().observe(getViewLifecycleOwner(), b -> {
+            binding.detectPlateMethodMode.setChecked(b);
+            binding.detectPlateMethodMode.setText(b ? R.string.use_plate_color_detect_plate : R.string.use_car_type_frame_select_detect_plate);
         });
     }
 

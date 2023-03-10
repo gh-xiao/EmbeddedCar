@@ -47,6 +47,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
@@ -101,7 +102,7 @@ public class ConnectTransport {
     //图形识别结果
     private int shapeResult = 0;
     //识别的车牌号
-    private String plate;
+    private String plate = "A123B4";
     //识别的车型
     private short car_type = 3;
     //交通标志物识别编号
@@ -1697,7 +1698,7 @@ public class ConnectTransport {
     }
 
     /**
-     * TODO 图形识别信息发送
+     * 图形识别信息发送
      *
      * @param task 图形统计对象
      */
@@ -2023,20 +2024,7 @@ public class ConnectTransport {
         boolean fail = true;
         if (recognition != null) {
             sendUIMassage(1, "需要识别" + recognition.getTitle() + "上的车牌");
-            /* TODO 将识别到的车型发送给从车 */
-            switch (recognition.getTitle()) {
-                case "motor":
-                    car_type = 0x01;
-                    break;
-                case "car":
-                    car_type = 0x02;
-                    break;
-                case "truck":
-                case "van":
-                    car_type = 0x03;
-                    break;
-            }
-            sendOther((short) 0xC8, car_type, (short) 0x00, (short) 0x00);
+            carTypeSend(recognition.getTitle());
             int x = (int) recognition.getLocation().left;
             int y = (int) recognition.getLocation().top;
             int width = (int) (recognition.getLocation().right - recognition.getLocation().left);
@@ -2080,8 +2068,36 @@ public class ConnectTransport {
      * 车牌信息发送
      */
     private void plateSend() {
-        sendUIMassage(1, plate);
-        /* 以下发送给TFT */
+        if (Boolean.TRUE.equals(mainViewModel.getSend_plate_mode().getValue())) {
+            String send = (mainViewModel.getPlate_data().getValue() == null || mainViewModel.getPlate_data().getValue().length() < 6) ? "A123B4" : mainViewModel.getPlate_data().getValue();
+            send = send.toUpperCase(Locale.ROOT);
+            sendUIMassage(1, send.substring(0, 6));
+            /* 以下发送给TFT */
+//        for (int J = 0; J < 5; J++) {
+//            YanChi(500);
+//            TFT_LCD(0x0B, 0x20, send.charAt(0), send.charAt(1), send.charAt(2));
+//        }
+//        sendUIMassage(1, "第一次发送成功");
+//        YanChi(1500);
+//        for (int J = 0; J < 5; J++) {
+//            YanChi(500);
+//            TFT_LCD(0x0B, 0x21, send.charAt(3), send.charAt(4), send.charAt(5));
+//        }
+//        sendUIMassage(1, "第二次发送成功");
+            /* 以下发送给从车 */
+            for (int J = 0; J < 3; J++) {
+                YanChi(500);
+                sendOther((short) 0xD1, (byte) (int) send.charAt(0), (byte) (int) send.charAt(1), (byte) (int) send.charAt(2));
+            }
+            sendUIMassage(1, "第一次发送成功");
+            for (int J = 0; J < 3; J++) {
+                YanChi(500);
+                sendOther((short) 0xD2, (byte) (int) send.charAt(3), (byte) (int) send.charAt(4), (byte) (int) send.charAt(5));
+            }
+            sendUIMassage(1, "第二次发送成功");
+        } else {
+            sendUIMassage(1, plate);
+            /* 以下发送给TFT */
 //        for (int J = 0; J < 5; J++) {
 //            YanChi(500);
 //            TFT_LCD(0x0B, 0x20, plate.charAt(0), plate.charAt(1), plate.charAt(2));
@@ -2093,17 +2109,18 @@ public class ConnectTransport {
 //            TFT_LCD(0x0B, 0x21, plate.charAt(3), plate.charAt(4), plate.charAt(5));
 //        }
 //        sendUIMassage(1, "第二次发送成功");
-        /* 以下发送给从车 */
-        for (int J = 0; J < 3; J++) {
-            YanChi(500);
-            sendOther((short) 0xD1, (byte) (int) plate.charAt(0), (byte) (int) plate.charAt(1), (byte) (int) plate.charAt(2));
+            /* 以下发送给从车 */
+            for (int J = 0; J < 3; J++) {
+                YanChi(500);
+                sendOther((short) 0xD1, (byte) (int) plate.charAt(0), (byte) (int) plate.charAt(1), (byte) (int) plate.charAt(2));
+            }
+            sendUIMassage(1, "第一次发送成功");
+            for (int J = 0; J < 3; J++) {
+                YanChi(500);
+                sendOther((short) 0xD2, (byte) (int) plate.charAt(3), (byte) (int) plate.charAt(4), (byte) (int) plate.charAt(5));
+            }
+            sendUIMassage(1, "第二次发送成功");
         }
-        sendUIMassage(1, "第一次发送成功");
-        for (int J = 0; J < 3; J++) {
-            YanChi(500);
-            sendOther((short) 0xD2, (byte) (int) plate.charAt(3), (byte) (int) plate.charAt(4), (byte) (int) plate.charAt(5));
-        }
-        sendUIMassage(1, "第二次发送成功");
         YanChi(500);
     }
 
@@ -2182,6 +2199,43 @@ public class ConnectTransport {
         return recognition;
     }
 
+    /**
+     * 车型信息发送
+     */
+    private void carTypeSend(String title) {
+        if (Boolean.TRUE.equals(mainViewModel.getSend_car_type_mode().getValue())) {
+            String send = mainViewModel.getCar_type_data().getValue() == null ? "ERROR" : mainViewModel.getCar_type_data().getValue();
+            sendUIMassage(1, "车型信息发送: " + send);
+            switch (send) {
+                case "motor":
+                    car_type = 0x01;
+                    break;
+                case "car":
+                    car_type = 0x02;
+                    break;
+                case "truck":
+                case "van":
+                    car_type = 0x03;
+                    break;
+            }
+        } else {
+            /* 将识别到的车型发送给从车 */
+            switch (title) {
+                case "motor":
+                    car_type = 0x01;
+                    break;
+                case "car":
+                    car_type = 0x02;
+                    break;
+                case "truck":
+                case "van":
+                    car_type = 0x03;
+                    break;
+            }
+        }
+        sendOther((short) 0xC8, car_type, (short) 0x00, (short) 0x00);
+    }
+
     /* ================================================== */
 
     /**
@@ -2258,13 +2312,39 @@ public class ConnectTransport {
                 getTrafficFlag = 3;
                 break;
         }
+        sendTSInfo();
     }
 
     /**
-     * TODO 交通标志物信息发送
+     * 交通标志物信息发送
      */
     private void sendTSInfo() {
-        //        /* 以下发送给主车 */
+        if (Boolean.TRUE.equals(mainViewModel.getSend_TS_mode().getValue())) {
+            String send = mainViewModel.getTraffic_sign_data().getValue() == null ? "ERROR" : mainViewModel.getTraffic_sign_data().getValue();
+            sendUIMassage(1, "交通标志物信息发送: " + send);
+            switch (send) {
+                case "go_straight":
+                    getTrafficFlag = 1;
+                    break;
+                case "turn_left":
+                    getTrafficFlag = 2;
+                    break;
+                case "turn_around":
+                    getTrafficFlag = 4;
+                    break;
+                case "no_straight":
+                    getTrafficFlag = 5;
+                    break;
+                case "no_turn":
+                    getTrafficFlag = 6;
+                    break;
+                case "turn_right":
+                default:
+                    getTrafficFlag = 3;
+                    break;
+            }
+        }
+        /* 以下发送给主车 */
 //        send((short) 0xC9, getTrafficFlag, (short) 0x00, (short) 0x00);
         YanChi(500);
         /* 以下发送给从车 */

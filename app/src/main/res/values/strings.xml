@@ -104,6 +104,20 @@
     <string name="traffic_sign_confidence">交通标志物识别置信度:</string>
     <string name="reset">还原</string>
     <string name="VID_confidence">车型识别最低置信度:</string>
+    <string name="a123b4">A123B4</string>
+    <string name="input_or_choose_send_plate">填入或选择发送的车牌:</string>
+    <string name="choose_send_plate">选择车牌</string>
+    <string name="use_input_plate">使用填入车牌</string>
+    <string name="dont_use_input_plate">不使用填入车牌</string>
+    <string name="choose_send_car_type">选择发送的车型:</string>
+    <string name="use_choose_car_type">使用选择车型</string>
+    <string name="dont_use_choose_car_type">不使用选择车型</string>
+    <string name="choose_send_TS">选择发送的交通标志物:</string>
+    <string name="choose_TS">选择交通标志物</string>
+    <string name="use_choose_TS">使用选择的交通标志物</string>
+    <string name="dont_use_choose_TS">不使用选择的交通标志物</string>
+    <string name="use_car_type_frame_select_detect_plate">使用车型框选车牌识别</string>
+    <string name="use_plate_color_detect_plate">使用车牌种类车牌识别</string>
 
     <!--    fragment_connect-->
     <string name="show_and_hide_psd">showAndHidePsd</string>

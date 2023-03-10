@@ -397,7 +397,7 @@
             </LinearLayout>
 
             <Button
-                android:id="@+id/detect_car_model_choose_btn"
+                android:id="@+id/detect_car_type_choose_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/choose_car_type"
@@ -407,13 +407,13 @@
                 tools:ignore="TextContrastCheck" />
 
             <Button
-                android:id="@+id/car_model_choose_btn"
+                android:id="@+id/car_type_choose_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/choose_car_type"
-                app:layout_constraintBottom_toBottomOf="@+id/detect_car_model_choose_btn"
-                app:layout_constraintStart_toEndOf="@+id/detect_car_model_choose_btn"
-                app:layout_constraintTop_toTopOf="@+id/detect_car_model_choose_btn"
+                app:layout_constraintBottom_toBottomOf="@+id/detect_car_type_choose_btn"
+                app:layout_constraintStart_toEndOf="@+id/detect_car_type_choose_btn"
+                app:layout_constraintTop_toTopOf="@+id/detect_car_type_choose_btn"
                 tools:ignore="TextContrastCheck" />
 
             <LinearLayout
@@ -537,8 +537,165 @@
                 app:layout_constraintTop_toTopOf="@+id/VID_min_data"
                 app:layout_constraintWidth_percent="0.15"
                 tools:ignore="TextContrastCheck" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <LinearLayout
+                android:id="@+id/line_send_plate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="15dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/line_VID_Confidence"
+                app:layout_constraintWidth_percent="0.65">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/input_or_choose_send_plate"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/plate_data"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/et_plate_data"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:autofillHints="no"
+                    android:hint="@string/a123b4"
+                    android:inputType="text"
+                    android:minHeight="48dp"
+                    android:textAlignment="center"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/send_plate_choose_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/choose_send_plate"
+                app:layout_constraintBottom_toBottomOf="@+id/line_send_plate"
+                app:layout_constraintStart_toEndOf="@+id/line_send_plate"
+                app:layout_constraintTop_toTopOf="@+id/line_send_plate"
+                tools:ignore="TextContrastCheck" />
+
+            <CheckBox
+                android:id="@+id/cb_plate_send_mode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@+id/send_plate_choose_btn"
+                app:layout_constraintStart_toEndOf="@+id/send_plate_choose_btn"
+                app:layout_constraintTop_toTopOf="@+id/send_plate_choose_btn" />
+
+            <LinearLayout
+                android:id="@+id/line_send_car_type"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="15dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/line_send_plate"
+                app:layout_constraintWidth_percent="0.45">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/choose_send_car_type"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_send_car_type"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/send_car_type_choose_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/choose_car_type"
+                app:layout_constraintBottom_toBottomOf="@+id/line_send_car_type"
+                app:layout_constraintStart_toEndOf="@+id/line_send_car_type"
+                app:layout_constraintTop_toTopOf="@+id/line_send_car_type"
+                tools:ignore="TextContrastCheck" />
+
+            <CheckBox
+                android:id="@+id/cb_car_type_send_mode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@+id/send_car_type_choose_btn"
+                app:layout_constraintStart_toEndOf="@+id/send_car_type_choose_btn"
+                app:layout_constraintTop_toTopOf="@+id/send_car_type_choose_btn" />
+
+            <LinearLayout
+                android:id="@+id/line_send_TS"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="15dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/line_send_car_type"
+                app:layout_constraintWidth_percent="0.45">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/choose_send_TS"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_send_TS_data"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/send_TS_choose_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/choose_TS"
+                app:layout_constraintBottom_toBottomOf="@+id/line_send_TS"
+                app:layout_constraintStart_toEndOf="@+id/line_send_TS"
+                app:layout_constraintTop_toTopOf="@+id/line_send_TS"
+                tools:ignore="TextContrastCheck" />
+
+            <CheckBox
+                android:id="@+id/cb_TS_send_mode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@+id/send_TS_choose_btn"
+                app:layout_constraintStart_toEndOf="@+id/send_TS_choose_btn"
+                app:layout_constraintTop_toTopOf="@+id/send_TS_choose_btn" />
+
+            <CheckBox
+                android:id="@+id/detect_plate_method_mode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/line_send_TS"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
     <TextView

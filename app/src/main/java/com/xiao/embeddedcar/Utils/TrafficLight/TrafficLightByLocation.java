@@ -23,16 +23,12 @@ public class TrafficLightByLocation {
 
     private static final String TAG = TrafficLightByLocation.class.getSimpleName();
     //原始位置阈值
-    private static final int ORIGIN_LOCATION = 65;
+    public static final int ORIGIN_LOCATION = 65;
     //红绿灯位置阈值调整
     private static int LIGHT_LOCATION = 65;
     private static Mat rAyMat, greenMat;
     //已经处理好的图像
     private static Bitmap detectROI;
-
-    public static int getOriginLocation() {
-        return ORIGIN_LOCATION;
-    }
 
     public static Bitmap getDetectROI() {
         return detectROI;
