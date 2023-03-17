@@ -13,7 +13,7 @@ public class FastDo {
         return flag;
     }
 
-    // 两次点击按钮之间的点击间隔不能少于300毫秒(3秒)
+    // 两次主车信息发送之间的时间间隔不能少于1秒
     private static final int MIN_SEND_DELAY_TIME = 1000;
     private static long lastSendTime;
 
