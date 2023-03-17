@@ -45,34 +45,32 @@
                     android:textStyle="bold" />
             </LinearLayout>
 
-            <RadioGroup
-                android:id="@+id/QR_color_choose_RG"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintBottom_toBottomOf="@+id/line_qr"
-                app:layout_constraintStart_toEndOf="@+id/line_qr"
-                app:layout_constraintTop_toTopOf="@+id/line_qr">
-
-                <RadioButton
+                <CheckBox
                     android:id="@+id/rb_QR_red"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/red" />
+                    android:text="@string/red"
+                    app:layout_constraintBottom_toBottomOf="@+id/line_qr"
+                    app:layout_constraintStart_toEndOf="@+id/line_qr"
+                    app:layout_constraintTop_toTopOf="@+id/line_qr"/>
 
-                <RadioButton
+                <CheckBox
                     android:id="@+id/rb_QR_green"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/green" />
+                    android:text="@string/green"
+                    app:layout_constraintBottom_toBottomOf="@+id/rb_QR_red"
+                    app:layout_constraintStart_toEndOf="@+id/rb_QR_red"
+                    app:layout_constraintTop_toTopOf="@+id/rb_QR_red"/>
 
-                <RadioButton
+                <CheckBox
                     android:id="@+id/rb_QR_blue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/blue" />
-
-            </RadioGroup>
+                    android:text="@string/blue"
+                    app:layout_constraintBottom_toBottomOf="@+id/rb_QR_green"
+                    app:layout_constraintStart_toEndOf="@+id/rb_QR_green"
+                    app:layout_constraintTop_toTopOf="@+id/rb_QR_green"/>
 
             <LinearLayout
                 android:id="@+id/line_shape"

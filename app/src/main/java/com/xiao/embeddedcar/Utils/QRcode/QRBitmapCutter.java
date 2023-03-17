@@ -33,9 +33,17 @@ public class QRBitmapCutter {
     //轮廓统计
     private static final List<MatOfPoint> contours = new ArrayList<>();
     //检测颜色选择
-    public static QRColor color = QRColor.RED;
+    private static QRColor color = QRColor.RED;
 
     public enum QRColor {RED, GREEN, BLUE}
+
+    public static QRColor getColor() {
+        return color;
+    }
+
+    public static void setColor(QRColor color) {
+        QRBitmapCutter.color = color;
+    }
 
     /**
      * @param inputQRBitmap 待解析裁剪的二维码原图
@@ -52,7 +60,8 @@ public class QRBitmapCutter {
             Imgproc.cvtColor(mat, mat, Imgproc.COLOR_BGR2RGB);
         }
         /* 设置感兴趣区域,减少误裁剪概率 */
-        Rect ROI = new Rect(100, 0, mat.width() - 190, mat.height() - 35);
+//        Rect ROI = new Rect(100, 10, mat.width() - 190, mat.height() - 35);
+        Rect ROI = new Rect((mat.width() / 100 * 40), (mat.height() / 100 * 10), (mat.width() / 100 * 28), (mat.height() / 100 * 75));
         Mat ROIMat = new Mat(mat, ROI);
         /* 转换为包含hsv参数的mat对象 */
         Mat hsvMat = new Mat();
@@ -78,10 +87,8 @@ public class QRBitmapCutter {
         Mat kernel = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3, 3));
         //https://www.jianshu.com/p/ee72f5215e07
         /* 膨胀操作(扩大白色联通区域) */
-        Imgproc.morphologyEx(hsvMat, hsvMat, Imgproc.MORPH_DILATE, kernel);
-        Imgproc.morphologyEx(hsvMat, hsvMat, Imgproc.MORPH_DILATE, kernel);
-        Imgproc.morphologyEx(hsvMat, hsvMat, Imgproc.MORPH_DILATE, kernel);
-
+        for (int i = 1; i <= 6; i++)
+            Imgproc.morphologyEx(hsvMat, hsvMat, Imgproc.MORPH_DILATE, kernel);
         contours.clear();
         /* 获取轮廓 */
         //无用但必要的Mat对象
@@ -132,12 +139,12 @@ public class QRBitmapCutter {
                 } catch (Exception e) {
                     Log.e(TAG, "二维码裁剪错误");
                     e.printStackTrace();
-                    return null;
+                    return inputQRBitmap;
                 }
             }
         }
         Log.e(TAG, "没有查找到轮廓");
-        return null;
+        return inputQRBitmap;
     }
 
     /**

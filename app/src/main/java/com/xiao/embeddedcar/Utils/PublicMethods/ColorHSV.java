@@ -25,11 +25,13 @@ public final class ColorHSV {
     public static final int[] greenHSV1 = new int[]{0, 70, 40, 255, 150, 255, 110};
     //青色
     public static final int[] cyanHSV = new int[]{0, 95, 85, 255, 150, 255, 110};
+    public static final int[] cyanHSV1 = new int[]{0, 95, 85, 255, 190, 255, 110};
     //蓝色
     public static final int[] blueHSV = new int[]{0, 120, 110, 255, 150, 255, 110};
     public static final int[] blueHSV1 = new int[]{0, 130, 95, 255, 225, 255, 110};
     public static final int[] blueHSV2 = new int[]{0, 120, 85, 255, 210, 255, 195};
     public static final int[] blueHSV3 = new int[]{0, 120, 85, 255, 210, 255, 110};
+    public static final int[] blueHSV4 = new int[]{0, 130, 110, 255, 210, 255, 195};
     //蓝色 - 红色取反
     public static final int[] red2blueHSV = new int[]{0, 140, 110, 255, 150, 255, 110};
     //紫色

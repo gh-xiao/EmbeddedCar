@@ -52,15 +52,9 @@ public class ConfigFragment extends ABaseFragment {
     @SuppressLint("SetTextI18n")
     @Override
     void init() {
-        /* 二维码颜色选择 */
-        binding.QRColorChooseRG.setOnCheckedChangeListener((group, id) -> {
-            if (id == R.id.rb_QR_red)
-                mainViewModel.getQR_color().setValue(QRBitmapCutter.QRColor.RED);
-            if (id == R.id.rb_QR_green)
-                mainViewModel.getQR_color().setValue(QRBitmapCutter.QRColor.GREEN);
-            if (id == R.id.rb_QR_blue)
-                mainViewModel.getQR_color().setValue(QRBitmapCutter.QRColor.BLUE);
-        });
+        binding.rbQRRed.setOnCheckedChangeListener((buttonView, b) -> mainViewModel.getRed().setValue(b));
+        binding.rbQRGreen.setOnCheckedChangeListener((buttonView, b) -> mainViewModel.getGreen().setValue(b));
+        binding.rbQRBlue.setOnCheckedChangeListener((buttonView, b) -> mainViewModel.getBlue().setValue(b));
         /* 图形颜色选择 */
         binding.shapeColorChooseBtn.setOnClickListener(v -> {
             AlertDialog.Builder shape_color_choose_builder = new AlertDialog.Builder(requireActivity());
@@ -198,7 +192,7 @@ public class ConfigFragment extends ABaseFragment {
             AlertDialog.Builder save_plate_choose_builder = new AlertDialog.Builder(requireActivity());
             save_plate_choose_builder.setTitle("选择已保存的车牌");
             String[] item = Objects.requireNonNull(ConnectTransport.getInstance().getPlate_list()).toArray(new String[0]);
-            save_plate_choose_builder.setSingleChoiceItems(item, -1, (dialog, which) ->  binding.etPlateData.setText(item[which]));
+            save_plate_choose_builder.setSingleChoiceItems(item, -1, (dialog, which) -> binding.etPlateData.setText(item[which]));
             save_plate_choose_builder.create().show();
         });
         binding.cbPlateSendMode.setOnCheckedChangeListener((buttonView, isChecked) -> mainViewModel.getSend_plate_mode().setValue(isChecked));
@@ -311,21 +305,38 @@ public class ConfigFragment extends ABaseFragment {
 
     @Override
     void observerDataStateUpdateAction() {
-        mainViewModel.getQR_color().observe(getViewLifecycleOwner(), qrColor -> {
-            QRBitmapCutter.color = qrColor;
-            switch (qrColor) {
-                case RED:
-                    binding.tvQrColor.setText("红色");
-                    binding.QRColorChooseRG.check(R.id.rb_QR_red);
-                    break;
-                case GREEN:
-                    binding.tvQrColor.setText("绿色");
-                    binding.QRColorChooseRG.check(R.id.rb_QR_green);
-                    break;
-                case BLUE:
-                    binding.tvQrColor.setText("蓝色");
-                    binding.QRColorChooseRG.check(R.id.rb_QR_blue);
-                    break;
+        mainViewModel.getRed().observe(getViewLifecycleOwner(), b -> {
+            binding.rbQRRed.setChecked(b);
+            if (b) {
+                if (!Objects.requireNonNull(mainViewModel.getQR_color().getValue()).contains(QRBitmapCutter.QRColor.RED))
+                    Objects.requireNonNull(mainViewModel.getQR_color().getValue()).add(QRBitmapCutter.QRColor.RED);
+                binding.tvQrColor.append("●红色●");
+            } else {
+                Objects.requireNonNull(mainViewModel.getQR_color().getValue()).remove(QRBitmapCutter.QRColor.RED);
+                binding.tvQrColor.setText(binding.tvQrColor.getText().toString().replace("●红色●", ""));
+            }
+        });
+        mainViewModel.getGreen().observe(getViewLifecycleOwner(), b -> {
+            binding.rbQRGreen.setChecked(b);
+            if (b) {
+                if (!Objects.requireNonNull(mainViewModel.getQR_color().getValue()).contains(QRBitmapCutter.QRColor.GREEN))
+                    Objects.requireNonNull(mainViewModel.getQR_color().getValue()).add(QRBitmapCutter.QRColor.GREEN);
+                binding.tvQrColor.append("●绿色●");
+            } else {
+                Objects.requireNonNull(mainViewModel.getQR_color().getValue()).remove(QRBitmapCutter.QRColor.GREEN);
+                binding.tvQrColor.setText(binding.tvQrColor.getText().toString().replace("●绿色●", ""));
+            }
+
+        });
+        mainViewModel.getBlue().observe(getViewLifecycleOwner(), b -> {
+            binding.rbQRBlue.setChecked(b);
+            if (b) {
+                if (!Objects.requireNonNull(mainViewModel.getQR_color().getValue()).contains(QRBitmapCutter.QRColor.BLUE))
+                    Objects.requireNonNull(mainViewModel.getQR_color().getValue()).add(QRBitmapCutter.QRColor.BLUE);
+                binding.tvQrColor.append("●蓝色●");
+            } else {
+                Objects.requireNonNull(mainViewModel.getQR_color().getValue()).remove(QRBitmapCutter.QRColor.BLUE);
+                binding.tvQrColor.setText(binding.tvQrColor.getText().toString().replace("●蓝色●", ""));
             }
         });
         mainViewModel.getShape_color().observe(getViewLifecycleOwner(), s -> binding.tvShapeColor.setText(s));

@@ -11,9 +11,9 @@ public class GetCode {
     public static String parsing(String str) {
         StringBuilder sb = new StringBuilder();
         for (char ch : str.toCharArray()) {
-            if (Character.isDigit(ch) || Character.isUpperCase(ch) || Character.isLowerCase(ch))
+//            if (Character.isDigit(ch) || Character.isUpperCase(ch) || Character.isLowerCase(ch))
 //            if (Character.isDigit(ch) || Character.isUpperCase(ch))
-                sb.append(ch);
+            if (Character.isDigit(ch)) sb.append(ch);
         }
         String code = sb.toString();
 //        System.out.println(code);

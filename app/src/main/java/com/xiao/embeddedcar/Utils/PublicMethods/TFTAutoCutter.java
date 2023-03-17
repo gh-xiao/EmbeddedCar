@@ -32,7 +32,8 @@ public class TFTAutoCutter {
     // 可用
 //    private static int[] CutterPara = {0, 0, 180, 10, 255, 200, 255};
 //    private static int[] CutterPara = {0, 0, 180, 10, 255, 160, 255};
-    private static int[] CutterPara = {0, 0, 180, 46, 255, 115, 255};
+//    private static int[] CutterPara = {0, 0, 180, 46, 255, 115, 255};
+    private static int[] CutterPara = {0, 0, 180, 46, 255, 155, 255};
 
     public static int[] getOriginPara() {
         return OriginPara;

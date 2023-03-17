@@ -5,11 +5,19 @@ import androidx.lifecycle.ViewModel;
 
 import com.xiao.embeddedcar.Utils.QRcode.QRBitmapCutter;
 
+import java.util.ArrayList;
+
 public class MainViewModel extends ViewModel {
     //主从状态
     private final MutableLiveData<Boolean> chief_state_flag = new MutableLiveData<>(true);
     //二维码检测色彩
-    private final MutableLiveData<QRBitmapCutter.QRColor> QR_color = new MutableLiveData<>(QRBitmapCutter.color);
+    private final MutableLiveData<ArrayList<QRBitmapCutter.QRColor>> QR_color = new MutableLiveData<>(new ArrayList<>());
+    //红色
+    private final MutableLiveData<Boolean> red = new MutableLiveData<>(true);
+    //绿色
+    private final MutableLiveData<Boolean> green = new MutableLiveData<>(false);
+    //蓝色
+    private final MutableLiveData<Boolean> blue = new MutableLiveData<>(true);
     //智能交通灯设备发送选择: 1/2 - A/B
     private final MutableLiveData<Integer> send_trafficLight = new MutableLiveData<>(1);
     //智能交通灯设备位置检测选择: 1/2 - 长线/短线
@@ -23,7 +31,7 @@ public class MainViewModel extends ViewModel {
     //车牌种类
     private final MutableLiveData<String> plate_color = new MutableLiveData<>("green");
     //车型检测种类
-    private final MutableLiveData<String> detect_car_type = new MutableLiveData<>("bike");
+    private final MutableLiveData<String> detect_car_type = new MutableLiveData<>("car");
     //车型所需种类
     private final MutableLiveData<String> car_type = new MutableLiveData<>("all");
     //交通标志物识别最低置信度
@@ -51,8 +59,20 @@ public class MainViewModel extends ViewModel {
         return chief_state_flag;
     }
 
-    public MutableLiveData<QRBitmapCutter.QRColor> getQR_color() {
+    public MutableLiveData<ArrayList<QRBitmapCutter.QRColor>> getQR_color() {
         return QR_color;
+    }
+
+    public MutableLiveData<Boolean> getRed() {
+        return red;
+    }
+
+    public MutableLiveData<Boolean> getBlue() {
+        return blue;
+    }
+
+    public MutableLiveData<Boolean> getGreen() {
+        return green;
     }
 
     public MutableLiveData<Integer> getSend_trafficLight() {

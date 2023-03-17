@@ -98,8 +98,12 @@ public class ConnectTransport {
     private static char[] RFID2;
     //超声波数据
     private long ultraSonic = 260;
-    //二维码识别结果
-    private String qrResult = "A26";
+    //二维码信息
+    private static String RedQR = "SSSSSSSS";
+    private static String BlueQR = "+8%#3<>6";
+    private static short P = 8;
+    private static short Q = 3;
+    private static short N = 6;
     //图形识别结果
     private int shapeResult = 0;
     //识别的车牌号
@@ -937,55 +941,131 @@ public class ConnectTransport {
                 break;
             //二维码识别 + 超声波测距数据
             case 3:
-                YanChi(500);
-                cameraCommandUtil.postHttp(MainActivity.getLoginInfo().getIPCamera(), 2, 1);
-                YanChi(1000);
+//                try {
+//                    YanChi(500);
+//                    cameraCommandUtil.postHttp(MainActivity.getLoginInfo().getIPCamera(), 2, 1);
+//                    YanChi(1000);
+//                    try {
+//                        WeChatQR_byString_mod();
+//                    } catch (Exception e) {
+//                        RedQR = "SSSSSSSS";
+//                        BlueQR = "+8%#3<>6";
+//                        sendQRInfo();
+//                    }
+//                    /* 获取超声数据 */
+//                    ultraSonic = getUltraSonic();
+//
+//                    YanChi(500);
+//                    cameraCommandUtil.postHttp(MainActivity.getLoginInfo().getIPCamera(), 0, 1);
+//
+//                } catch (Exception e) {
+//                    sendUIMassage(1, "模块运行错误!");
+//                }
 
-                WeChatQR_mod();
-                ultraSonic = getUltraSonic();
+                try {
+                    YanChi(500);
+                    cameraCommandUtil.postHttp(MainActivity.getLoginInfo().getIPCamera(), 2, 1);
+                    YanChi(1000);
+                    try {
+                        if (mainViewModel.getQR_color().getValue() == null || mainViewModel.getQR_color().getValue().size() <= 0)
+                            WeChatQR_byString_mod();
+                        for (QRBitmapCutter.QRColor color : mainViewModel.getQR_color().getValue()) {
+                            QRBitmapCutter.setColor(color);
+                            WeChatQR_mod();
+                        }
+                    } catch (Exception e) {
+                        RedQR = "SSSSSSSS";
+                        BlueQR = "+8%#3<>6";
+                    }
+                    sendQRInfo();
+                    /* 获取超声数据 */
+                    ultraSonic = getUltraSonic();
 
-                YanChi(500);
-                cameraCommandUtil.postHttp(MainActivity.getLoginInfo().getIPCamera(), 0, 1);
+                    YanChi(500);
+                    cameraCommandUtil.postHttp(MainActivity.getLoginInfo().getIPCamera(), 0, 1);
+
+                } catch (Exception e) {
+                    sendUIMassage(1, "模块运行错误!");
+                }
+
                 YanChi(500);
                 send((short) (0xA0 + carGoto++), (short) 0x00, (short) 0x00, (short) 0x00);
                 break;
             //红绿灯识别
             case 4:
-                trafficLight_mod();
+                try {
+                    trafficLight_mod();
+                } catch (Exception e) {
+                    sendUIMassage(1, "模块运行错误!");
+                }
+
                 YanChi(500);
                 send((short) (0xA0 + carGoto++), (short) 0x00, (short) 0x00, (short) 0x00);
                 break;
             //立体显示 - 安卓控制
             case 5:
-                //得到发送的数组 (二维码数据+超声波十位数+超声波个位数(cm))
-                short[] data = StringToBytes("000" + qrResult + ultraSonic / 100 + ultraSonic / 10 % 10);
-                infrared_stereo(new short[]{0x20, data[0], data[1], data[2], data[3]});
-                YanChi(500);
-                infrared_stereo(new short[]{0x10, data[4], data[5], data[6], data[7]});
+                try {
+                    //得到发送的数组 (二维码数据+超声波十位数+超声波个位数(cm))
+                    short[] data = StringToBytes("32" + car_type + P + Q + N + ultraSonic / 100 + ultraSonic / 10 % 10);
+                    infrared_stereo(new short[]{0x20, data[0], data[1], data[2], data[3]});
+                    YanChi(500);
+                    infrared_stereo(new short[]{0x10, data[4], data[5], data[6], data[7]});
+                } catch (Exception ignored) {
+                    sendUIMassage(1, "模块运行错误!");
+                }
+
                 YanChi(500);
                 send((short) (0xA0 + carGoto++), (short) 0x00, (short) 0x00, (short) 0x00);
                 break;
             //TFT(A)合并项目 - 车型和车牌(注意TFT发送指令)
             case 6:
-                YanChi(500);
-                go(50, 100);
-                YanChi(500);
-                cameraCommandUtil.postHttp(MainActivity.getLoginInfo().getIPCamera(), 2, 1);
+                try {
+                    YanChi(500);
+                    cameraCommandUtil.postHttp(MainActivity.getLoginInfo().getIPCamera(), 2, 1);
 
-                plate_DetectByVID();
+                    YanChi(500);
+                    for (int J = 0; J < 3; J++) {
+                        YanChi(100);
+                        TFT_LCD(0x0B, 0x10, 0x02, 0x00, 0x00);
+                    }
+                    sendUIMassage(1, "TFT_A翻页中...");
+                    YanChi(500);
 
-                YanChi(500);
-                cameraCommandUtil.postHttp(MainActivity.getLoginInfo().getIPCamera(), 0, 1);
-                YanChi(500);
-                back(50, 100);
+                    if (Boolean.FALSE.equals(mainViewModel.getDetect_methods_choose().getValue()))
+                        plate_DetectByVID();
+                    else plate_DetectByColor();
+
+                    YanChi(500);
+                    cameraCommandUtil.postHttp(MainActivity.getLoginInfo().getIPCamera(), 0, 1);
+                } catch (Exception ignored) {
+                    sendUIMassage(1, "模块运行错误!");
+                }
+
                 YanChi(500);
                 send((short) (0xA0 + carGoto++), (short) 0x00, (short) 0x00, (short) 0x00);
                 break;
             //TFT合并项目 - 图形和交通标志物(注意TFT发送指令)
             case 7:
+                try {
+                    YanChi(500);
+                    cameraCommandUtil.postHttp(MainActivity.getLoginInfo().getIPCamera(), 2, 1);
 
-                trafficSign_mod();
-                Shape_mod();
+                    YanChi(500);
+                    for (int J = 0; J < 3; J++) {
+                        YanChi(100);
+                        TFT_LCD(0x08, 0x10, 0x02, 0x00, 0x00);
+                    }
+                    sendUIMassage(1, "TFT_A翻页中...");
+                    YanChi(500);
+
+                    trafficSign_mod();
+                    Shape_mod();
+
+                    YanChi(500);
+                    cameraCommandUtil.postHttp(MainActivity.getLoginInfo().getIPCamera(), 0, 1);
+                } catch (Exception ignored) {
+                    sendUIMassage(1, "模块运行错误!");
+                }
 
                 YanChi(500);
                 send((short) (0xA0 + carGoto++), (short) 0x00, (short) 0x00, (short) 0x00);
@@ -1028,427 +1108,6 @@ public class ConnectTransport {
      * D1发送给从车车牌数据前三位
      * D2发送给从车车牌数据后三位
      */
-    private void Q1() {
-
-        digital_clear();
-        YanChi(500);
-        digital_open();
-
-        // B8->B6->右转
-        YanChi(1000);
-        send((short) 0xB1, (short) 0x00, (short) 0x00, (short) 0x00);
-        YanChi(2500);
-        send((short) 0xB4, (short) 0x00, (short) 0x00, (short) 0x00);
-        System.out.println("B8->B6->右转-----模块完成");
-
-        // 过ETC->D6->右转面向智能语音播报系统
-        YanChi(3500);
-        send((short) 0xB1, (short) 0x00, (short) 0x00, (short) 0x00);
-        YanChi(3500);
-        send((short) 0xB4, (short) 0x00, (short) 0x00, (short) 0x00);
-        System.out.println("过ETC->D6->右转面向智能语音播报系统-----模块完成");
-        /*TODO
-         * 语音播报控制
-         */
-        //----------
-
-        //----------
-
-        // 左转->过障碍物通道->左转面向红绿灯
-        YanChi(3500);
-        send((short) 0xB3, (short) 0x00, (short) 0x00, (short) 0x00);
-        YanChi(3500);
-        send((short) 0xB1, (short) 0x00, (short) 0x00, (short) 0x00);
-        YanChi(3500);
-        send((short) 0xB3, (short) 0x00, (short) 0x00, (short) 0x00);
-        /*TODO
-         * 红绿灯
-         */
-        //----------
-        trafficLight_mod();
-        WeChatQR_mod();
-        //----------
-        System.out.println("左转->过障碍物通道->左转->红绿灯识别完成-----模块完成");
-
-        // 前进到F4->识别二维码
-        YanChi(1500);
-        send((short) 0xB1, (short) 0x00, (short) 0x00, (short) 0x00);
-        /*TODO
-         * 二维码识别
-         */
-        YanChi(1500);
-        //---------
-
-        //---------
-        System.out.println("前进到F4->识别二维码-----模块完成");
-
-        // 左转->前进到D4
-        YanChi(3500);
-        send((short) 0xB3, (short) 0x00, (short) 0x00, (short) 0x00);
-        YanChi(3500);
-        send((short) 0xB1, (short) 0x00, (short) 0x00, (short) 0x00);
-        System.out.println("左转->前进到D4-----模块完成");
-
-        // 右转->前进到D2->OCR识别/车牌识别
-        YanChi(2500);
-        send((short) 0xB4, (short) 0x00, (short) 0x00, (short) 0x00);
-        YanChi(1500);
-        ReadCard_short2crossroads();
-        YanChi(1000);
-
-        /*TODO
-         * OCR识别/车牌识别
-         */
-        //----------
-//        plate_mod_branch3();
-        //----------
-        System.out.println("右转->前进到D2->OCR识别/车牌识别-----模块完成");
-
-        // 左转->读卡并前进到B2
-        YanChi(2500);
-        send((short) 0xB3, (short) 0x00, (short) 0x00, (short) 0x00);
-        /*TODO
-         * 这里改为循迹读卡
-         */
-        YanChi(2500);
-        //----------
-        send((short) 0xB6, (short) 0x00, (short) 0x00, (short) 0x00);
-        YanChi(3000);
-        //长线-----半路程
-        ReadCard_longLine();
-        YanChi(2500);
-        //B2卡位
-        line(90);
-        YanChi(800);
-        stop();
-        YanChi(500);
-        send((short) 0xB2, (short) 0x00, (short) 0x00, (short) 0x00);
-        //读卡
-        YanChi(1500);
-        send((short) 0xB6, (short) 0x00, (short) 0x00, (short) 0x00);
-        //----------
-        System.out.println("左转->读卡并前进到B2-----模块完成");
-
-//        System.out.println(easyDL());
-
-        //倒车入库&&启动从车
-        YanChi(3500);
-        sendOther((short) 160, (short) 162, (short) 0x00, (short) 0x00);
-        YanChi(1500);
-        send((short) 0xA6, (short) 0x00, (short) 0x00, (short) 0x00);
-        System.out.println("倒车入库启动");
-
-    }
-
-    private void Q2() {
-
-        YanChi(1000);
-        garage_control(0x0D, 0x01, 0x01);
-        YanChi(1000);
-        digital_clear();
-        YanChi(1000);
-        digital_open();
-
-        // F7->F6->右转45
-        YanChi(1000);
-        send((short) 0xB1, (short) 0x00, (short) 0x00, (short) 0x00);
-        YanChi(3500);
-        send((short) 0xB9, (short) 0x00, (short) 0x00, (short) 0x00);
-        YanChi(3500);
-        //向TFT前进减少干扰
-        send((short) 0xB2, (short) 0x00, (short) 0x00, (short) 0x00);
-        YanChi(2000);
-        System.out.println("F7->F6->右转45-----模块完成");
-        //----------
-        //识别图形
-//        Shape_mod();
-        //识别车牌
-//        plate_mod_branch3();
-        //识别交通标志物
-
-        //----------
-        System.out.println("识别完成");
-        //左转面向E6道闸
-        //后退到原位置
-        YanChi(1000);
-        send((short) 0xC1, (short) 0x00, (short) 0x00, (short) 0x00);
-        YanChi(2000);
-        send((short) 0xB3, (short) 0x00, (short) 0x00, (short) 0x00);
-        YanChi(1500);
-        send((short) 0xB3, (short) 0x00, (short) 0x00, (short) 0x00);
-        System.out.println("左转面向E6道闸完成");
-
-        //F6->打开道闸->D6
-        YanChi(3500);
-        //发送信息给道闸
-        for (int J = 0; J < 3; J++) {
-            gate(0x10, plate.charAt(0), plate.charAt(1), plate.charAt(2));
-            YanChi(500);
-        }
-        //发送信息给道闸
-        for (int J = 0; J < 3; J++) {
-            gate(0x11, plate.charAt(3), plate.charAt(4), plate.charAt(5));
-            YanChi(100);
-        }
-        YanChi(500);
-        gate(0x01, 0x01, 0x00, 0x00);
-        YanChi(1000);
-        send((short) 0xB1, (short) 0x00, (short) 0x00, (short) 0x00);
-        System.out.println("F6->打开道闸->D6-----模块完成");
-
-        // D6->B6->左转面向静态标志物
-        YanChi(3500);
-        send((short) 0xB1, (short) 0x00, (short) 0x00, (short) 0x00);
-        YanChi(3500);
-        send((short) 0xB3, (short) 0x00, (short) 0x00, (short) 0x00);
-        System.out.println("D6->B6->左转面向静态标志物-----模块完成");
-
-        // 识别二维码/LCD发送测距信息->右转180->识别红绿灯
-        WeChatQR_mod();
-        YanChi(500);
-        for (int J = 0; J < 3; J++) {
-            digital_dic((int) getUltraSonic());
-            YanChi(100);
-        }
-        YanChi(1500);
-        send((short) 0xB4, (short) 0x00, (short) 0x00, (short) 0x00);
-        YanChi(3500);
-        send((short) 0xB4, (short) 0x00, (short) 0x00, (short) 0x00);
-//        trafficLight_mod(1);
-        System.out.println("识别二维码->左转/右转180->识别红绿灯-----模块完成");
-
-        // B6->B4->左转面向语音播报
-        YanChi(1500);
-        send((short) 0xB1, (short) 0x00, (short) 0x00, (short) 0x00);
-        YanChi(3500);
-        send((short) 0xB3, (short) 0x00, (short) 0x00, (short) 0x00);
-        YanChi(1500);
-        //----------
-        send((short) 0xC0, (short) 0x00, (short) 0x00, (short) 0x00);
-        //----------
-        System.out.println("B6->B4->左转面向语音播报-----模块完成");
-
-        // 右转面向立体显示->发送数据
-        YanChi(35000);
-        send((short) 0xB4, (short) 0x00, (short) 0x00, (short) 0x00);
-        YanChi(1500);
-        send((short) 0xB9, (short) 0x00, (short) 0x00, (short) 0x00);
-        //----------
-        YanChi(2000);
-        infrared_stereo(new short[]{0x15, getTrafficFlag, getTrafficFlag, 0x00, 0x00});
-        //----------
-        YanChi(3500);
-        send((short) 0xB4, (short) 0x00, (short) 0x00, (short) 0x00);
-        System.out.println("右转面向立体显示->发送数据-----模块完成");
-
-        // B4->寻卡->F4
-        YanChi(3500);
-        send((short) 0xB1, (short) 0x00, (short) 0x00, (short) 0x00);
-        YanChi(3500);
-        send((short) 0xB1, (short) 0x00, (short) 0x00, (short) 0x00);
-
-//        YanChi(2500);
-//        ReadCard_longLine();
-//        YanChi(2500);
-//        ReadCard_short2crossroads();
-//        YanChi(2500);
-//        ReadCard_longLine();
-//        YanChi(2500);
-//        ReadCard_short2crossroads();
-
-        System.out.println("B4->寻卡->F4-----模块完成");
-
-        // F4->左转->F2
-        YanChi(3500);
-        send((short) 0xB3, (short) 0x00, (short) 0x00, (short) 0x00);
-        YanChi(3500);
-        send((short) 0xB1, (short) 0x00, (short) 0x00, (short) 0x00);
-        System.out.println("F4->左转->F2-----模块完成");
-
-        // 右转->调整智能路灯->左转面向报警台->左转面向特殊地形
-        YanChi(3500);
-        send((short) 0xB4, (short) 0x00, (short) 0x00, (short) 0x00);
-        //----------
-        YanChi(3500);
-        //RFID卡解密结果
-        int k = 2;
-        //图形解析结果 - 红色图形数量
-        int r = shapeResult;
-        //灯光初始挡位
-//        int n = HomeFragment.getLight();
-        int n = 500;
-        Log.i(TAG, "RFID解密结果: " + k + " 图形解析结果: " + r + " 灯光初始挡位: " + n);
-        int i = (int) (Math.pow((k + r), n) % 4 + 1);
-        gear(i);
-        //----------
-        YanChi(3500);
-        send((short) 0xB3, (short) 0x00, (short) 0x00, (short) 0x00);
-        YanChi(1500);
-        send((short) 0xB8, (short) 0x00, (short) 0x00, (short) 0x00);
-        //----------
-        //开启报警台
-        //----------
-        YanChi(3500);
-        send((short) 0xB3, (short) 0x00, (short) 0x00, (short) 0x00);
-
-        // F2->特殊地形->B2
-        YanChi(3500);
-        send((short) 0xB1, (short) 0x00, (short) 0x00, (short) 0x00);
-
-        //倒车入库&&启动从车
-        YanChi(9000);
-//        sendOther((short) 160, (short) 162, (short) 0x00, (short) 0x00);
-//        YanChi(3500);
-        send((short) 0xB3, (short) 0x00, (short) 0x00, (short) 0x00);
-        YanChi(1500);
-        send((short) 0xB5, (short) 0x00, (short) 0x00, (short) 0x00);
-        System.out.println("倒车入库启动");
-
-
-    }
-
-    private void Q3() {
-
-        YanChi(1000);
-        for (int J = 0; J < 3; J++) {
-            digital_clear();
-            YanChi(50);
-        }
-        YanChi(1500);
-        digital_open();
-
-        // F7->F6
-        YanChi(1000);
-        send((short) 0xB1, (short) 0x00, (short) 0x00, (short) 0x00);
-        System.out.println("F7->F6-----模块完成");
-
-        //左转面向ETC
-        YanChi(2500);
-        send((short) 0xB3, (short) 0x00, (short) 0x00, (short) 0x00);
-        System.out.println("左转面向ETC完成");
-
-        //F6->打开ETC->B6
-        YanChi(3500);
-        //-----?????-----
-//        rudder_control(0x01, 0x01);
-        //-----?????-----
-        line(90);
-        YanChi(800);
-        stop();
-        //等待ETC开启
-        YanChi(1500);
-        //通过ETC到D6
-        send((short) 0xB1, (short) 0x00, (short) 0x00, (short) 0x00);
-        System.out.println("F6->打开ETC->D6-----模块完成");
-
-        // D6->B6->左面向静态标志物
-        YanChi(1500);
-        line(90);
-        YanChi(3500);
-        System.out.println("D6->B6->面向静态标志物-----模块完成");
-
-        // 识别二维码/LCD发送测距信息->右转180->识别红绿灯
-        WeChatQR_mod();
-        for (int J = 0; J < 3; J++) {
-            digital_dic((int) getUltraSonic());
-            YanChi(100);
-        }
-        YanChi(1000);
-        send((short) 0xB2, (short) 0x00, (short) 0x00, (short) 0x00);
-        YanChi(1000);
-        send((short) 0xB4, (short) 0x00, (short) 0x00, (short) 0x00);
-        System.out.println("识别二维码->右转180-----模块完成");
-
-        // B6->B4->左转面向TFT(A)
-        YanChi(2500);
-        send((short) 0xB1, (short) 0x00, (short) 0x00, (short) 0x00);
-        YanChi(3500);
-        send((short) 0xB3, (short) 0x00, (short) 0x00, (short) 0x00);
-        YanChi(1500);
-        //----------
-//        plate_mod_branch3();
-        Shape_mod();
-        sendOther((short) 160, (short) 162, (short) 0x00, (short) 0x00);
-        //----------
-        System.out.println("B6->B4->左转面向TFT(A)-----模块完成");
-
-        // 右转面向烽火台->发送数据
-        YanChi(2000);
-        send((short) 0xB4, (short) 0x00, (short) 0x00, (short) 0x00);
-        YanChi(1500);
-        send((short) 0xB9, (short) 0x00, (short) 0x00, (short) 0x00);
-        //----------
-        YanChi(2000);
-        //开启烽火台
-        //----------
-        YanChi(3500);
-        send((short) 0xB4, (short) 0x00, (short) 0x00, (short) 0x00);
-        System.out.println("右转面向烽火台->发送数据-----模块完成");
-
-        // B4->红绿灯识别->D4->开启道闸->F4
-        //----------
-        trafficLight_mod();
-        //----------
-        send((short) 0xB1, (short) 0x00, (short) 0x00, (short) 0x00);
-        YanChi(3500);
-        //----------
-        //发送信息给道闸
-        for (int J = 0; J < 3; J++) {
-            gate(0x10, plate.charAt(0), plate.charAt(1), plate.charAt(2));
-            YanChi(500);
-        }
-        //发送信息给道闸
-        for (int J = 0; J < 3; J++) {
-            gate(0x11, plate.charAt(3), plate.charAt(4), plate.charAt(5));
-            YanChi(100);
-        }
-        YanChi(500);
-        gate(0x01, 0x01, 0x00, 0x00);
-        //----------
-        YanChi(3000);
-        send((short) 0xB1, (short) 0x00, (short) 0x00, (short) 0x00);
-        System.out.println("B4->红绿灯识别->D4->开启道闸->F4-----模块完成");
-
-        // F4->识别交通标志物->左转->F2
-        //----------
-//        easyDL();
-        //----------
-        YanChi(1500);
-        send((short) 0xB3, (short) 0x00, (short) 0x00, (short) 0x00);
-        YanChi(3000);
-        send((short) 0xB1, (short) 0x00, (short) 0x00, (short) 0x00);
-        System.out.println("F4->左转->F2-----模块完成");
-
-        // 左转45面向报警台->左转面向特殊地形
-        YanChi(1500);
-        send((short) 0xB8, (short) 0x00, (short) 0x00, (short) 0x00);
-        //----------
-        //向立体显示物发数据
-        //----------
-        YanChi(3500);
-        send((short) 0xB3, (short) 0x00, (short) 0x00, (short) 0x00);
-
-        // F2->特殊地形->B2->语音识别
-        YanChi(2500);
-        line(90);
-        YanChi(1300);
-        go(50, 1200);
-        YanChi(2500);
-        send((short) 0xB1, (short) 0x00, (short) 0x00, (short) 0x00);
-        YanChi(2000);
-        //----------
-        send((short) 0xC0, (short) 0x00, (short) 0x00, (short) 0x00);
-        //----------
-        YanChi(30000);
-
-        //倒车入库
-        send((short) 0xB3, (short) 0x00, (short) 0x00, (short) 0x00);
-        YanChi(1500);
-        send((short) 0xB5, (short) 0x00, (short) 0x00, (short) 0x00);
-        System.out.println("倒车入库启动");
-
-    }
-
     public void Q4() {
 
         YanChi(1000);
@@ -1689,7 +1348,7 @@ public class ConnectTransport {
             if (totals <= 3 /*|| totals >= 6*/) {
                 for (int J = 0; J < 3; J++) {
                     YanChi(100);
-                    TFT_LCD(0x0B, 0x10, 0x02, 0x00, 0x00);
+                    TFT_LCD(0x08, 0x10, 0x02, 0x00, 0x00);
                 }
                 sendUIMassage(1, "当前识别次数: " + fre + "\n图形数量小于3,TFT_A翻页");
             } else {
@@ -1707,7 +1366,7 @@ public class ConnectTransport {
      *
      * @param task 图形统计对象
      */
-    private void sendShapeInfo(ShapeDetector task) {
+    public void sendShapeInfo(ShapeDetector task) {
         /* 以下发送给主车 */
 //        send((short) 0xC7, (short) shapeResult, (short) 0x00, (short) 0x00);
 //        YanChi(500);
@@ -1721,21 +1380,24 @@ public class ConnectTransport {
                 task.getShapeCounts("三角形") +
                 task.getShapeCounts("菱形") +
                 task.getShapeCounts("五角星");
+        YanChi(1500);
         for (int J = 0; J < 5; J++) {
             YanChi(500);
-            TFT_LCD(0x0B, 0x20, toTFT_B.charAt(0), toTFT_B.charAt(1), toTFT_B.charAt(2));
+            TFT_LCD(0x08, 0x20, toTFT_B.charAt(0), toTFT_B.charAt(1), toTFT_B.charAt(2));
         }
-        sendUIMassage(1, "第一次发送成功");
+        sendUIMassage(1, "TFT_B第一次发送成功");
         YanChi(1500);
-        for (int J = 0; J < 5; J++)
-            TFT_LCD(0x0B, 0x21, toTFT_B.charAt(3), toTFT_B.charAt(4), toTFT_B.charAt(5));
-        sendUIMassage(1, "第二次发送成功");
+        for (int J = 0; J < 5; J++) {
+            YanChi(500);
+            TFT_LCD(0x08, 0x21, toTFT_B.charAt(3), toTFT_B.charAt(4), toTFT_B.charAt(5));
+        }
+        sendUIMassage(1, "TFT_B第二次发送成功:\n" + toTFT_B);
         YanChi(500);
         /* 以下发送给LED数码显示管 */
         String toLED_one = "F" + Objects.requireNonNull(task.getColorCounts().get("红色")).getCounts("总计");
-        String toLED_two = String.valueOf(Objects.requireNonNull(task.getColorCounts().get("绿色")).getCounts("总计")) +
-                Objects.requireNonNull(task.getColorCounts().get("蓝色")).getCounts("总计");
-        digital(0x02, Integer.parseInt(toLED_one, 16), Integer.parseInt(toLED_two, 16), Integer.parseInt("0" + getTrafficFlag, 16));
+        String toLED_two = String.valueOf(Objects.requireNonNull(task.getColorCounts().get("绿色")).getCounts("总计"))
+                + Objects.requireNonNull(task.getColorCounts().get("蓝色")).getCounts("总计");
+        digital(2, Integer.parseInt(toLED_one, 16), Integer.parseInt(toLED_two, 16), Integer.parseInt("0" + getTrafficFlag, 16));
     }
 
     /**
@@ -1792,15 +1454,65 @@ public class ConnectTransport {
             try {
                 qrStr = WeChatQRCodeDetector.detectAndDecode(detect).get(0);
                 sendUIMassage(1, "第" + fre + "次识别二维码: ■■■" + qrStr + "■■■");
-            } catch (IndexOutOfBoundsException | NullPointerException e) {
-                sendUIMassage(1, "识别错误!");
+            } catch (Exception e) {
+                sendUIMassage(1, "识别错误!Exception!");
                 e.printStackTrace();
             }
         } while ((qrStr == null || qrStr.isEmpty()) && fre++ <= 5);
         if (qrStr == null || qrStr.isEmpty()) qrStr = "A1B2C3D4E5";
-        qrResult = GetCode.parsing(qrStr);
-        sendUIMassage(1, "最终结果: ■■■" + qrResult + "■■■");
-        sendQRInfo();
+        if (QRBitmapCutter.getColor() == QRBitmapCutter.QRColor.RED) {
+            RedQR = GetCode.parsing(qrStr);
+            P = Short.parseShort(String.valueOf(RedQR.charAt(0)));
+            Q = Short.parseShort(String.valueOf(RedQR.charAt(1)));
+            N = Short.parseShort(String.valueOf(RedQR.charAt(2)));
+            sendUIMassage(1, "红色最终结果: ■■■" + RedQR + "■■■");
+        }
+        if (QRBitmapCutter.getColor() == QRBitmapCutter.QRColor.BLUE) {
+            BlueQR = qrStr;
+            sendUIMassage(1, "蓝色最终结果: ■■■" + BlueQR + "■■■");
+        }
+    }
+
+    /**
+     * WeChat二维码扫描 - 根据结果输出给指定字符串(不进行颜色选择)
+     */
+    public synchronized void WeChatQR_byString_mod() {
+        int fre = 1;
+        int allHas = 0;
+        sendUIMassage(1, "开始识别二维码!");
+        do {
+            String qrStr = "";
+            YanChi(1500);
+            /* 扫描结果 */
+            List<String> list = WeChatQRCodeDetector.detectAndDecode(stream);
+            /* 重新扫描 */
+            if (list.size() <= 0) continue;
+            try {
+                for (int i = 0; i < list.size(); i++) {
+                    qrStr = list.get(i);
+                    String detectStr = GetCode.parsing(qrStr);
+                    /* 题意红色二维码所需数据 */
+                    if (detectStr.length() == 3) {
+                        RedQR = detectStr;
+                        sendUIMassage(1, "红色最终结果: ■■■" + RedQR + "■■■");
+                        P = Short.parseShort(String.valueOf(RedQR.charAt(0)));
+                        Q = Short.parseShort(String.valueOf(RedQR.charAt(1)));
+                        N = Short.parseShort(String.valueOf(RedQR.charAt(2)));
+                        allHas++;
+                    }
+                    /* 题意蓝色二维码所需数据 */
+                    else if (qrStr.length() == 8) {
+                        BlueQR = qrStr;
+                        sendUIMassage(1, "蓝色最终结果: ■■■" + BlueQR + "■■■");
+                        allHas++;
+                    }
+                }
+                sendUIMassage(1, "第" + fre + "次识别二维码: ■■■" + qrStr + "■■■");
+            } catch (Exception e) {
+                sendUIMassage(1, "识别错误!Exception!");
+                e.printStackTrace();
+            }
+        } while (fre++ <= 5 && allHas < 2);
     }
 
     /**
@@ -1811,11 +1523,11 @@ public class ConnectTransport {
         YanChi(500);
         short n;
         try {
-            n = Short.parseShort(String.valueOf(qrResult.charAt(2)));
+            n = N;
             sendUIMassage(1, "需要向从车发送的 N = " + n);
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             sendUIMassage(1, "解析错误!");
-            n = 2;
+            n = 6;
         }
         sendOther((short) 0xC6, n, (short) 0x00, (short) 0x00);
     }
@@ -1837,7 +1549,8 @@ public class ConnectTransport {
             e.printStackTrace();
         }
         if (qrStr == null || qrStr.isEmpty()) qrStr = "A1B2C3D4E5";
-        qrResult = GetCode.parsing(qrStr);
+        //二维码识别结果
+        String qrResult = GetCode.parsing(qrStr);
         sendUIMassage(1, "最终结果: ■■■" + qrResult + "■■■");
     }
 
@@ -2025,7 +1738,7 @@ public class ConnectTransport {
         }
         plate_list.clear();
         //车型识别结果
-        Classifier.Recognition recognition = VID_mod();
+        Classifier.Recognition recognition = VID_mod_fix();
         //车型识别使用的Bitmap
         Bitmap getCarLocal = MainActivity.getVID_Detector().getSaveBitmap();
         //是否处理成功
@@ -2083,53 +1796,53 @@ public class ConnectTransport {
             send = completion(send);
             sendUIMassage(1, send.substring(0, 6));
             /* 以下发送给TFT */
-//        for (int J = 0; J < 5; J++) {
-//            YanChi(500);
-//            TFT_LCD(0x0B, 0x20, send.charAt(0), send.charAt(1), send.charAt(2));
-//        }
-//        sendUIMassage(1, "第一次发送成功");
-//        YanChi(1500);
-//        for (int J = 0; J < 5; J++) {
-//            YanChi(500);
-//            TFT_LCD(0x0B, 0x21, send.charAt(3), send.charAt(4), send.charAt(5));
-//        }
-//        sendUIMassage(1, "第二次发送成功");
+            for (int J = 0; J < 5; J++) {
+                YanChi(500);
+                TFT_LCD(0x0B, 0x20, send.charAt(0), send.charAt(1), send.charAt(2));
+            }
+            sendUIMassage(1, "TFT第一次发送成功");
+            YanChi(1500);
+            for (int J = 0; J < 5; J++) {
+                YanChi(500);
+                TFT_LCD(0x0B, 0x21, send.charAt(3), send.charAt(4), send.charAt(5));
+            }
+            sendUIMassage(1, "TFT第二次发送成功");
             /* 以下发送给从车 */
             for (int J = 0; J < 3; J++) {
                 YanChi(500);
                 sendOther((short) 0xD1, (byte) (int) send.charAt(0), (byte) (int) send.charAt(1), (byte) (int) send.charAt(2));
             }
-            sendUIMassage(1, "第一次发送成功");
+            sendUIMassage(1, "向从车第一次发送成功");
             for (int J = 0; J < 3; J++) {
                 YanChi(500);
                 sendOther((short) 0xD2, (byte) (int) send.charAt(3), (byte) (int) send.charAt(4), (byte) (int) send.charAt(5));
             }
-            sendUIMassage(1, "第二次发送成功");
+            sendUIMassage(1, "向从车第二次发送成功");
         } else {
             sendUIMassage(1, plate);
             /* 以下发送给TFT */
-//        for (int J = 0; J < 5; J++) {
-//            YanChi(500);
-//            TFT_LCD(0x0B, 0x20, plate.charAt(0), plate.charAt(1), plate.charAt(2));
-//        }
-//        sendUIMassage(1, "第一次发送成功");
-//        YanChi(1500);
-//        for (int J = 0; J < 5; J++) {
-//            YanChi(500);
-//            TFT_LCD(0x0B, 0x21, plate.charAt(3), plate.charAt(4), plate.charAt(5));
-//        }
-//        sendUIMassage(1, "第二次发送成功");
+            for (int J = 0; J < 5; J++) {
+                YanChi(500);
+                TFT_LCD(0x0B, 0x20, plate.charAt(0), plate.charAt(1), plate.charAt(2));
+            }
+            sendUIMassage(1, "TFT第一次发送成功");
+            YanChi(1500);
+            for (int J = 0; J < 5; J++) {
+                YanChi(500);
+                TFT_LCD(0x0B, 0x21, plate.charAt(3), plate.charAt(4), plate.charAt(5));
+            }
+            sendUIMassage(1, "TFT第二次发送成功");
             /* 以下发送给从车 */
             for (int J = 0; J < 3; J++) {
                 YanChi(500);
                 sendOther((short) 0xD1, (byte) (int) plate.charAt(0), (byte) (int) plate.charAt(1), (byte) (int) plate.charAt(2));
             }
-            sendUIMassage(1, "第一次发送成功");
+            sendUIMassage(1, "向从车第一次发送成功");
             for (int J = 0; J < 3; J++) {
                 YanChi(500);
                 sendOther((short) 0xD2, (byte) (int) plate.charAt(3), (byte) (int) plate.charAt(4), (byte) (int) plate.charAt(5));
             }
-            sendUIMassage(1, "第二次发送成功");
+            sendUIMassage(1, "向从车第二次发送成功");
         }
         YanChi(500);
     }
@@ -2210,6 +1923,64 @@ public class ConnectTransport {
     }
 
     /**
+     * 由赛题更改而来
+     *
+     * @return 识别结果
+     */
+    public synchronized Classifier.Recognition VID_mod_fix() {
+        //重新识别次数
+        int fre = 1;
+        //所有识别结果
+        TreeMap<String, Integer> total = new TreeMap<>();
+        Type typeMap = new TypeToken<List<Classifier.Recognition>>() {}.getType();
+        //识别结果
+        Classifier.Recognition recognition = null;
+        //是否包含指定结果
+        boolean has = false;
+        /* 使用List存储结果,按时间进行统计取得最终结果 */
+        do {
+            sendUIMassage(1, "=====第" + fre + "次识别车型=====");
+            total.clear();
+            sendUIMassage(1, "等待图像稳定...");
+            YanChi(6000);
+            sendUIMassage(1, "开始识别...");
+            for (int i = 0; i < 10; i++) {
+                /* 裁剪TFT区域 */
+                Bitmap detect = TFTAutoCutter.TFTCutter(stream);
+                /* 获得序列化的结果 */
+                String serialize = MainActivity.getVID_Detector().processImage(detect);
+                /* 反序列化 */
+                Gson gson = new GsonBuilder().enableComplexMapKeySerialization().setPrettyPrinting().create();
+                List<Classifier.Recognition> results = gson.fromJson(serialize, typeMap);
+                /* 获得统计结果 */
+                if (results.size() > 0) for (Classifier.Recognition result : results) {
+                    /* 将结果返回至模块ImageView */
+                    sendUIMassage(2, MainActivity.getVID_Detector().getSaveBitmap());
+                    /* 将识别结果添加到TreeMap */
+                    if (!total.containsKey(result.getTitle())) total.put(result.getTitle(), 1);
+                    else //noinspection ConstantConditions
+                        total.put(result.getTitle(), total.get(result.getTitle()) + 1);
+                    has = true;
+                    recognition = result;
+                }
+            }
+            /* 结果获取失败处理 */
+            /*■■■根据题意设置约束数量■■■注意修改TFT发送■■■ */
+            if (total.size() <= 0 || !has) {
+                sendUIMassage(1, "识别车型失败!");
+                for (int J = 0; J < 3; J++) {
+                    YanChi(100);
+                    TFT_LCD(0x0B, 0x10, 0x02, 0x00, 0x00);
+                }
+                sendUIMassage(1, "翻页中...");
+            }
+        } while (!has && fre++ < 8);
+        sendUIMassage(1, "检测到可能包含车牌的指定车型: " + (recognition != null ? recognition.getTitle() : "ERROR!") + "\n结果出现次数: " + total.get(recognition != null ? recognition.getTitle() : "0"));
+        sendUIMassage(1, "车型识别" + (has ? "成功" : "失败"));
+        return recognition;
+    }
+
+    /**
      * 车型信息发送
      */
     private void carTypeSend(String title) {
@@ -2283,7 +2054,7 @@ public class ConnectTransport {
                 sendUIMassage(1, "第" + fre + "次识别标志物失败!");
                 for (int J = 0; J < 3; J++) {
                     YanChi(100);
-                    TFT_LCD(0x0B, 0x10, 0x02, 0x00, 0x00);
+                    TFT_LCD(0x08, 0x10, 0x02, 0x00, 0x00);
                 }
                 sendUIMassage(1, "翻页中...");
                 continue;
@@ -2343,10 +2114,10 @@ public class ConnectTransport {
                     getTrafficFlag = 4;
                     break;
                 case "no_straight":
-                    getTrafficFlag = 5;
+                    getTrafficFlag = 6;
                     break;
                 case "no_turn":
-                    getTrafficFlag = 6;
+                    getTrafficFlag = 5;
                     break;
                 case "turn_right":
                 default:
