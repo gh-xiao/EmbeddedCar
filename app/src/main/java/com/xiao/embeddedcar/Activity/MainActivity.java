@@ -142,8 +142,6 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
                 (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED || (Build.VERSION.SDK_INT >= 30 && Environment.isExternalStorageManager())))
             initLibrary();
-        /* 控件动作初始化 */
-        init();
         /* 设置观察者 */
         observerDataStateUpdateAction();
     }
@@ -260,13 +258,6 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * 控件动作初始化
-     */
-    private void init() {
-
     }
 
     /**
@@ -428,7 +419,7 @@ public class MainActivity extends AppCompatActivity {
             initMsg.append(TS_Detector.LoadModel("CPU", 4, this.getAssets()) ? "交通标志物识别模型创建成功\n" : "交通标志物识别模型创建失败\n");
             initMsg.append(VID_Detector.LoadModel("CPU", 4, this.getAssets()) ? "车型识别模型创建成功" : "车型识别模型创建失败");
         } catch (Exception e) {
-            e.printStackTrace();
+            initMsg.append("Exception!有库文件初始化错误!");
         }
         /* 实例化连接类(需要库文件先初始化完毕) */
         ConnectTransport.getInstance().init(this, mainViewModel);

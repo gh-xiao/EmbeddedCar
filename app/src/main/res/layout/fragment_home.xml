@@ -100,7 +100,7 @@
                     android:text="@string/reset_home_data"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/rvData"
-                    tools:ignore="TextContrastCheck" />
+                    tools:ignore="ButtonStyle,TextContrastCheck" />
 
                 <Button
                     android:id="@+id/refresh_btn"
@@ -111,7 +111,7 @@
                     android:text="@string/refresh"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/rvData"
-                    tools:ignore="TextContrastCheck" />
+                    tools:ignore="ButtonStyle,TextContrastCheck" />
             </LinearLayout>
 
             <ImageView
@@ -132,6 +132,7 @@
                 android:background="@drawable/bg_select_all"
                 android:contentDescription="@string/module_img_show"
                 android:padding="2dp"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/ll_control_btn"
                 app:layout_constraintWidth_percent="0.48" />
@@ -149,26 +150,6 @@
                 android:textAlignment="center"
                 app:layout_constraintTop_toBottomOf="@id/module_img_show" />
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="100dp"
-                android:layout_margin="5dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ll_control_btn"
-                app:layout_constraintWidth_percent="0.48">
-
-                <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/get_module_img_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:checked="true"
-                    android:layoutDirection="rtl"
-                    android:text="@string/get_mod_detect_pic_true"
-                    android:thumb="@drawable/switch_thumb"
-                    app:switchPadding="5dp"
-                    app:track="@drawable/switch_track_selector" />
-            </LinearLayout>
 
             <ImageButton
                 android:id="@+id/stop_button"

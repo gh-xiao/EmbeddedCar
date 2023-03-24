@@ -26,7 +26,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.xiao.embeddedcar.R;
 
-
 /**
  * Splash Activity that inflates splash activity xml.
  */
