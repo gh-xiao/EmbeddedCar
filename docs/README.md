@@ -5,3 +5,5 @@ EmbeddedCar
 ## 版本更新记录: [Version.md](./Version.md)
 
 ## 软件部分帮助资料: [Help.md](./Help.md)
+
+## 开源许可: [LICENSE.md](./LICENSE.md)
