@@ -6,4 +6,4 @@ EmbeddedCar
 
 ## 软件部分帮助资料: [Help.md](./Help.md)
 
-## 开源许可: [![[LICENSE.md](../LICENSE.txt)](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+## 开源许可: [![[MIT开源许可]](https://img.shields.io/badge/License-MIT-yellow.svg)](../LICENSE.txt)
