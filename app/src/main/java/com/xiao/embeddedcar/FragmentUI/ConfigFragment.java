@@ -307,38 +307,44 @@ public class ConfigFragment extends ABaseFragment {
     void observerDataStateUpdateAction() {
         mainViewModel.getRed().observe(getViewLifecycleOwner(), b -> {
             binding.rbQRRed.setChecked(b);
+            if (mainViewModel.getQR_color().getValue() == null) return;
             if (b) {
-                if (!Objects.requireNonNull(mainViewModel.getQR_color().getValue()).contains(QRBitmapCutter.QRColor.RED))
-                    Objects.requireNonNull(mainViewModel.getQR_color().getValue()).add(QRBitmapCutter.QRColor.RED);
-                binding.tvQrColor.append("●红色●");
+                if (!mainViewModel.getQR_color().getValue().contains(QRBitmapCutter.QRColor.RED)) {
+                    mainViewModel.getQR_color().getValue().add(QRBitmapCutter.QRColor.RED);
+                    mainViewModel.getTv_color().setValue(mainViewModel.getTv_color().getValue() + "●红色●");
+                }
             } else {
-                Objects.requireNonNull(mainViewModel.getQR_color().getValue()).remove(QRBitmapCutter.QRColor.RED);
-                binding.tvQrColor.setText(binding.tvQrColor.getText().toString().replace("●红色●", ""));
+                mainViewModel.getQR_color().getValue().remove(QRBitmapCutter.QRColor.RED);
+                mainViewModel.getTv_color().setValue(Objects.requireNonNull(mainViewModel.getTv_color().getValue()).replaceAll("●红色●", ""));
             }
         });
         mainViewModel.getGreen().observe(getViewLifecycleOwner(), b -> {
             binding.rbQRGreen.setChecked(b);
+            if (mainViewModel.getQR_color().getValue() == null) return;
             if (b) {
-                if (!Objects.requireNonNull(mainViewModel.getQR_color().getValue()).contains(QRBitmapCutter.QRColor.GREEN))
-                    Objects.requireNonNull(mainViewModel.getQR_color().getValue()).add(QRBitmapCutter.QRColor.GREEN);
-                binding.tvQrColor.append("●绿色●");
+                if (!mainViewModel.getQR_color().getValue().contains(QRBitmapCutter.QRColor.GREEN)) {
+                    mainViewModel.getQR_color().getValue().add(QRBitmapCutter.QRColor.GREEN);
+                    mainViewModel.getTv_color().setValue(mainViewModel.getTv_color().getValue() + "●绿色●");
+                }
             } else {
-                Objects.requireNonNull(mainViewModel.getQR_color().getValue()).remove(QRBitmapCutter.QRColor.GREEN);
-                binding.tvQrColor.setText(binding.tvQrColor.getText().toString().replace("●绿色●", ""));
+                mainViewModel.getQR_color().getValue().remove(QRBitmapCutter.QRColor.GREEN);
+                mainViewModel.getTv_color().setValue(Objects.requireNonNull(mainViewModel.getTv_color().getValue()).replaceAll("●绿色●", ""));
             }
-
         });
         mainViewModel.getBlue().observe(getViewLifecycleOwner(), b -> {
             binding.rbQRBlue.setChecked(b);
+            if (mainViewModel.getQR_color().getValue() == null) return;
             if (b) {
-                if (!Objects.requireNonNull(mainViewModel.getQR_color().getValue()).contains(QRBitmapCutter.QRColor.BLUE))
-                    Objects.requireNonNull(mainViewModel.getQR_color().getValue()).add(QRBitmapCutter.QRColor.BLUE);
-                binding.tvQrColor.append("●蓝色●");
+                if (!mainViewModel.getQR_color().getValue().contains(QRBitmapCutter.QRColor.BLUE)) {
+                    mainViewModel.getQR_color().getValue().add(QRBitmapCutter.QRColor.BLUE);
+                    mainViewModel.getTv_color().setValue(mainViewModel.getTv_color().getValue() + "●蓝色●");
+                }
             } else {
-                Objects.requireNonNull(mainViewModel.getQR_color().getValue()).remove(QRBitmapCutter.QRColor.BLUE);
-                binding.tvQrColor.setText(binding.tvQrColor.getText().toString().replace("●蓝色●", ""));
+                mainViewModel.getQR_color().getValue().remove(QRBitmapCutter.QRColor.BLUE);
+                mainViewModel.getTv_color().setValue(Objects.requireNonNull(mainViewModel.getTv_color().getValue()).replaceAll("●蓝色●", ""));
             }
         });
+        mainViewModel.getTv_color().observe(getViewLifecycleOwner(), s -> binding.tvQrColor.setText(s));
         mainViewModel.getShape_color().observe(getViewLifecycleOwner(), s -> binding.tvShapeColor.setText(s));
         mainViewModel.getShape_type().observe(getViewLifecycleOwner(), s -> binding.tvShapeType.setText(s));
         mainViewModel.getSend_trafficLight().observe(getViewLifecycleOwner(), i -> {

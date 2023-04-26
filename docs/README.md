@@ -7,3 +7,7 @@ EmbeddedCar
 ## 软件部分帮助资料: [Help.md](./Help.md)
 
 ## 开源许可: [![[MIT开源许可]](https://img.shields.io/badge/License-MIT-yellow.svg)](../LICENSE.txt)
+
+## 心愿功能:
+
+    #添加自选运行模块,允许根据队列运行Android模块项目

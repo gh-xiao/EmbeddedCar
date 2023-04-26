@@ -12,6 +12,7 @@ public class MainViewModel extends ViewModel {
     private final MutableLiveData<Boolean> chief_state_flag = new MutableLiveData<>(true);
     //二维码检测色彩
     private final MutableLiveData<ArrayList<QRBitmapCutter.QRColor>> QR_color = new MutableLiveData<>(new ArrayList<>());
+    private final MutableLiveData<String> tv_color = new MutableLiveData<>("");
     //红色
     private final MutableLiveData<Boolean> red = new MutableLiveData<>(true);
     //绿色
@@ -61,6 +62,10 @@ public class MainViewModel extends ViewModel {
 
     public MutableLiveData<ArrayList<QRBitmapCutter.QRColor>> getQR_color() {
         return QR_color;
+    }
+
+    public MutableLiveData<String> getTv_color() {
+        return tv_color;
     }
 
     public MutableLiveData<Boolean> getRed() {

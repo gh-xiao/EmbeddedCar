@@ -976,8 +976,8 @@ public class ConnectTransport {
                     } catch (Exception e) {
                         RedQR = "SSSSSSSS";
                         BlueQR = "+8%#3<>6";
+                        sendQRInfo();
                     }
-                    sendQRInfo();
                     /* 获取超声数据 */
                     ultraSonic = getUltraSonic();
 
@@ -985,7 +985,7 @@ public class ConnectTransport {
                     cameraCommandUtil.postHttp(MainActivity.getLoginInfo().getIPCamera(), 0, 1);
 
                 } catch (Exception e) {
-                    sendUIMassage(1, "模块运行错误!");
+                    sendUIMassage(1, "模块3运行错误!已跳过!");
                 }
 
                 YanChi(500);
@@ -996,7 +996,7 @@ public class ConnectTransport {
                 try {
                     trafficLight_mod();
                 } catch (Exception e) {
-                    sendUIMassage(1, "模块运行错误!");
+                    sendUIMassage(1, "模块4运行错误!已跳过!");
                 }
 
                 YanChi(500);
@@ -1011,7 +1011,7 @@ public class ConnectTransport {
                     YanChi(500);
                     infrared_stereo(new short[]{0x10, data[4], data[5], data[6], data[7]});
                 } catch (Exception ignored) {
-                    sendUIMassage(1, "模块运行错误!");
+                    sendUIMassage(1, "模块5运行错误!已跳过!");
                 }
 
                 YanChi(500);
@@ -1038,7 +1038,7 @@ public class ConnectTransport {
                     YanChi(500);
                     cameraCommandUtil.postHttp(MainActivity.getLoginInfo().getIPCamera(), 0, 1);
                 } catch (Exception ignored) {
-                    sendUIMassage(1, "模块运行错误!");
+                    sendUIMassage(1, "模块6运行错误!已跳过!");
                 }
 
                 YanChi(500);
@@ -1064,7 +1064,7 @@ public class ConnectTransport {
                     YanChi(500);
                     cameraCommandUtil.postHttp(MainActivity.getLoginInfo().getIPCamera(), 0, 1);
                 } catch (Exception ignored) {
-                    sendUIMassage(1, "模块运行错误!");
+                    sendUIMassage(1, "模块7运行错误!已跳过!");
                 }
 
                 YanChi(500);
