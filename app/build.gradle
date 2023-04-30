@@ -16,11 +16,11 @@ android {
         minSdk 21
         //表示在Android13.0(33)版本上已经进行过充分的测试
         //noinspection ExpiredTargetSdkVersion - 表示忽略Google提示的建议
-        targetSdk 33
+        targetSdk 32
         //项目版本号
         versionCode 1
         //版本名
-        versionName "2.6.1"
+        versionName "2.6.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         //设置支持的so库架构(开发者可以根据需要，选择一个或多个平台的so)
         ndk {
@@ -86,6 +86,8 @@ dependencies {
     implementation 'com.github.gzu-liyujiang.AndroidPicker:WheelPicker:4.1.11'
     //Gson
     implementation 'com.google.code.gson:gson:2.10.1'
+    //风格化设计 - 玻璃拟物化
+    implementation 'com.github.fornewid:neumorphism:0.3.2'
 
     //本地依赖声明：将本地的jar包、目录添加依赖关系，添加到项目的构建路径当中
     implementation fileTree(include: ['*.jar'], dir: 'libs')

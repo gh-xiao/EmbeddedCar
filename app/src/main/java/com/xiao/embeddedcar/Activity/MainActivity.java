@@ -17,6 +17,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -52,6 +54,8 @@ import com.xiao.embeddedcar.databinding.ActivityMainBinding;
 
 import org.opencv.android.OpenCVLoader;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -69,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
     private ModuleViewModel moduleViewModel;
     //权限申请状态
     private boolean allPermissionsGranted;
+    private final ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> MainActivity.this.finish());
     //全局登录信息
     private static LoginInfo loginInfo = new LoginInfo();
     //主从状态
@@ -119,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         /* 权限检查 */
         Request();
+        requestAllFilesAccess();
         /* 设置顶部工具栏 */
         setSupportActionBar(binding.appBar.toolbar);
         /* 设置抽屉布局 */
@@ -139,9 +145,10 @@ public class MainActivity extends AppCompatActivity {
         /* 初始化单例对象 */
         initSingleton();
         /* 初始化library文件 */
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
-                (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED || (Build.VERSION.SDK_INT >= 30 && Environment.isExternalStorageManager())))
-            initLibrary();
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+//                (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+//                        || (Build.VERSION.SDK_INT >= 30 && Environment.isExternalStorageManager())))
+        initLibrary();
         /* 设置观察者 */
         observerDataStateUpdateAction();
     }
@@ -287,12 +294,10 @@ public class MainActivity extends AppCompatActivity {
                 String WiFiSSID = getConnectWifiSSID();
                 String finalSSID = WiFiSSID.equals("<unknown ssid>") ? getConnectWifiSsidTwo() : WiFiSSID;
                 initMsg.append(finalSSID.equals("<unknown ssid>") ? "当前未连接到WiFi,请接入设备WiFi后再试!" : "当前连接的WiFi: " + finalSSID);
-                requestAllFilesAccess();
             } else if (PermissionChecker.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PermissionChecker.PERMISSION_GRANTED)
                 initMsg.append("WiFi检查异常,请检查网络权限!");
             else initMsg.append("未正常授予所有权限,库文件未完全初始化!");
             initMsg.append("\n");
-            initLibrary();
         }
     }
 
@@ -312,6 +317,11 @@ public class MainActivity extends AppCompatActivity {
                 Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.READ_PHONE_STATE
         };
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+            ArrayList<String> permissions_list = new ArrayList<>(Arrays.asList(permissions));
+            permissions_list.add(Manifest.permission.MANAGE_EXTERNAL_STORAGE);
+            permissions = permissions_list.toArray(new String[0]);
+        }
         allPermissionsGranted = true;
         for (String perm : permissions) {
             if (PackageManager.PERMISSION_GRANTED != ContextCompat.checkSelfPermission(this, perm)) {
@@ -327,7 +337,6 @@ public class MainActivity extends AppCompatActivity {
         String finalSSID = WiFiSSID.equals("<unknown ssid>") ? getConnectWifiSsidTwo() : WiFiSSID;
         initMsg.append(finalSSID.equals("<unknown ssid>") ? "当前未连接到WiFi,请接入设备WiFi后再试!" : "当前连接的WiFi: " + finalSSID);
         initMsg.append("\n");
-        requestAllFilesAccess();
     }
 
     /**
@@ -343,7 +352,7 @@ public class MainActivity extends AppCompatActivity {
             alertBuilder.setPositiveButton("去设置", (dialog, which) -> {
                 Intent intent = new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
+                launcher.launch(intent);
             });
             alertBuilder.setNegativeButton("取消", (dialog, which) -> dialog.dismiss());
             alertBuilder.show();
