@@ -7,16 +7,96 @@
     tools:context=".FragmentUI.ConnectFragment">
 
     <TextView
+        android:id="@+id/tv_IP"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="5dp"
+        android:gravity="center"
+        android:text="@string/ip"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:layout_constraintHeight_percent="0.1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.142" />
+
+    <TextView
+        android:id="@+id/IP"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:text="@string/null_data"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_IP"
+        app:layout_constraintStart_toEndOf="@+id/tv_IP"
+        app:layout_constraintTop_toTopOf="@+id/tv_IP"
+        app:layout_constraintWidth_percent="0.343" />
+
+    <TextView
+        android:id="@+id/tv_IP_Camera"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="5dp"
+        android:gravity="center"
+        android:text="@string/ip_camera"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:layout_constraintHeight_percent="0.1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_IP"
+        app:layout_constraintWidth_percent="0.142" />
+
+    <TextView
+        android:id="@+id/IP_Camera"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:text="@string/null_data"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_IP_Camera"
+        app:layout_constraintStart_toEndOf="@+id/tv_IP_Camera"
+        app:layout_constraintTop_toTopOf="@+id/tv_IP_Camera"
+        app:layout_constraintWidth_percent="0.343" />
+
+    <TextView
+        android:id="@+id/tv_Pure_Camera_IP"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="5dp"
+        android:gravity="center"
+        android:text="@string/pure_camera_ip"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:layout_constraintHeight_percent="0.1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/IP_Camera"
+        app:layout_constraintWidth_percent="0.142" />
+
+    <TextView
+        android:id="@+id/Pure_Camera_IP"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:text="@string/null_data"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_Pure_Camera_IP"
+        app:layout_constraintStart_toEndOf="@+id/tv_Pure_Camera_IP"
+        app:layout_constraintTop_toTopOf="@+id/tv_Pure_Camera_IP"
+        app:layout_constraintWidth_percent="0.343" />
+
+    <TextView
         android:id="@+id/connect_info"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:layout_margin="5dp"
         android:background="@drawable/bg_select_all"
         android:padding="5dp"
         android:scrollbars="vertical"
         android:textAlignment="center"
         android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/Pure_Camera_IP"
         app:layout_constraintWidth_percent="0.485" />
 
     <ScrollView
@@ -197,6 +277,15 @@
                     android:layout_margin="10dp"
                     android:layout_weight="1"
                     android:text="@string/clean_and_reset"
+                    tools:ignore="ButtonStyle,TextContrastCheck" />
+
+                <Button
+                    android:id="@+id/navigation"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:text="@string/nav_home"
                     tools:ignore="ButtonStyle,TextContrastCheck" />
 
                 <Button

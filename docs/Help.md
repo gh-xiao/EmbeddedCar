@@ -29,6 +29,8 @@
 * [AndroidPicker](https://github.com/gzu-liyujiang/AndroidPicker/blob/master/API.md)
 * 自定义Toolbar在[这里](https://blog.csdn.net/baidu_41616022/article/details/117912975)
   ,或[这里](https://blog.csdn.net/qq_43441284/article/details/125438810)
+* [DatagramSocket](https://www.cnblogs.com/codderYouzg/p/12419019.html)
+* 有关该程序使用的UDP通讯可以前往[这里](https://blog.csdn.net/s990420/article/details/119335819)了解
 
 # 以下内容基于ChatGPT生成,请自行分辨真伪
 

@@ -24,9 +24,9 @@ import androidx.navigation.Navigation;
 import com.xiao.embeddedcar.Activity.MainActivity;
 import com.xiao.embeddedcar.R;
 import com.xiao.embeddedcar.Utils.CameraUtil.XcApplication;
+import com.xiao.embeddedcar.Utils.Network.USBToSerialUtil;
 import com.xiao.embeddedcar.Utils.PublicMethods.FastDo;
 import com.xiao.embeddedcar.Utils.PublicMethods.ToastUtil;
-import com.xiao.embeddedcar.Utils.Network.USBToSerialUtil;
 import com.xiao.embeddedcar.ViewModel.ConnectViewModel;
 import com.xiao.embeddedcar.databinding.FragmentConnectBinding;
 
@@ -52,6 +52,7 @@ public class ConnectFragment extends ABaseFragment {
         init();
         //设置观察者
         observerDataStateUpdateAction();
+        binding.connectInfo.setText("");
         return root;
     }
 
@@ -78,6 +79,9 @@ public class ConnectFragment extends ABaseFragment {
             binding.loginName.setText(R.string.login_text);
             binding.loginPsd.setText(R.string.edit_password);
             binding.connectInfo.setText("");
+            binding.IP.setText(R.string.null_data);
+            binding.IPCamera.setText(R.string.null_data);
+            binding.PureCameraIP.setText(R.string.null_data);
         });
         /* 连接Button */
         binding.connect.setOnClickListener(view -> {
@@ -85,14 +89,18 @@ public class ConnectFragment extends ABaseFragment {
             if (FastDo.isFastClick()) {
                 if (XcApplication.isSerial != XcApplication.Mode.SOCKET) tryGetUsbPermission();
                 connectViewModel.requestConnect();
-                Navigation.findNavController(binding.getRoot()).navigate(R.id.action_nav_connect_to_nav_home);
             }
         });
+        /* 跳转到主页 */
+        binding.navigation.setOnClickListener(v -> Navigation.findNavController(binding.getRoot()).navigate(R.id.action_nav_connect_to_nav_home));
     }
 
     @Override
     void observerDataStateUpdateAction() {
-        connectViewModel.getConnectInfo().observe(getViewLifecycleOwner(), s -> binding.connectInfo.append(s + "\n"));
+        connectViewModel.getConnectInfo().setValue(null);
+        connectViewModel.getConnectInfo().observe(getViewLifecycleOwner(), s -> {
+            if (s != null) binding.connectInfo.append(s + "\n");
+        });
         connectViewModel.getConnectMode().observe(getViewLifecycleOwner(), b -> {
             binding.connectionMode.setChecked(b);
             if (b) {
@@ -105,12 +113,19 @@ public class ConnectFragment extends ABaseFragment {
         });
         connectViewModel.getLoginInfo().observe(getViewLifecycleOwner(), loginInfo -> {
             if (loginInfo == null || loginInfo.getIP() == null) return;
-            connectViewModel.getConnectInfo().setValue(loginInfo.toString());
+            if (loginInfo.getIP() != null)
+                binding.IP.setText(loginInfo.getIP());
+            if (loginInfo.getIPCamera() != null)
+                binding.IPCamera.setText(loginInfo.getIPCamera());
+            if (loginInfo.getPureCameraIP() != null)
+                binding.PureCameraIP.setText(loginInfo.getPureCameraIP());
             MainActivity.setLoginInfo(loginInfo);
         });
         connectViewModel.getLoginState().observe(getViewLifecycleOwner(), s -> {
-            if (Objects.equals(s, "Fail"))
+            if (Objects.equals(s, "Fail")) {
                 connectViewModel.getConnectInfo().setValue("=====摄像头连接失败!=====\n");
+                connectViewModel.getLoginState().setValue("");
+            }
         });
     }
 

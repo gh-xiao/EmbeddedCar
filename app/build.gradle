@@ -14,13 +14,14 @@ android {
         applicationId "com.xiao.embeddedcar"
         //指定项目最低兼容的Android版本 - 21(Android5.0)
         minSdk 21
-        //表示在Android13.0(33)版本上已经进行过充分的测试
+        //表示在Android12.0(32)版本上已经进行过充分的测试
         //noinspection ExpiredTargetSdkVersion - 表示忽略Google提示的建议
+        //noinspection OldTargetApi
         targetSdk 32
         //项目版本号
         versionCode 1
         //版本名
-        versionName "2.6.2"
+        versionName "2.6.3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         //设置支持的so库架构(开发者可以根据需要，选择一个或多个平台的so)
         ndk {
@@ -58,16 +59,16 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
-    implementation 'androidx.navigation:navigation-fragment:2.5.1'
-    implementation 'androidx.navigation:navigation-ui:2.5.1'
+    implementation 'androidx.navigation:navigation-fragment:2.5.3'
+    implementation 'androidx.navigation:navigation-ui:2.5.3'
     implementation 'androidx.core:core:1.9.0'
-    implementation 'com.google.android.material:material:1.6.1'
+    implementation 'com.google.android.material:material:1.8.0'
     implementation 'com.android.volley:volley:1.2.1'//谷歌通讯库(暂未使用)
 
     testImplementation 'junit:junit:4.13.2'//用以声明测试用例库
 
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
     //远程依赖声明
     //微信二维码识别以及基本的openCV库

@@ -27,72 +27,101 @@ public class CameraSearchService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        SearchCameraUtil searchCameraUtil;
-        Intent mintent = new Intent(CameraConnectUtil.getaS());
-        for (int i = 0; i < 3 && IP == null; i++) {
-            searchCameraUtil = new SearchCameraUtil();
-//            IP = searchCameraUtil !=null ? searchCameraUtil.send(): null;
-            IP = searchCameraUtil.send();
-            //线程休眠
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        Intent mIntent = new Intent(CameraConnectUtil.getaS());
+//        for (int i = 0; i < 3 && IP == null; i++) {
+//            searchCameraUtil = new SearchCameraUtil();
+////            IP = searchCameraUtil !=null ? searchCameraUtil.send(): null;
+//            IP = searchCameraUtil.send();
+//            //线程休眠
+//            try {
+//                Thread.sleep(1000);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        }
+
+        Timer getServerIPTimer = new Timer();
+        getServerIPTimer.schedule(new TimerTask() {
+            private int reGet = 0;
+
+            @Override
+            public void run() {
+                this.reGet++;
+                if (reGet >= 3) {
+                    this.cancel();
+                    this.reGet = 0;
+                }
+                IP = new SearchCameraUtil().send();
             }
-        }
-        if (IP == null) mintent.putExtra("loginState", "Fail");
-        mintent.putExtra("IP", IP + ":81");
-        mintent.putExtra("pureip", IP);
+        }, 0, 1000);
+
+        if (IP == null) mIntent.putExtra("loginState", "Fail");
+        mIntent.putExtra("IP", IP + ":81");
+        mIntent.putExtra("pureip", IP);
         //广播发送器 - 发送给CameraSearchService的广播
-        sendBroadcast(mintent);
+        sendBroadcast(mIntent);
     }
 
+    /**
+     * 摄像头搜索工具类
+     */
     static class SearchCameraUtil {
+        private final static String TAG = "UDPClient";
+        //服务端IP地址
         private String IP = "";
-        private final String TAG = "UDPClient";
         //端口
-        private final int PORT = 3565;
+        private final static int PORT = 3565;
         //服务器端口
-        private final int SERVER_PORT = 8600;
+        private final static int SERVER_PORT = 8600;
+        //客户端往服务器发送的校验字节
         private final byte[] mByte = new byte[]{68, 72, 1, 1};
+        //UDPSocket对象
         private DatagramSocket dSocket = null;
+        //回传数据存放数组
         private final byte[] msg = new byte[1024];
-        boolean isConn = false;
+        private boolean isConn = false;
 
+        /**
+         * 通讯检测
+         *
+         * @return 服务器IP地址
+         */
         public String send() {
             InetAddress local;
 
             try {
                 local = InetAddress.getByName("255.255.255.255");
-                Log.e(this.TAG, "已找到服务器,连接中...");
+                Log.e(TAG, "已找到服务器,连接中...");
             } catch (UnknownHostException var1) {
-                Log.e(this.TAG, "未找到服务器.");
+                Log.e(TAG, "未找到服务器.");
                 var1.printStackTrace();
                 return null;
             }
 
             try {
-                if (this.dSocket != null) this.dSocket.close();
-                this.dSocket = null;
-                // 第一次连接没有报错，第二次开始报这个错误。字面意思看出是由于端口被占用，未释放导致。
-                // 虽然程序貌似已经退出，个人猜测是由于系统还没有及时释放导致的。
-//				this.dSocket = new DatagramSocket(3565);
+                /* 重置UDP_Socket */
+                if (dSocket != null) dSocket.close();
+                dSocket = null;
+                /* 绑定一个新的UDP_Socket */
                 dSocket = new DatagramSocket(null);
+                /* 设置重用Socket所绑定的本地地址 */
                 dSocket.setReuseAddress(true);
+                /* 绑定3565端口 */
                 dSocket.bind(new InetSocketAddress(PORT));
-                Log.e(this.TAG, "正在连接服务器...");
+                Log.e(TAG, "正在连接服务器...");
             } catch (SocketException var2) {
                 var2.printStackTrace();
-                Log.e(this.TAG, "服务器连接失败.");
+                Log.e(TAG, "服务器连接失败.");
                 return null;
             }
-
+            /* 设置数据报包发送 */
             DatagramPacket sendPacket = new DatagramPacket(this.mByte, 4, local, SERVER_PORT);
+            /* 设置数据报包接收 */
             DatagramPacket recPacket = new DatagramPacket(this.msg, this.msg.length);
 
             try {
-                this.dSocket.send(sendPacket);
-
+                dSocket.send(sendPacket);
+                /* 设置定时器 */
                 Timer timer = new Timer();
                 timer.schedule(new TimerTask() {
                     @Override
@@ -104,32 +133,35 @@ public class CameraSearchService extends IntentService {
                         isConn = true;
                     }
                 }, 0, 1000);
-
-                this.dSocket.receive(recPacket);
-
-
+                /* 接收数据 */
+                dSocket.receive(recPacket);
+                /* 关闭定时器 */
                 timer.cancel();
+                /* 获取回传文本 */
                 String text = new String(this.msg, 0, recPacket.getLength());
-                if (text.substring(0, 2).equals("DH")) this.getIP(text);
-
+                /* 解析IP地址 */
+                if (text.startsWith("DH")) this.getIP(text);
                 Log.e("IP值", this.IP);
-                this.dSocket.close();
-                Log.e(this.TAG, "消息发送成功!");
+                /* 关闭UDP_Socket */
+                dSocket.close();
+                Log.e(TAG, "消息发送成功!");
             } catch (SocketException var3) {
-                Log.e(this.TAG, "消息接收失败.");
+                dSocket.close();
+                Log.e(TAG, "消息接收失败.");
                 return null;
             } catch (IOException var4) {
-                Log.e(this.TAG, "IOException: 消息发送失败.");
+                dSocket.close();
+                Log.e(TAG, "IOException: 消息发送失败.");
                 return null;
             }
             return this.IP;
         }
 
         private void getIP(String text) {
-            byte[] ipbyte = text.getBytes(StandardCharsets.UTF_8);
-            for (int i = 4; i < 22 && ipbyte[i] != 0; ++i) {
-                if (ipbyte[i] == 46) this.IP += ".";
-                else this.IP += (ipbyte[i] - 48);
+            byte[] ipByte = text.getBytes(StandardCharsets.UTF_8);
+            for (int i = 4; i < 22 && ipByte[i] != 0; ++i) {
+                if (ipByte[i] == 46) this.IP += ".";
+                else this.IP += (ipByte[i] - 48);
             }
         }
     }

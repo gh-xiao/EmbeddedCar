@@ -120,12 +120,17 @@
     <string name="use_plate_color_detect_plate">使用车牌种类车牌识别</string>
 
     <!--    fragment_connect-->
+    <string name="ip">IP:</string>
+    <string name="ip_camera">IPCamera:</string>
+    <string name="pure_camera_ip">pureCameraIP:</string>
+    <string name="null_data">未连接</string>
     <string name="show_and_hide_psd">showAndHidePsd</string>
     <string name="communication_method">通信方式</string>
     <string name="wifi">WiFi</string>
     <string name="serial">串口</string>
-    <string name="clean_and_reset">清空与重置</string>
-    <string name="connect">连接</string>
+    <string name="clean_and_reset">重置信息</string>
+    <string name="nav_home">转到主页</string>
+    <string name="connect">连接设备</string>
 
     <!--    fragment_control-->
     <string name="display_info">显示信息</string>
