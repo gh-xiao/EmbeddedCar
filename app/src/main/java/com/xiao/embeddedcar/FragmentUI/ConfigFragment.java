@@ -5,15 +5,12 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.SeekBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModel;
 
 import com.github.gzuliyujiang.wheelview.contract.OnWheelChangedListener;
 import com.github.gzuliyujiang.wheelview.widget.WheelView;
@@ -24,34 +21,29 @@ import com.xiao.embeddedcar.Utils.TrafficLight.TrafficLightByLocation;
 import com.xiao.embeddedcar.Utils.TrafficSigns.YoloV5_tfLite_TSDetector;
 import com.xiao.embeddedcar.Utils.VID.YoloV5_tfLite_VIDDetector;
 import com.xiao.embeddedcar.ViewModel.MainViewModel;
-import com.xiao.embeddedcar.ViewModel.ModuleViewModel;
 import com.xiao.embeddedcar.databinding.FragmentConfigBinding;
 
 import java.util.Objects;
 
-public class ConfigFragment extends ABaseFragment {
+public class ConfigFragment extends AbstractFragment<FragmentConfigBinding, ViewModel> {
     private FragmentConfigBinding binding;
     private MainViewModel mainViewModel;
-    private ModuleViewModel moduleViewModel;
+
+    public ConfigFragment() {
+        super(FragmentConfigBinding::inflate, null, true);
+    }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mainViewModel = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
-        moduleViewModel = new ViewModelProvider(requireActivity()).get(ModuleViewModel.class);
-        binding = FragmentConfigBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
-        //控件动作初始化
-        init();
+    public void initFragment(@NonNull FragmentConfigBinding binding, @Nullable ViewModel viewModel, @Nullable Bundle savedInstanceState) {
+        this.binding = binding;
+        this.mainViewModel = getMainViewModel();
         //数字滚轮初始化
         initPicker();
-        //设置观察者
-        observerDataStateUpdateAction();
-        return root;
     }
 
     @SuppressLint("SetTextI18n")
     @Override
-    void init() {
+    public void init() {
         binding.rbQRRed.setOnCheckedChangeListener((buttonView, b) -> mainViewModel.getRed().setValue(b));
         binding.rbQRGreen.setOnCheckedChangeListener((buttonView, b) -> mainViewModel.getGreen().setValue(b));
         binding.rbQRBlue.setOnCheckedChangeListener((buttonView, b) -> mainViewModel.getBlue().setValue(b));
@@ -96,15 +88,12 @@ public class ConfigFragment extends ABaseFragment {
         binding.plateColorChooseRG.setOnCheckedChangeListener((group, id) -> {
             if (id == R.id.rb_plate_all) {
                 mainViewModel.getPlate_color().setValue("all");
-                moduleViewModel.getPlate_color().setValue("all");
             }
             if (id == R.id.rb_plate_green) {
                 mainViewModel.getPlate_color().setValue("green");
-                moduleViewModel.getPlate_color().setValue("green");
             }
             if (id == R.id.rb_plate_blue) {
                 mainViewModel.getPlate_color().setValue("blue");
-                moduleViewModel.getPlate_color().setValue("blue");
             }
         });
         /* 车型检测选择 */
@@ -304,7 +293,7 @@ public class ConfigFragment extends ABaseFragment {
     }
 
     @Override
-    void observerDataStateUpdateAction() {
+    public void observerDataStateUpdateAction() {
         mainViewModel.getRed().observe(getViewLifecycleOwner(), b -> {
             binding.rbQRRed.setChecked(b);
             if (mainViewModel.getQR_color().getValue() == null) return;

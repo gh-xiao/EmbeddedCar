@@ -31,6 +31,9 @@
   ,或[这里](https://blog.csdn.net/qq_43441284/article/details/125438810)
 * [DatagramSocket](https://www.cnblogs.com/codderYouzg/p/12419019.html)
 * 有关该程序使用的UDP通讯可以前往[这里](https://blog.csdn.net/s990420/article/details/119335819)了解
+* 以下是Kotlin泛型的相关概念:[简书](https://www.jianshu.com/p/671184ce18fc)
+  ,[菜鸟编程](https://www.runoob.com/kotlin/kotlin-generics.html)
+  ,[Kotlin官方文档](https://book.kotlincn.net/text/generics.html)
 
 # 以下内容基于ChatGPT生成,请自行分辨真伪
 

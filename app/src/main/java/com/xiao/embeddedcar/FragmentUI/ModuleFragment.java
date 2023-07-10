@@ -3,16 +3,12 @@ package com.xiao.embeddedcar.FragmentUI;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.luck.picture.lib.basic.PictureSelectionSystemModel;
 import com.luck.picture.lib.basic.PictureSelector;
@@ -20,55 +16,47 @@ import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
 import com.xiao.embeddedcar.Utils.PublicMethods.BitmapProcess;
-import com.xiao.embeddedcar.ViewModel.HomeViewModel;
+import com.xiao.embeddedcar.ViewModel.MainViewModel;
 import com.xiao.embeddedcar.ViewModel.ModuleViewModel;
 import com.xiao.embeddedcar.databinding.FragmentModuleBinding;
 
 import java.util.ArrayList;
 
-public class ModuleFragment extends ABaseFragment {
+public class ModuleFragment extends AbstractFragment<FragmentModuleBinding, ModuleViewModel> {
 
     private FragmentModuleBinding binding;
-    public ModuleViewModel moduleViewModel;
-    private HomeViewModel homeViewModel;
+    private MainViewModel mainViewModel;
+    private ModuleViewModel moduleViewModel;
     private ActivityResultLauncher<PickVisualMediaRequest> pickMedia;
     private PictureSelectionSystemModel pictureSelector;
 
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        homeViewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
-        moduleViewModel = new ViewModelProvider(requireActivity()).get(ModuleViewModel.class);
-        binding = FragmentModuleBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
-        //控件动作初始化
-        init();
-        //设置观察者
-        observerDataStateUpdateAction();
-        return root;
+    public ModuleFragment() {
+        super(FragmentModuleBinding::inflate, ModuleViewModel.class, true);
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-//        binding = null;
+    public void initFragment(@NonNull FragmentModuleBinding binding, @Nullable ModuleViewModel viewModel, @Nullable Bundle savedInstanceState) {
+        this.binding = binding;
+        this.moduleViewModel = viewModel;
+        this.mainViewModel = getMainViewModel();
     }
 
     @Override
-    void init() {
+    public void init() {
         binding.cleanBtn.setOnClickListener(v -> {
-            moduleViewModel.getModuleInfoTV().setValue(null);
-            moduleViewModel.getModuleImgShow().setValue(null);
+            mainViewModel.getModuleInfoTV().setValue(null);
+            mainViewModel.getModuleImgShow().setValue(null);
             binding.moduleInfo.setText(null);
         });
         binding.moduleInfo.setMovementMethod(ScrollingMovementMethod.getInstance());
-        binding.trafficLightModBtn.setOnClickListener(v -> moduleViewModel.module(1));
-        binding.plateOcrModBtn.setOnClickListener(v -> moduleViewModel.module(2));
-        binding.shapeModBtn.setOnClickListener(v -> moduleViewModel.module(3));
-        binding.trafficSignModBtn.setOnClickListener(v -> moduleViewModel.module(4));
-        binding.VIDModBtn.setOnClickListener(v -> moduleViewModel.module(5));
-        binding.QRModBtn.setOnClickListener(v -> moduleViewModel.module(6));
-        binding.cutterBitmapBtn.setOnClickListener(v -> moduleViewModel.module(7));
-        binding.devMethodBtn.setOnClickListener(v -> moduleViewModel.module(0xFF));
+        binding.trafficLightModBtn.setOnClickListener(v -> moduleViewModel.module(1, mainViewModel));
+        binding.plateOcrModBtn.setOnClickListener(v -> moduleViewModel.module(2, mainViewModel));
+        binding.shapeModBtn.setOnClickListener(v -> moduleViewModel.module(3, mainViewModel));
+        binding.trafficSignModBtn.setOnClickListener(v -> moduleViewModel.module(4, mainViewModel));
+        binding.VIDModBtn.setOnClickListener(v -> moduleViewModel.module(5, mainViewModel));
+        binding.QRModBtn.setOnClickListener(v -> moduleViewModel.module(6, mainViewModel));
+        binding.cutterBitmapBtn.setOnClickListener(v -> moduleViewModel.module(7, mainViewModel));
+        binding.devMethodBtn.setOnClickListener(v -> moduleViewModel.module(0xFF, mainViewModel));
         binding.howDetectBtn.setOnCheckedChangeListener((buttonView, b) -> moduleViewModel.getDetectMode().setValue(b));
         binding.getImgBtn.setOnCheckedChangeListener((buttonView, b) -> moduleViewModel.getGetImgMode().setValue(b));
         binding.chooseDetectPicBtn.setOnClickListener(v -> {
@@ -98,10 +86,10 @@ public class ModuleFragment extends ABaseFragment {
     }
 
     @Override
-    void observerDataStateUpdateAction() {
-        moduleViewModel.getModuleInfoTV().setValue(null);
-        moduleViewModel.getModuleImgShow().observe(getViewLifecycleOwner(), b -> binding.moduleImg.setImageBitmap(b));
-        moduleViewModel.getModuleInfoTV().observe(getViewLifecycleOwner(), s -> {
+    public void observerDataStateUpdateAction() {
+        mainViewModel.getModuleInfoTV().setValue(null);
+        mainViewModel.getModuleImgShow().observe(getViewLifecycleOwner(), b -> binding.moduleImg.setImageBitmap(b));
+        mainViewModel.getModuleInfoTV().observe(getViewLifecycleOwner(), s -> {
             if (s != null) {
                 binding.moduleInfo.append(s + "\n");
                 int offset = binding.moduleInfo.getLineCount() * binding.moduleInfo.getLineHeight();
@@ -116,10 +104,10 @@ public class ModuleFragment extends ABaseFragment {
         moduleViewModel.getGetImgMode().observe(getViewLifecycleOwner(), b -> {
             if (b) {
                 binding.getImgBtn.setText("开启实时图片传入");
-                homeViewModel.getShowImg().observe(getViewLifecycleOwner(), bitmap -> binding.moduleImg.setImageBitmap(bitmap));
+                mainViewModel.getShowImg().observe(getViewLifecycleOwner(), bitmap -> binding.moduleImg.setImageBitmap(bitmap));
             } else {
                 binding.getImgBtn.setText("关闭实时图片传入");
-                homeViewModel.getShowImg().removeObservers(getViewLifecycleOwner());
+                mainViewModel.getShowImg().removeObservers(getViewLifecycleOwner());
                 moduleViewModel.getDetectPicture().setValue(null);
             }
         });

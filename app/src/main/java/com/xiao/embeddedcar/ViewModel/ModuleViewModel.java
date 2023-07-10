@@ -4,7 +4,6 @@ import static com.xiao.embeddedcar.Utils.CameraUtil.XcApplication.cachedThreadPo
 import static com.xiao.embeddedcar.Utils.PaddleOCR.PlateDetector.completion;
 
 import android.graphics.Bitmap;
-import android.os.Handler;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -21,17 +20,10 @@ import com.xiao.embeddedcar.Utils.PublicMethods.TFTAutoCutter;
 
 import org.tensorflow.lite.examples.detection.tflite.Classifier;
 
-import java.lang.ref.WeakReference;
 import java.lang.reflect.Type;
 import java.util.List;
 
 public class ModuleViewModel extends ViewModel {
-    /* 视图ViewModel */
-    //图片显示
-    private final MutableLiveData<Bitmap> moduleImgShow = new MutableLiveData<>();
-    //信息数据显示
-    private final MutableLiveData<String> moduleInfoTV = new MutableLiveData<>();
-
     /* 数据与配置ViewModel */
     //检测模式
     private final MutableLiveData<Boolean> detectMode = new MutableLiveData<>(true);
@@ -39,18 +31,8 @@ public class ModuleViewModel extends ViewModel {
     private final MutableLiveData<Boolean> getImgMode = new MutableLiveData<>(false);
     //待检测图片
     private final MutableLiveData<Bitmap> detectPicture = new MutableLiveData<>();
-    //车牌种类
-    private final MutableLiveData<String> plate_color = new MutableLiveData<>("green");
 
     /* getter */
-    public MutableLiveData<Bitmap> getModuleImgShow() {
-        return moduleImgShow;
-    }
-
-    public MutableLiveData<String> getModuleInfoTV() {
-        return moduleInfoTV;
-    }
-
     public MutableLiveData<Boolean> getDetectMode() {
         return detectMode;
     }
@@ -63,29 +45,12 @@ public class ModuleViewModel extends ViewModel {
         return detectPicture;
     }
 
-    public MutableLiveData<String> getPlate_color() {
-        return plate_color;
-    }
-
-    public Handler getGetModuleInfoHandle() {
-        return getModuleInfoHandle;
-    }
-
-    /**
-     * 获取模块回传信息Handler
-     */
-    private final Handler getModuleInfoHandle = new Handler(new WeakReference<Handler.Callback>(msg -> {
-        if (msg.what == 1) moduleInfoTV.setValue((String) msg.obj);
-        if (msg.what == 2) moduleImgShow.setValue((Bitmap) msg.obj);
-        return true;
-    }).get());
-
     /**
      * 模块测试控制
      *
      * @param i -
      */
-    public void module(int i) {
+    public void module(int i, MainViewModel mainViewModel) {
         ConnectTransport ct = ConnectTransport.getInstance();
         if (Boolean.FALSE.equals(detectMode.getValue())) {
             Bitmap detect = detectPicture.getValue();
@@ -117,7 +82,7 @@ public class ModuleViewModel extends ViewModel {
                                 ct.sendUIMassage(1, "新能源车牌: " + result.getLabel());
                             if ("blue".equals(color))
                                 ct.sendUIMassage(1, "蓝底车牌: " + result.getLabel());
-                            if (plate_color.getValue() != null && plate_color.getValue().equals(color)) {
+                            if (mainViewModel.getPlate_color().getValue() != null && mainViewModel.getPlate_color().getValue().equals(color)) {
                                 finalResult = result.getLabel();
                                 finalResult = completion(finalResult);
                                 ct.sendUIMassage(1, "当前所需车牌: ■■■" + finalResult + "■■■");
@@ -177,7 +142,7 @@ public class ModuleViewModel extends ViewModel {
                     break;
                 //图片保存
                 case 7:
-                    cachedThreadPool.execute(() -> ct.sendUIMassage(1, BitmapProcess.saveBitmap("MFP", moduleImgShow.getValue())));
+                    cachedThreadPool.execute(() -> ct.sendUIMassage(1, BitmapProcess.saveBitmap("MFP", mainViewModel.getModuleImgShow().getValue())));
                     break;
                 //全安卓控制4
                 case 0xB4:
@@ -188,7 +153,7 @@ public class ModuleViewModel extends ViewModel {
                     });
                     break;
             }
-            else moduleInfoTV.setValue("传入图片为空!");
+            else mainViewModel.getModuleInfoTV().setValue("传入图片为空!");
         } else {
             if (ct != null && ct.getStream() != null) switch (i) {
                 //红绿灯
@@ -227,7 +192,7 @@ public class ModuleViewModel extends ViewModel {
                     cachedThreadPool.execute(() -> {});
                     break;
             }
-            else moduleInfoTV.setValue("摄像头未发送图片!");
+            else mainViewModel.getModuleInfoTV().setValue("摄像头未发送图片!");
         }
     }
 }

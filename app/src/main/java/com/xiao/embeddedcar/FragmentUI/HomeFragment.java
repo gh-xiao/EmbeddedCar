@@ -7,13 +7,11 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.ScrollingMovementMethod;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.ViewModelProvider;
+import androidx.annotation.Nullable;
 
 import com.bkrcl.control_car_video.camerautil.CameraCommandUtil;
 import com.xiao.embeddedcar.Activity.MainActivity;
@@ -21,23 +19,22 @@ import com.xiao.embeddedcar.DataProcessingModule.ConnectTransport;
 import com.xiao.embeddedcar.Entity.LoginInfo;
 import com.xiao.embeddedcar.R;
 import com.xiao.embeddedcar.Utils.CameraUtil.XcApplication;
+import com.xiao.embeddedcar.Utils.Network.USBToSerialUtil;
 import com.xiao.embeddedcar.Utils.Network.WiFiStateUtil;
 import com.xiao.embeddedcar.Utils.PublicMethods.BaseConversion;
 import com.xiao.embeddedcar.Utils.PublicMethods.FastDo;
 import com.xiao.embeddedcar.Utils.PublicMethods.ToastUtil;
-import com.xiao.embeddedcar.ViewModel.ConnectViewModel;
 import com.xiao.embeddedcar.ViewModel.HomeViewModel;
-import com.xiao.embeddedcar.ViewModel.ModuleViewModel;
+import com.xiao.embeddedcar.ViewModel.MainViewModel;
 import com.xiao.embeddedcar.databinding.FragmentHomeBinding;
 
 import java.util.Locale;
 
-public class HomeFragment extends ABaseFragment {
+public class HomeFragment extends AbstractFragment<FragmentHomeBinding, HomeViewModel> {
 
     private FragmentHomeBinding binding;
+    private MainViewModel mainViewModel;
     private HomeViewModel homeViewModel;
-    private ConnectViewModel connectViewModel;
-    private ModuleViewModel moduleViewModel;
     private int sp_n = 50;
     private int angle = 90;
     private int mp_n = 100;
@@ -46,31 +43,32 @@ public class HomeFragment extends ABaseFragment {
     private float x1 = 0;
     private float y1 = 0;
 
+    public HomeFragment() {
+        super(FragmentHomeBinding::inflate, HomeViewModel.class, true);
+    }
+
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        homeViewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
-        connectViewModel = new ViewModelProvider(requireActivity()).get(ConnectViewModel.class);
-        moduleViewModel = new ViewModelProvider(requireActivity()).get(ModuleViewModel.class);
-        binding = FragmentHomeBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
-        //控件动作初始化
-        init();
-        //设置观察者
-        observerDataStateUpdateAction();
-        return root;
+    public void initFragment(@NonNull FragmentHomeBinding binding, @Nullable HomeViewModel viewModel, @Nullable Bundle savedInstanceState) {
+        this.binding = binding;
+        this.homeViewModel = viewModel;
+        this.mainViewModel = getMainViewModel();
+        /* 实例化连接类(需要库文件先初始化完毕) */
+        ConnectTransport.getInstance().init(requireActivity(), mainViewModel, homeViewModel);
+        /* 初始化SerialUtil类(用于非Socket通讯) */
+        USBToSerialUtil.getInstance().init(requireActivity(), homeViewModel, mainViewModel);
     }
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
-    void init() {
+    public void init() {
         //设置TextView滚动
         binding.Debug.setMovementMethod(ScrollingMovementMethod.getInstance());
         binding.commandData.setMovementMethod(ScrollingMovementMethod.getInstance());
         //清空重置按钮监听事件
         binding.clearDebugArea.setOnClickListener(view -> {
             binding.Debug.setText("Debug显示\n");
-            homeViewModel.getShowImg().setValue(null);
-            moduleViewModel.getModuleImgShow().setValue(null);
+            mainViewModel.getShowImg().setValue(null);
+            mainViewModel.getModuleImgShow().setValue(null);
             binding.commandData.setText(R.string.command_data_show);
             homeViewModel.getMp_n().setValue(100);
             homeViewModel.getAngle().setValue(50);
@@ -85,8 +83,8 @@ public class HomeFragment extends ABaseFragment {
         binding.refreshBtn.setOnClickListener(view -> {
             if (FastDo.isFastClick()) {
                 if (WiFiStateUtil.getInstance().wifiInit() || XcApplication.isSerial != XcApplication.Mode.SOCKET) {
-                    homeViewModel.refreshConnect();
-                    HomeViewModel.setReady(true);
+                    mainViewModel.refreshConnect();
+                    MainViewModel.setReady(true);
                 } else ToastUtil.getInstance().ShowToast("还未进行连接操作!", 10);
             } else ToastUtil.getInstance().ShowToast("请勿快速连按!", 10);
         });
@@ -164,10 +162,10 @@ public class HomeFragment extends ABaseFragment {
     }
 
     @Override
-    void observerDataStateUpdateAction() {
+    public void observerDataStateUpdateAction() {
         homeViewModel.getDebugArea().setValue(null);
         //图片信息显示
-        homeViewModel.getShowImg().observe(getViewLifecycleOwner(), showImg -> binding.img.setImageBitmap(showImg));
+        mainViewModel.getShowImg().observe(getViewLifecycleOwner(), showImg -> binding.img.setImageBitmap(showImg));
         //设备数据接收
         homeViewModel.getDataShow().observe(getViewLifecycleOwner(), s -> {
             binding.rvData.setTextColor(chief_status_flag ? getResources().getColor(R.color.white) : getResources().getColor(R.color.black));
@@ -193,7 +191,7 @@ public class HomeFragment extends ABaseFragment {
             }
         });
         //连接状态
-        homeViewModel.getConnectState().observe(getViewLifecycleOwner(), integer -> {
+        mainViewModel.getConnectState().observe(getViewLifecycleOwner(), integer -> {
             switch (integer) {
                 case 3:
                     homeViewModel.getDebugArea().setValue("平台已连接,代码: 3");
@@ -223,13 +221,13 @@ public class HomeFragment extends ABaseFragment {
         });
         //IP信息设置与图片显示
         homeViewModel.getIpShow().observe(getViewLifecycleOwner(), s -> binding.showIP.setText(s));
-        connectViewModel.getLoginInfo().observe(getViewLifecycleOwner(), loginInfo -> {
+        mainViewModel.getLoginInfo().observe(getViewLifecycleOwner(), loginInfo -> {
             if (loginInfo == null || loginInfo.getIP() == null) return;
             if (XcApplication.isSerial == XcApplication.Mode.SOCKET && !(loginInfo.getIPCamera() == null || loginInfo.getIPCamera().equals("null:81"))) {
                 //开启接收网络传入图片
-                homeViewModel.getCameraPicture();
+                mainViewModel.getCameraPicture();
                 //开启接收设备传入数据
-                homeViewModel.refreshConnect();
+                mainViewModel.refreshConnect();
                 homeViewModel.getIpShow().setValue("WiFi连接成功! " + "IP地址: " + loginInfo.getIP() + "\n"
                         + "摄像头连接成功! " + "Camera-IP: " + loginInfo.getPureCameraIP());
             } else if (XcApplication.isSerial == XcApplication.Mode.SOCKET && loginInfo.getIP().equals("0.0.0.0")) {
@@ -242,10 +240,11 @@ public class HomeFragment extends ABaseFragment {
             }
         });
         //
-        moduleViewModel.getModuleInfoTV().observe(getViewLifecycleOwner(), s -> {
+        mainViewModel.getModuleInfoTV().observe(getViewLifecycleOwner(), s -> {
             if (s != null) binding.Debug.append(s + "\n");
         });
     }
+
 
     /**
      * 摄像头位置调整

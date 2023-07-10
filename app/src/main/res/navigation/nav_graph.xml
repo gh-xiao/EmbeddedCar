@@ -46,12 +46,19 @@
     <fragment
         android:id="@+id/nav_analyse"
         android:name="com.xiao.embeddedcar.FragmentUI.AnalyseFragment"
-        android:label="图片分析"
+        android:label="@string/menu_analyse"
         tools:layout="@layout/fragment_analyse" />
 
     <fragment
         android:id="@+id/nav_config"
         android:name="com.xiao.embeddedcar.FragmentUI.ConfigFragment"
-        android:label="配置选项"
+        android:label="@string/menu_config"
         tools:layout="@layout/fragment_config" />
+
+    <fragment
+        android:id="@+id/nav_test"
+        android:name="com.xiao.embeddedcar.FragmentUI.testFragment"
+        android:label="@string/menu_test"
+        tools:layout="@layout/fragment_test" />
+
 </navigation>

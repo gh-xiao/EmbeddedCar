@@ -8,15 +8,14 @@ public class ToastUtil {
     private Context mContext;
     //单例对象
     @SuppressLint("StaticFieldLeak")
-    private static ToastUtil mInstance;
-
+    private static volatile ToastUtil mInstance;
 
     private ToastUtil() {
     }
 
-    public static synchronized ToastUtil getInstance() {
-        if (null == mInstance) {
-            mInstance = new ToastUtil();
+    public static ToastUtil getInstance() {
+        if (null == mInstance) synchronized (ToastUtil.class) {
+            if (mInstance == null) mInstance = new ToastUtil();
         }
         return mInstance;
     }

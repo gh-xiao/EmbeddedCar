@@ -1,15 +1,39 @@
 package com.xiao.embeddedcar.ViewModel;
 
+import android.graphics.Bitmap;
+import android.os.Handler;
+
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.xiao.embeddedcar.Activity.MainActivity;
+import com.xiao.embeddedcar.DataProcessingModule.ConnectTransport;
+import com.xiao.embeddedcar.Entity.LoginInfo;
+import com.xiao.embeddedcar.Utils.CameraUtil.XcApplication;
+import com.xiao.embeddedcar.Utils.PublicMethods.FastDo;
 import com.xiao.embeddedcar.Utils.QRcode.QRBitmapCutter;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 public class MainViewModel extends ViewModel {
+    /* 网络操作ViewModel */
+    //登录信息
+    private final MutableLiveData<LoginInfo> loginInfo = new MutableLiveData<>(new LoginInfo());
+    //登录状态
+    private final MutableLiveData<String> loginState = new MutableLiveData<>();
+    //连接状态
+    private final MutableLiveData<Integer> connectState = new MutableLiveData<>();
     //主从状态
     private final MutableLiveData<Boolean> chief_state_flag = new MutableLiveData<>(true);
+    /* 模块Fragment的ViewModel数据 */
+    //设备图片传入
+    private final MutableLiveData<Bitmap> showImg = new MutableLiveData<>();
+    //模块图片显示
+    private final MutableLiveData<Bitmap> moduleImgShow = new MutableLiveData<>();
+    //信息数据显示
+    private final MutableLiveData<String> moduleInfoTV = new MutableLiveData<>();
+    /* 配置文件ViewModel数据 */
     //二维码检测色彩
     private final MutableLiveData<ArrayList<QRBitmapCutter.QRColor>> QR_color = new MutableLiveData<>(new ArrayList<>());
     private final MutableLiveData<String> tv_color = new MutableLiveData<>("");
@@ -56,8 +80,37 @@ public class MainViewModel extends ViewModel {
     private final MutableLiveData<Boolean> detect_methods_choose = new MutableLiveData<>(false);
 
     /* getter */
+
+    public MutableLiveData<LoginInfo> getLoginInfo() {
+        return loginInfo;
+    }
+
+    public MutableLiveData<String> getLoginState() {
+        return loginState;
+    }
+
+    public MutableLiveData<Integer> getConnectState() {
+        return connectState;
+    }
+
     public MutableLiveData<Boolean> getChief_state_flag() {
         return chief_state_flag;
+    }
+
+    public MutableLiveData<Bitmap> getShowImg() {
+        return showImg;
+    }
+
+    public MutableLiveData<Bitmap> getModuleImgShow() {
+        return moduleImgShow;
+    }
+
+    public MutableLiveData<String> getModuleInfoTV() {
+        return moduleInfoTV;
+    }
+
+    public Handler getGetModuleInfoHandle() {
+        return getModuleInfoHandle;
     }
 
     public MutableLiveData<ArrayList<QRBitmapCutter.QRColor>> getQR_color() {
@@ -150,4 +203,72 @@ public class MainViewModel extends ViewModel {
     public MutableLiveData<Boolean> getDetect_methods_choose() {
         return detect_methods_choose;
     }
+
+    private static boolean ready = true;
+
+    public static void setReady(boolean ready) {
+        MainViewModel.ready = ready;
+    }
+
+    /**
+     * 刷新操作
+     */
+    public void refreshConnect() {
+        if (XcApplication.isSerial == XcApplication.Mode.SOCKET) {
+            //开启网络连接线程
+            connect_thread();
+        } else if (XcApplication.isSerial == XcApplication.Mode.SERIAL) {
+            //使用纯串口uart4
+            serial_thread();
+        }
+    }
+
+    /**
+     * WiFi模式下的线程通讯
+     */
+    private void connect_thread() {
+        XcApplication.cachedThreadPool.execute(() -> ConnectTransport.getInstance().connect( MainActivity.getLoginInfo().getIP()));
+    }
+
+    /**
+     * 串口模式下的通讯
+     */
+    private void serial_thread() {
+        XcApplication.cachedThreadPool.execute(() -> ConnectTransport.getInstance().serial_connect());
+    }
+
+    /**
+     * 获取摄像头回传图片Handle
+     */
+    private final Handler getBitmapHandle = new Handler(new WeakReference<Handler.Callback>(msg -> {
+        if (msg.what == 1) {
+            showImg.setValue((Bitmap) msg.obj);
+            return true;
+        } else if (msg.what == 0) {
+            if (FastDo.isFastClick()) refreshConnect();
+        } else connectState.setValue(msg.what);
+
+        return false;
+    }).get());
+
+    /**
+     * 获取摄像头回传的图片
+     */
+    public void getCameraPicture() {
+        if (ready) {
+            moduleInfoTV.setValue("正在开启线程尝试获取摄像头传入图片...");
+            ready = !ready;
+            //单线程池
+            XcApplication.singleThreadExecutor.execute(() -> ConnectTransport.getInstance().getPicture(getBitmapHandle));
+        }
+    }
+
+    /**
+     * 获取模块回传信息Handler
+     */
+    private final Handler getModuleInfoHandle = new Handler(new WeakReference<Handler.Callback>(msg -> {
+        if (msg.what == 1) moduleInfoTV.setValue((String) msg.obj);
+        if (msg.what == 2) moduleImgShow.setValue((Bitmap) msg.obj);
+        return true;
+    }).get());
 }

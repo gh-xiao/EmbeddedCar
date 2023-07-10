@@ -163,4 +163,5 @@
     <!--    layout - item_digital-->
     <string name="digital_title">显示数据行:</string>
     <string name="auto_half_control">自动驾驶</string>
+    <string name="menu_test">测试使用</string>
 </resources>

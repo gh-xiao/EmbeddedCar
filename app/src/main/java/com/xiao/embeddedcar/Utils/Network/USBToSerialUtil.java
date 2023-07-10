@@ -22,8 +22,8 @@ import com.hoho.android.usbserial.util.HexDump;
 import com.hoho.android.usbserial.util.SerialInputOutputManager;
 import com.xiao.embeddedcar.Utils.CameraUtil.XcApplication;
 import com.xiao.embeddedcar.Utils.PublicMethods.ToastUtil;
-import com.xiao.embeddedcar.ViewModel.ConnectViewModel;
 import com.xiao.embeddedcar.ViewModel.HomeViewModel;
+import com.xiao.embeddedcar.ViewModel.MainViewModel;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,10 +33,10 @@ import java.util.List;
 public class USBToSerialUtil {
     private final String TAG = this.getClass().getSimpleName();
     @SuppressLint("StaticFieldLeak")
-    private static USBToSerialUtil mInstance;
+    private static volatile USBToSerialUtil mInstance;
     private Context mContext;
     private HomeViewModel hvm;
-    private ConnectViewModel cvm;
+    private MainViewModel mvm;
 
     /**
      * 私有构造器
@@ -48,9 +48,9 @@ public class USBToSerialUtil {
      *
      * @return SerialUtil对象
      */
-    public static synchronized USBToSerialUtil getInstance() {
-        if (null == mInstance) {
-            mInstance = new USBToSerialUtil();
+    public static USBToSerialUtil getInstance() {
+        if (null == mInstance) synchronized (USBToSerialUtil.class) {
+            if (null == mInstance) mInstance = new USBToSerialUtil();
         }
         return mInstance;
     }
@@ -60,10 +60,10 @@ public class USBToSerialUtil {
      *
      * @param context Activity上下文
      */
-    public void init(Context context, HomeViewModel homeViewModel, ConnectViewModel connectViewModel) {
+    public void init(Context context, HomeViewModel homeViewModel, MainViewModel mainViewModel) {
         this.mContext = context;
         this.hvm = homeViewModel;
-        this.cvm = connectViewModel;
+        this.mvm = mainViewModel;
         this.mUsbManager = (UsbManager) context.getSystemService(USB_SERVICE);
     }
 
@@ -90,7 +90,7 @@ public class USBToSerialUtil {
         @Override
         public void onNewData(final byte[] data) {
             //通过USB接收小车回传的数据
-            Message msg = hvm.rehHandler.obtainMessage(1, data);
+            Message msg = hvm.getRehHandler().obtainMessage(1, data);
             msg.sendToTarget();
             final String message = "Read " + data.length + " bytes: \n" + HexDump.dumpHexString(data) + "\n\n";
             Log.e("SerialGetData", message);
@@ -123,7 +123,7 @@ public class USBToSerialUtil {
      * 通过异步任务AsyncTask实现usb的获取
      */
     private void refreshDeviceList() {
-        cvm.getConnectInfo().setValue("启动AsyncTask获取设备列表...");
+        mvm.getModuleInfoTV().setValue("启动AsyncTask获取设备列表...");
         //https://shoewann0402.github.io/2020/03/06/android-R-AsyncTask-deprecated/
         new AsyncTask<Void, Void, List<UsbSerialPort>>() {
             @Override
@@ -149,7 +149,7 @@ public class USBToSerialUtil {
                 mEntries.addAll(result);
                 useUSBToSerial();
                 Log.e(TAG, "Done refreshing, " + mEntries.size() + " entries found.");
-                cvm.getConnectInfo().setValue("刷新成功,已发现" + mEntries.size() + "台设备!");
+                mvm.getModuleInfoTV().setValue("刷新成功,已发现" + mEntries.size() + "台设备!");
             }
         }.execute((Void) null);
     }
@@ -170,7 +170,7 @@ public class USBToSerialUtil {
 
         } catch (IndexOutOfBoundsException e) {
             Log.e(TAG, "IndexOutOfBoundsException: 请检查USB连接状态!");
-            cvm.getConnectInfo().setValue("IndexOutOfBoundsException: 串口通信失败,请检查USB连接状态!");
+            mvm.getModuleInfoTV().setValue("IndexOutOfBoundsException: 串口通信失败,请检查USB连接状态!");
 //            ToastUtil.getInstance().ShowToast("串口通信失败,请检查设备连接状态!");
         }
         //使用usb功能
@@ -183,19 +183,19 @@ public class USBToSerialUtil {
     private void controlUSB() {
         Log.e(TAG, "Resumed,port= " + sPort);
         if (sPort == null)
-            cvm.getConnectInfo().setValue(" UsbSerialPort对象为空,没有串口驱动!");
+            mvm.getModuleInfoTV().setValue(" UsbSerialPort对象为空,没有串口驱动!");
         else {
             tryGetUsbPermission();
             if (connection == null) {
                 refreshDeviceList();
-                cvm.getConnectInfo().setValue("UsbDeviceConnection对象为空,串口驱动失败!");
+                mvm.getModuleInfoTV().setValue("UsbDeviceConnection对象为空,串口驱动失败!");
                 return;
             }
             try {
                 sPort.open(connection);
                 sPort.setParameters(115200, 8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE);
             } catch (IOException e) {
-                cvm.getConnectInfo().setValue("IOException: 串口驱动错误!");
+                mvm.getModuleInfoTV().setValue("IOException: 串口驱动错误!");
                 try {
                     sPort.close();
                 } catch (IOException ignored) {
@@ -203,7 +203,7 @@ public class USBToSerialUtil {
                 sPort = null;
                 return;
             }
-            cvm.getConnectInfo().setValue("串口设备: " + sPort.getClass().getSimpleName());
+            mvm.getModuleInfoTV().setValue("串口设备: " + sPort.getClass().getSimpleName());
         }
         onDeviceStateChange();
     }
@@ -253,7 +253,7 @@ public class USBToSerialUtil {
         //注册广播接收器
         mContext.registerReceiver(mUsbPermissionActionReceiver, filter);
         //https://zhuanlan.zhihu.com/p/396790121
-        PendingIntent mPermissionIntent = PendingIntent.getBroadcast(mContext, 0, new Intent(ACTION_USB_PERMISSION), 0);
+        @SuppressLint("UnspecifiedImmutableFlag") PendingIntent mPermissionIntent = PendingIntent.getBroadcast(mContext, 0, new Intent(ACTION_USB_PERMISSION), 0);
         //here do emulation to ask all connected usb device for permission
         /* 向所有连接的usb设备请求许可 */
         for (final UsbDevice usbDevice : mUsbManager.getDeviceList().values()) {

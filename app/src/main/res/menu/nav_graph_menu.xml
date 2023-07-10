@@ -32,5 +32,9 @@
             android:id="@+id/nav_config"
             android:icon="@drawable/ic_menu_config"
             android:title="@string/menu_config" />
+        <item
+            android:id="@+id/nav_test"
+            android:icon="@drawable/ic_menu_test"
+            android:title="@string/menu_test" />
     </group>
 </menu>

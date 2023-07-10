@@ -1,13 +1,11 @@
 package com.xiao.embeddedcar.FragmentUI;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.lifecycle.ViewModel;
 
 import com.bkrcl.control_car_video.camerautil.CameraCommandUtil;
 import com.xiao.embeddedcar.Activity.MainActivity;
@@ -16,24 +14,22 @@ import com.xiao.embeddedcar.Entity.LoginInfo;
 import com.xiao.embeddedcar.Utils.CameraUtil.XcApplication;
 import com.xiao.embeddedcar.databinding.FragmentOtherBinding;
 
-public class OtherFragment extends ABaseFragment {
+public class OtherFragment extends AbstractFragment<FragmentOtherBinding, ViewModel> {
 
     private FragmentOtherBinding binding;
     private int state_camera = 0;
 
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = FragmentOtherBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
-        //控件动作初始化
-        init();
-        //设置观察者
-        observerDataStateUpdateAction();
-        return root;
+    public OtherFragment() {
+        super(FragmentOtherBinding::inflate, null, false);
     }
 
     @Override
-    void init() {
+    public void initFragment(@NonNull FragmentOtherBinding binding, @Nullable ViewModel viewModel, @Nullable Bundle savedInstanceState) {
+        this.binding = binding;
+    }
+
+    @Override
+    public void init() {
         binding.positionDialog.setOnClickListener(view -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
             builder.setTitle("摄像头角度预设位调节");
@@ -76,7 +72,7 @@ public class OtherFragment extends ABaseFragment {
     }
 
     @Override
-    void observerDataStateUpdateAction() {
+    public void observerDataStateUpdateAction() {
     }
 
     private void cameraState_control() {
@@ -125,6 +121,5 @@ public class OtherFragment extends ABaseFragment {
                 state_camera = 0;
             });
         }
-
     }
 }

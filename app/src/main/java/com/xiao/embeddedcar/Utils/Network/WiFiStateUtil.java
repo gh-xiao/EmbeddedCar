@@ -15,7 +15,7 @@ import android.util.Log;
 
 import com.xiao.embeddedcar.Entity.LoginInfo;
 import com.xiao.embeddedcar.Utils.PublicMethods.ToastUtil;
-import com.xiao.embeddedcar.ViewModel.ConnectViewModel;
+import com.xiao.embeddedcar.ViewModel.MainViewModel;
 
 import java.util.Objects;
 
@@ -23,10 +23,10 @@ public class WiFiStateUtil {
 
     private static final String TAG = "Main";
     @SuppressLint("StaticFieldLeak")
-    private static WiFiStateUtil mInstance;
+    private static volatile WiFiStateUtil mInstance;
     private Context mContext;
     private WifiManager wifiManager;
-    private ConnectViewModel vm;
+    private MainViewModel vm;
     private LoginInfo l;
     private ToastUtil toastUtil;
     private WifiStateBroadcastReceive mReceive;
@@ -41,9 +41,9 @@ public class WiFiStateUtil {
     /**
      * 获取ConnectTransport单例对象
      */
-    public static synchronized WiFiStateUtil getInstance() {
-        if (null == mInstance) {
-            mInstance = new WiFiStateUtil();
+    public static WiFiStateUtil getInstance() {
+        if (null == mInstance) synchronized (WiFiStateUtil.class) {
+            if (null == mInstance) mInstance = new WiFiStateUtil();
         }
         return mInstance;
     }
@@ -128,7 +128,7 @@ public class WiFiStateUtil {
         }
     }
 
-    public boolean wifiInit(ConnectViewModel vm) {
+    public boolean wifiInit(MainViewModel vm) {
         if (mContext == null) return false;
         this.vm = vm;
         /* 得到服务器的IP地址 */
@@ -151,6 +151,7 @@ public class WiFiStateUtil {
 
     /**
      * 进行连接操作后调用的方法
+     *
      * @return 是否为正确的IP地址
      */
     public boolean wifiInit() {

@@ -39,17 +39,14 @@ import com.xiao.embeddedcar.DataProcessingModule.CrashHandler;
 import com.xiao.embeddedcar.Entity.LoginInfo;
 import com.xiao.embeddedcar.R;
 import com.xiao.embeddedcar.Utils.CameraUtil.CameraConnectUtil;
-import com.xiao.embeddedcar.Utils.PublicMethods.ToastUtil;
 import com.xiao.embeddedcar.Utils.Network.USBToSerialUtil;
 import com.xiao.embeddedcar.Utils.Network.WiFiStateUtil;
 import com.xiao.embeddedcar.Utils.PublicMethods.BitmapProcess;
+import com.xiao.embeddedcar.Utils.PublicMethods.ToastUtil;
 import com.xiao.embeddedcar.Utils.QRcode.WeChatQRCodeDetector;
 import com.xiao.embeddedcar.Utils.TrafficSigns.YoloV5_tfLite_TSDetector;
 import com.xiao.embeddedcar.Utils.VID.YoloV5_tfLite_VIDDetector;
-import com.xiao.embeddedcar.ViewModel.ConnectViewModel;
-import com.xiao.embeddedcar.ViewModel.HomeViewModel;
 import com.xiao.embeddedcar.ViewModel.MainViewModel;
-import com.xiao.embeddedcar.ViewModel.ModuleViewModel;
 import com.xiao.embeddedcar.databinding.ActivityMainBinding;
 
 import org.opencv.android.OpenCVLoader;
@@ -67,10 +64,6 @@ public class MainActivity extends AppCompatActivity {
     private NavController navController;
     //MainActivity的ViewModel
     private MainViewModel mainViewModel;
-    //基于ActivityContext的ViewModel
-    private HomeViewModel homeViewModel;
-    private ConnectViewModel connectViewModel;
-    private ModuleViewModel moduleViewModel;
     //权限申请状态
     private boolean allPermissionsGranted;
     private final ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> MainActivity.this.finish());
@@ -114,10 +107,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        onWindowFocusChanged(true);
         mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
-        homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
-        connectViewModel = new ViewModelProvider(this).get(ConnectViewModel.class);
-        moduleViewModel = new ViewModelProvider(this).get(ModuleViewModel.class);
         /* 绑定xml文件 */
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         /* 设置内容视图为绑定类的根视图 */
@@ -135,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
         /* 将每个菜单ID作为一组ID传递，因为每个菜单都应被视为顶级目的地。 */
         /* 以配置的方式把导航栏配置到APP中,并绑定导航栏中的项对应的Fragment页面，实现联动 */
         mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_home, R.id.nav_connect, R.id.nav_control, R.id.nav_other,
-                R.id.nav_module, R.id.nav_analyse, R.id.nav_config).setOpenableLayout(drawer).build();
+                R.id.nav_module, R.id.nav_analyse, R.id.nav_config, R.id.nav_test).setOpenableLayout(drawer).build();
         /* https://zhuanlan.zhihu.com/p/338437260 */
         /* NavController:管理应用导航的对象，实现Fragment之间的跳转等操作 */
         navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
@@ -203,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
                 ConnectTransport.setCarGoto(1);
                 break;
             case R.id.Android_Control:
-                moduleViewModel.module(0xB4);
+                cachedThreadPool.execute(ConnectTransport.getInstance()::Q4);
                 break;
             case R.id.half_Control:
                 //对话框构造器
@@ -273,7 +264,7 @@ public class MainActivity extends AppCompatActivity {
     private void observerDataStateUpdateAction() {
         mainViewModel.getChief_state_flag().observe(this, b -> chief_status_flag = b);
         /* 消息回传解析线程启动 */
-        cachedThreadPool.execute(() -> ConnectTransport.getInstance().setReMsgHandler(moduleViewModel.getGetModuleInfoHandle()));
+        cachedThreadPool.execute(() -> ConnectTransport.getInstance().setReMsgHandler(mainViewModel.getGetModuleInfoHandle()));
     }
 
     /**
@@ -346,15 +337,15 @@ public class MainActivity extends AppCompatActivity {
     private void requestAllFilesAccess() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !Environment.isExternalStorageManager()) {
             allPermissionsGranted = false;
-            AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
-            alertBuilder.setMessage("需授权访问外部存储用于拷贝库资源");
-            alertBuilder.setCancelable(false);
-            alertBuilder.setPositiveButton("去设置", (dialog, which) -> {
-                Intent intent = new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                launcher.launch(intent);
-            });
-            alertBuilder.setNegativeButton("取消", (dialog, which) -> dialog.dismiss());
+            AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this)
+                    .setMessage("需授权访问外部存储用于拷贝库资源")
+                    .setCancelable(false)
+                    .setPositiveButton("去设置", (dialog, which) -> {
+                        Intent intent = new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        launcher.launch(intent);
+                    })
+                    .setNegativeButton("取消", (dialog, which) -> dialog.dismiss());
             alertBuilder.show();
         }
     }
@@ -407,7 +398,7 @@ public class MainActivity extends AppCompatActivity {
         /* 初始化Bitmap处理对象类 */
         BitmapProcess.getInstance().init(this);
         /* 初始化摄像头连接工具类 */
-        CameraConnectUtil.getInstance().init(this, connectViewModel);
+        CameraConnectUtil.getInstance().init(this, mainViewModel);
         /* 初始化WiFi状态工具类 */
         WiFiStateUtil.getInstance().init(this);
     }
@@ -430,10 +421,6 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             initMsg.append("Exception!有库文件初始化错误!");
         }
-        /* 实例化连接类(需要库文件先初始化完毕) */
-        ConnectTransport.getInstance().init(this, mainViewModel);
-        /* 初始化SerialUtil类(用于非Socket通讯) */
-        USBToSerialUtil.getInstance().init(this, homeViewModel, connectViewModel);
-        homeViewModel.getDebugArea().setValue(initMsg.toString());
+        mainViewModel.getModuleInfoTV().setValue(initMsg.toString());
     }
 }

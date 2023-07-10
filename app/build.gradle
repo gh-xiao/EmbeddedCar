@@ -1,6 +1,8 @@
 //应用 应用程序模块
 plugins {
     id 'com.android.application'
+    id 'kotlin-android'
+    id 'org.jetbrains.kotlin.android'
 }
 
 android {
@@ -21,7 +23,7 @@ android {
         //项目版本号
         versionCode 1
         //版本名
-        versionName "2.6.3"
+        versionName "2.7.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         //设置支持的so库架构(开发者可以根据需要，选择一个或多个平台的so)
         ndk {
@@ -44,6 +46,7 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
     buildFeatures {
+        dataBinding true
         viewBinding true
     }
     sourceSets {
@@ -55,15 +58,19 @@ android {
 }
 
 dependencies {
+    implementation 'androidx.core:core:1.9.0'
+    implementation 'androidx.activity:activity:1.6.1'
     implementation 'androidx.appcompat:appcompat:1.4.2'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
-    implementation 'androidx.navigation:navigation-fragment:2.5.3'
-    implementation 'androidx.navigation:navigation-ui:2.5.3'
-    implementation 'androidx.core:core:1.9.0'
-    implementation 'com.google.android.material:material:1.8.0'
-    implementation 'com.android.volley:volley:1.2.1'//谷歌通讯库(暂未使用)
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
+    implementation 'com.google.android.material:material:1.9.0'
+    //谷歌通讯库(暂未使用)
+    implementation 'com.android.volley:volley:1.2.1'
+    //谷歌material材质设计
+    implementation 'com.google.android.material:material:1.9.0'
 
     testImplementation 'junit:junit:4.13.2'//用以声明测试用例库
 
@@ -79,7 +86,6 @@ dependencies {
     implementation 'org.tensorflow:tensorflow-lite:2.4.0'
     implementation 'org.tensorflow:tensorflow-lite-gpu:2.4.0'
     //图片选择器
-    implementation 'androidx.activity:activity:1.6.1'
     implementation 'io.github.lucksiege:pictureselector:v3.10.7'
     //pictureSelector插件
     implementation 'com.github.bumptech.glide:glide:4.15.0'

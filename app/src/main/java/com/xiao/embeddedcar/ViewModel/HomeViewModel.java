@@ -2,14 +2,12 @@ package com.xiao.embeddedcar.ViewModel;
 
 import static com.xiao.embeddedcar.Activity.MainActivity.chief_status_flag;
 
-import android.graphics.Bitmap;
 import android.os.Handler;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.xiao.embeddedcar.Activity.MainActivity;
 import com.xiao.embeddedcar.DataProcessingModule.ConnectTransport;
 import com.xiao.embeddedcar.Utils.CameraUtil.XcApplication;
 import com.xiao.embeddedcar.Utils.PublicMethods.BaseConversion;
@@ -25,13 +23,9 @@ import java.util.Locale;
 
 @SuppressWarnings("unused")
 public class HomeViewModel extends ViewModel {
-
-    private static boolean ready = true;
     /* 视图ViewModel */
     //模块接收图片设置
-    private final MutableLiveData<Boolean> moduleImgMode = new MutableLiveData<>(true);
-    //图片显示
-    private final MutableLiveData<Bitmap> showImg = new MutableLiveData<>();
+//    private final MutableLiveData<Boolean> moduleImgMode = new MutableLiveData<>(true);
     //IP信息区
     private final MutableLiveData<String> ipShow = new MutableLiveData<>();
     //数据接收显示区
@@ -48,8 +42,6 @@ public class HomeViewModel extends ViewModel {
     private final MutableLiveData<Integer> mp_n = new MutableLiveData<>(100);
 
     /* 数据ViewModel */
-    //连接状态
-    private final MutableLiveData<Integer> connectState = new MutableLiveData<>();
     //光敏状态数据
     public MutableLiveData<Long> psStatus = new MutableLiveData<>();
     //超声波数据
@@ -61,13 +53,9 @@ public class HomeViewModel extends ViewModel {
 
     /* getter */
 
-    public MutableLiveData<Boolean> getModuleImgMode() {
-        return moduleImgMode;
-    }
-
-    public MutableLiveData<Bitmap> getShowImg() {
-        return showImg;
-    }
+//    public MutableLiveData<Boolean> getModuleImgMode() {
+//        return moduleImgMode;
+//    }
 
     public MutableLiveData<String> getIpShow() {
         return ipShow;
@@ -97,10 +85,6 @@ public class HomeViewModel extends ViewModel {
         return mp_n;
     }
 
-    public MutableLiveData<Integer> getConnectState() {
-        return connectState;
-    }
-
     public MutableLiveData<Long> getPsStatus() {
         return psStatus;
     }
@@ -121,42 +105,11 @@ public class HomeViewModel extends ViewModel {
         return rehHandler;
     }
 
-    public static void setReady(boolean ready) {
-        HomeViewModel.ready = ready;
-    }
-
-    /**
-     * 刷新操作
-     */
-    public void refreshConnect() {
-        if (XcApplication.isSerial == XcApplication.Mode.SOCKET) {
-            //开启网络连接线程
-            connect_thread();
-        } else if (XcApplication.isSerial == XcApplication.Mode.SERIAL) {
-            //使用纯串口uart4
-            serial_thread();
-        }
-    }
-
-    /**
-     * WiFi模式下的线程通讯
-     */
-    private void connect_thread() {
-        XcApplication.cachedThreadPool.execute(() -> ConnectTransport.getInstance().connect(rehHandler, MainActivity.getLoginInfo().getIP()));
-    }
-
-    /**
-     * 串口模式下的通讯
-     */
-    private void serial_thread() {
-        XcApplication.cachedThreadPool.execute(() -> ConnectTransport.getInstance().serial_connect(rehHandler));
-    }
-
     /**
      * 接受设备发送的数据
      * (此写法避免引发内存泄露)
      */
-    public final Handler rehHandler = new Handler(new WeakReference<Handler.Callback>(msg -> {
+    private final Handler rehHandler = new Handler(new WeakReference<Handler.Callback>(msg -> {
         if (msg.what == 1) {
             byte[] mByte = (byte[]) msg.obj;
             //信息获取
@@ -252,33 +205,25 @@ public class HomeViewModel extends ViewModel {
                 commandData.setValue(mByte);
             }
             return true;
-        } else connectState.setValue(msg.what);
+        } else getConnectState(msg.what);
         return false;
     }).get());
 
-    /**
-     * 获取摄像头回传的图片
-     */
-    public void getCameraPicture() {
-        if (ready) {
-            debugArea.setValue("正在开启线程尝试获取摄像头传入图片...");
-            ready = !ready;
-            //单线程池
-            XcApplication.singleThreadExecutor.execute(() -> ConnectTransport.getInstance().getPicture(getBitmapHandle));
+    private void getConnectState(int i) {
+        //连接状态
+        switch (i) {
+            case 3:
+                debugArea.setValue("平台已连接,代码: 3");
+                break;
+            case 4:
+                debugArea.setValue("平台连接失败或已关闭!,代码: 4");
+                break;
+            case 5:
+                debugArea.setValue("WiFi通讯建立失败!,代码: 5");
+                break;
+            default:
+                debugArea.setValue("请检查WiFi连接状态!,代码: 0");
+                break;
         }
     }
-
-    /**
-     * 获取摄像头回传图片Handle
-     */
-    private final Handler getBitmapHandle = new Handler(new WeakReference<Handler.Callback>(msg -> {
-        if (msg.what == 1) {
-            showImg.setValue((Bitmap) msg.obj);
-            return true;
-        } else if (msg.what == 0) {
-            if (FastDo.isFastClick()) refreshConnect();
-        } else connectState.setValue(msg.what);
-
-        return false;
-    }).get());
 }

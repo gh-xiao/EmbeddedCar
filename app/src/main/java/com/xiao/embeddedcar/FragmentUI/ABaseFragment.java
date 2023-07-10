@@ -2,6 +2,7 @@ package com.xiao.embeddedcar.FragmentUI;
 
 import androidx.fragment.app.Fragment;
 
+@Deprecated
 public abstract class ABaseFragment extends Fragment {
     /**
      * 控件动作初始化

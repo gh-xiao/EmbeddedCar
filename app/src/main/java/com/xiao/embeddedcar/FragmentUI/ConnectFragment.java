@@ -12,53 +12,48 @@ import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.text.method.ScrollingMovementMethod;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import com.xiao.embeddedcar.Activity.MainActivity;
 import com.xiao.embeddedcar.R;
+import com.xiao.embeddedcar.Utils.CameraUtil.CameraConnectUtil;
 import com.xiao.embeddedcar.Utils.CameraUtil.XcApplication;
 import com.xiao.embeddedcar.Utils.Network.USBToSerialUtil;
 import com.xiao.embeddedcar.Utils.PublicMethods.FastDo;
 import com.xiao.embeddedcar.Utils.PublicMethods.ToastUtil;
 import com.xiao.embeddedcar.ViewModel.ConnectViewModel;
+import com.xiao.embeddedcar.ViewModel.MainViewModel;
 import com.xiao.embeddedcar.databinding.FragmentConnectBinding;
 
 import java.util.Objects;
 
-public class ConnectFragment extends ABaseFragment {
+public class ConnectFragment extends AbstractFragment<FragmentConnectBinding, ConnectViewModel> {
 
     private static final String ACTION_USB_PERMISSION = "com.android.example.USB_PERMISSION";
     private FragmentConnectBinding binding;
+    private MainViewModel mainViewModel;
     private ConnectViewModel connectViewModel;
     //USB管理对象
     private final UsbManager mUsbManager = USBToSerialUtil.getInstance().getmUsbManager();
 
+    public ConnectFragment() {
+        super(FragmentConnectBinding::inflate, ConnectViewModel.class, true);
+    }
+
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        //ViewModel
-        connectViewModel = new ViewModelProvider(requireActivity()).get(ConnectViewModel.class);
-        //xml文件绑定
-        binding = FragmentConnectBinding.inflate(inflater, container, false);
-        //视图绑定
-        View root = binding.getRoot();
-        //控件动作初始化
-        init();
-        //设置观察者
-        observerDataStateUpdateAction();
+    public void initFragment(@NonNull FragmentConnectBinding binding, @Nullable ConnectViewModel viewModel, @Nullable Bundle savedInstanceState) {
+        this.binding = binding;
+        this.connectViewModel = viewModel;
+        mainViewModel = getMainViewModel();
         binding.connectInfo.setText("");
-        return root;
     }
 
     @SuppressLint("SetTextI18n")
     @Override
-    void init() {
+    public void init() {
         /* 设置左侧TextView滚动 */
         binding.connectInfo.setMovementMethod(ScrollingMovementMethod.getInstance());
         /* 密码显示与隐藏 */
@@ -88,7 +83,7 @@ public class ConnectFragment extends ABaseFragment {
             //禁止快速连按
             if (FastDo.isFastClick()) {
                 if (XcApplication.isSerial != XcApplication.Mode.SOCKET) tryGetUsbPermission();
-                connectViewModel.requestConnect();
+                requestConnect();
             }
         });
         /* 跳转到主页 */
@@ -96,7 +91,7 @@ public class ConnectFragment extends ABaseFragment {
     }
 
     @Override
-    void observerDataStateUpdateAction() {
+    public void observerDataStateUpdateAction() {
         connectViewModel.getConnectInfo().setValue(null);
         connectViewModel.getConnectInfo().observe(getViewLifecycleOwner(), s -> {
             if (s != null) binding.connectInfo.append(s + "\n");
@@ -111,22 +106,41 @@ public class ConnectFragment extends ABaseFragment {
                 binding.connectionMode.setText(R.string.serial);
             }
         });
-        connectViewModel.getLoginInfo().observe(getViewLifecycleOwner(), loginInfo -> {
-            if (loginInfo == null || loginInfo.getIP() == null) return;
-            if (loginInfo.getIP() != null)
-                binding.IP.setText(loginInfo.getIP());
-            if (loginInfo.getIPCamera() != null)
-                binding.IPCamera.setText(loginInfo.getIPCamera());
-            if (loginInfo.getPureCameraIP() != null)
-                binding.PureCameraIP.setText(loginInfo.getPureCameraIP());
+        mainViewModel.getLoginInfo().observe(getViewLifecycleOwner(), loginInfo -> {
+            if (loginInfo == null) return;
+            binding.IP.setText((loginInfo.getIP() == null || loginInfo.getIP().equals("0.0.0.0")) ? "IP获取失败" : loginInfo.getIP());
+            binding.IPCamera.setText((loginInfo.getIPCamera() == null || loginInfo.getIPCamera().equals("null:81")) ? "摄像头IP获取失败" : loginInfo.getIPCamera());
+            binding.IP.setText((loginInfo.getPureCameraIP() == null) ? "摄像头端口失败" : loginInfo.getPureCameraIP());
+            connectViewModel.getConnectInfo().setValue("");
             MainActivity.setLoginInfo(loginInfo);
         });
-        connectViewModel.getLoginState().observe(getViewLifecycleOwner(), s -> {
+        mainViewModel.getLoginState().observe(getViewLifecycleOwner(), s -> {
             if (Objects.equals(s, "Fail")) {
                 connectViewModel.getConnectInfo().setValue("=====摄像头连接失败!=====\n");
-                connectViewModel.getLoginState().setValue("");
+                mainViewModel.getLoginState().setValue("");
+            }
+            if (Objects.equals(s, "Success")) {
+                connectViewModel.getConnectInfo().setValue("=====摄像头连接成功!=====\n");
+                mainViewModel.getLoginState().setValue("");
             }
         });
+    }
+
+    /**
+     * 请求连接
+     */
+    public void requestConnect() {
+        CameraConnectUtil.getInstance().cameraInit();
+        connectViewModel.getConnectInfo().setValue("检查通讯方式...\n");
+        //网络通讯
+        if (XcApplication.isSerial == XcApplication.Mode.SOCKET)
+            connectViewModel.useNetwork(mainViewModel);
+        else {
+            //搜索摄像头然后启动摄像头
+            connectViewModel.getConnectInfo().setValue("使用串口通讯\n");
+            USBToSerialUtil.getInstance().connectUSBSerial();
+            CameraConnectUtil.getInstance().search();
+        }
     }
 
     /**
@@ -140,7 +154,7 @@ public class ConnectFragment extends ABaseFragment {
         //注册广播接收器
         requireActivity().registerReceiver(mUsbPermissionActionReceiver, filter);
         //https://zhuanlan.zhihu.com/p/396790121
-        PendingIntent mPermissionIntent = PendingIntent.getBroadcast(getContext(), 0, new Intent(ACTION_USB_PERMISSION), 0);
+        PendingIntent mPermissionIntent = PendingIntent.getBroadcast(getContext(), 0, new Intent(ACTION_USB_PERMISSION), PendingIntent.FLAG_IMMUTABLE);
         //here do emulation to ask all connected usb device for permission
         /* 向所有连接的usb设备请求许可 */
         for (final UsbDevice usbDevice : mUsbManager.getDeviceList().values()) {

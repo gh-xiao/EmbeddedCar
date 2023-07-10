@@ -3,13 +3,8 @@ package com.xiao.embeddedcar.ViewModel;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.xiao.embeddedcar.Entity.LoginInfo;
 import com.xiao.embeddedcar.Utils.CameraUtil.CameraConnectUtil;
-import com.xiao.embeddedcar.Utils.CameraUtil.XcApplication;
-import com.xiao.embeddedcar.Utils.Network.USBToSerialUtil;
 import com.xiao.embeddedcar.Utils.Network.WiFiStateUtil;
-
-import java.util.Objects;
 
 public class ConnectViewModel extends ViewModel {
     /* 控件ViewModel */
@@ -26,50 +21,11 @@ public class ConnectViewModel extends ViewModel {
         return connectMode;
     }
 
-    /* 网络操作ViewModel */
-    //登录信息
-    private final MutableLiveData<LoginInfo> loginInfo = new MutableLiveData<>(new LoginInfo());
-    //登录状态
-    private final MutableLiveData<String> loginState = new MutableLiveData<>();
-
-    public MutableLiveData<LoginInfo> getLoginInfo() {
-        return loginInfo;
-    }
-
-    public MutableLiveData<String> getLoginState() {
-        return loginState;
-    }
-
-    /**
-     * 请求连接
-     */
-    public void requestConnect() {
-        CameraConnectUtil.getInstance().cameraInit();
-        connectInfo.setValue("检查通讯方式...\n");
-        //网络通讯
-        if (XcApplication.isSerial == XcApplication.Mode.SOCKET) useNetwork();
-        else {
-            //搜索摄像头然后启动摄像头
-            connectInfo.setValue("使用串口通讯\n");
-            USBToSerialUtil.getInstance().connectUSBSerial();
-            CameraConnectUtil.getInstance().search();
-            return;
-        }
-        if (Objects.equals(Objects.requireNonNull(loginInfo.getValue()).getIP(), "0.0.0.0")) {
-            connectInfo.setValue("连接失败,请重新连接!");
-            return;
-        }
-        if (Objects.equals(Objects.requireNonNull(loginInfo.getValue()).getIPCamera(), "null:81"))
-            connectInfo.setValue("摄像头没有找到，快去找找它吧");
-        else connectInfo.setValue("尝试连接摄像头...");
-        connectInfo.setValue("");
-    }
-
     /**
      * 网络通讯
      */
-    private void useNetwork() {
-        if (WiFiStateUtil.getInstance().wifiInit(this)) {
+    public void useNetwork(MainViewModel mvm) {
+        if (WiFiStateUtil.getInstance().wifiInit(mvm)) {
             connectInfo.setValue("使用WiFi通讯");
             //WiFi初始化成功
             search();

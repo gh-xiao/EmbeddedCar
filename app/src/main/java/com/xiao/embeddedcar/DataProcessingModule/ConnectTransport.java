@@ -29,6 +29,7 @@ import com.xiao.embeddedcar.Utils.QRcode.WeChatQRCodeDetector;
 import com.xiao.embeddedcar.Utils.Shape.ShapeDetector;
 import com.xiao.embeddedcar.Utils.TrafficLight.ColorProcess;
 import com.xiao.embeddedcar.Utils.TrafficLight.TrafficLightByLocation;
+import com.xiao.embeddedcar.ViewModel.HomeViewModel;
 import com.xiao.embeddedcar.ViewModel.MainViewModel;
 
 import org.opencv.android.Utils;
@@ -61,13 +62,14 @@ public class ConnectTransport {
     private final String TAG = ConnectTransport.class.getSimpleName();
     //单例对象
     @SuppressLint("StaticFieldLeak")
-    private static ConnectTransport mInstance;
+    private static volatile ConnectTransport mInstance;
     //上下文信息
     private Context mContext;
     //socket客户端对象
     private Socket socket;
     //ViewModel
     private MainViewModel mainViewModel;
+    private HomeViewModel homeViewModel;
     //客户端输入流
     private DataInputStream bInputStream;
     private InputStream SerialInputStream;
@@ -138,9 +140,9 @@ public class ConnectTransport {
     /**
      * 获取ConnectTransport单例对象
      */
-    public static synchronized ConnectTransport getInstance() {
-        if (null == mInstance) {
-            mInstance = new ConnectTransport();
+    public static ConnectTransport getInstance() {
+        if (null == mInstance) synchronized (ConnectTransport.class) {
+            if (null == mInstance) mInstance = new ConnectTransport();
         }
         return mInstance;
     }
@@ -151,9 +153,10 @@ public class ConnectTransport {
      * @param context       MainActivityContext
      * @param mainViewModel -
      */
-    public void init(Context context, MainViewModel mainViewModel) {
+    public void init(Context context, MainViewModel mainViewModel, HomeViewModel homeViewModel) {
         this.mContext = context.getApplicationContext();
         this.mainViewModel = mainViewModel;
+        this.homeViewModel = homeViewModel;
     }
 
     /**
@@ -174,12 +177,11 @@ public class ConnectTransport {
     /**
      * 建立通讯
      *
-     * @param reHandler 数据解析线程
-     * @param IP        有效IP地址
+     * @param IP 有效IP地址
      */
-    public void connect(Handler reHandler, String IP) {
+    public void connect(String IP) {
         try {
-            this.reHandler = reHandler;
+            this.reHandler = homeViewModel.getRehHandler();
             int port = 60000;
             socket = new Socket(IP, port);
             bInputStream = new DataInputStream(socket.getInputStream());
@@ -189,22 +191,20 @@ public class ConnectTransport {
             Log.e(TAG, "WiFi通讯建立失败!");
             Message msg = Message.obtain();
             msg.what = 5;
-            reHandler.sendMessage(msg);
+            homeViewModel.getRehHandler().sendMessage(msg);
         } catch (IOException e) {
             Message msg = Message.obtain();
             msg.what = 0;
-            reHandler.sendMessage(msg);
+            homeViewModel.getRehHandler().sendMessage(msg);
             e.printStackTrace();
         }
     }
 
     /**
      * 串口通讯
-     *
-     * @param reHandler 数据解析线程
      */
-    public void serial_connect(Handler reHandler) {
-        this.reHandler = reHandler;
+    public void serial_connect() {
+        this.reHandler = homeViewModel.getRehHandler();
         try {
             int baudRate = 115200;
             String path = "/dev/ttyS4";

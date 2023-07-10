@@ -56,6 +56,7 @@ public class CameraSearchService extends IntentService {
         }, 0, 1000);
 
         if (IP == null) mIntent.putExtra("loginState", "Fail");
+        else mIntent.putExtra("loginState", "Success");
         mIntent.putExtra("IP", IP + ":81");
         mIntent.putExtra("pureip", IP);
         //广播发送器 - 发送给CameraSearchService的广播

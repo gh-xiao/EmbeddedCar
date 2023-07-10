@@ -21,8 +21,10 @@ import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 //https://www.jianshu.com/p/9b2f43d87c9f
 //https://blog.csdn.net/shankezh/article/details/79332004
@@ -43,11 +45,10 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
     //存储异常和参数信息
     private final Map<String, String> paramsMap = new HashMap<>();
     //格式化时间
-    @SuppressLint("SimpleDateFormat")
-    private final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+    private final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.CHINA);
     //单例对象
     @SuppressLint("StaticFieldLeak")
-    private static CrashHandler mInstance;
+    private static volatile CrashHandler mInstance;
 
     /**
      * 私有构造器
@@ -58,9 +59,9 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
     /**
      * 获取CrashHandler实例
      */
-    public static synchronized CrashHandler getInstance() {
-        if (null == mInstance) {
-            mInstance = new CrashHandler();
+    public static CrashHandler getInstance() {
+        if (null == mInstance) synchronized (CrashHandler.class) {
+            if (null == mInstance) mInstance = new CrashHandler();
         }
         return mInstance;
     }
@@ -84,7 +85,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
             //自己处理
             try {
                 //延迟3秒杀进程
-                Thread.sleep(3000);
+                TimeUnit.SECONDS.sleep(3);
             } catch (InterruptedException e) {
                 Log.e(TAG, "error : ", e);
             }
@@ -130,13 +131,11 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
             PackageManager pm = ctx.getPackageManager();
             PackageInfo pi = pm.getPackageInfo(ctx.getPackageName(), PackageManager.GET_ACTIVITIES);
             if (pi != null) {
-                String versionName = pi.versionName == null ? "null" : pi.versionName;
-                String versionCode = pi.versionCode + "";
-                paramsMap.put("versionName", versionName);
-                paramsMap.put("versionCode", versionCode);
+                paramsMap.put("versionName", pi.versionName == null ? "null" : pi.versionName);
+                paramsMap.put("versionCode", String.valueOf(pi.versionCode));
             }
         } catch (PackageManager.NameNotFoundException e) {
-            Log.e(TAG, "an error occured when collect package info", e);
+            Log.e(TAG, "an error occurred when collect package info", e);
         }
         //获取所有系统信息
         Field[] fields = Build.class.getDeclaredFields();

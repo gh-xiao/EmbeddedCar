@@ -27,7 +27,7 @@ import java.util.Locale;
 
 public class BitmapProcess {
     @SuppressLint("StaticFieldLeak")
-    private static BitmapProcess mInstance;
+    private static volatile BitmapProcess mInstance;
     private Context mContext;
     // 指定我们想要存储文件的地址
     public static final String TargetPath = Environment.getExternalStorageDirectory() + "/" + Environment.DIRECTORY_DCIM + "/Tess/";
@@ -37,9 +37,9 @@ public class BitmapProcess {
     private BitmapProcess() {
     }
 
-    public static synchronized BitmapProcess getInstance() {
-        if (mInstance == null) {
-            mInstance = new BitmapProcess();
+    public static BitmapProcess getInstance() {
+        if (mInstance == null) synchronized (BitmapProcess.class) {
+            if (null == mInstance) mInstance = new BitmapProcess();
         }
         return mInstance;
     }

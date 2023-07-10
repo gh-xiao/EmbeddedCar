@@ -2,14 +2,10 @@ package com.xiao.embeddedcar.FragmentUI;
 
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.xiao.embeddedcar.R;
 import com.xiao.embeddedcar.ViewAdapter.MenuAdapter;
@@ -22,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ControlFragment extends ABaseFragment {
+public class ControlFragment extends AbstractFragment<FragmentControlBinding, ControlViewModel> {
 
     private FragmentControlBinding binding;
     private ControlViewModel controlViewModel;
@@ -54,20 +50,18 @@ public class ControlFragment extends ABaseFragment {
     //二级分类List
     private final List<String> secList = new ArrayList<>();
 
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        controlViewModel = new ViewModelProvider(this).get(ControlViewModel.class);
-        binding = FragmentControlBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
-        //控件动作初始化
-        init();
-        //设置观察者
-        observerDataStateUpdateAction();
-        return root;
+    public ControlFragment() {
+        super(FragmentControlBinding::inflate, ControlViewModel.class, false);
     }
 
     @Override
-    void init() {
+    public void initFragment(@NonNull FragmentControlBinding binding, @Nullable ControlViewModel viewModel, @Nullable Bundle savedInstanceState) {
+        this.binding = binding;
+        this.controlViewModel = viewModel;
+    }
+
+    @Override
+    public void init() {
         //设置TextView滚动
         binding.tvMsg.setMovementMethod(ScrollingMovementMethod.getInstance());
         /* 添加菜单选项 */
@@ -111,7 +105,7 @@ public class ControlFragment extends ABaseFragment {
     }
 
     @Override
-    void observerDataStateUpdateAction() {
+    public void observerDataStateUpdateAction() {
         controlViewModel.getShowMsg().setValue(null);
         controlViewModel.getSelectImage().observe(getViewLifecycleOwner(), i -> {
             ImageView iv = binding.ivControlChoose;

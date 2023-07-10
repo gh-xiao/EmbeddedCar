@@ -9,17 +9,16 @@ import android.content.IntentFilter;
 import android.util.Log;
 
 import com.xiao.embeddedcar.Entity.LoginInfo;
-import com.xiao.embeddedcar.ViewModel.ConnectViewModel;
-
+import com.xiao.embeddedcar.ViewModel.MainViewModel;
 
 public class CameraConnectUtil {
     private static final String A_S = "com.a_s";
     //单例对象
     @SuppressLint("StaticFieldLeak")
-    private static CameraConnectUtil mInstance;
+    private static volatile CameraConnectUtil mInstance;
     //上下文
     private Context mContext;
-    private ConnectViewModel connectViewModel;
+    private MainViewModel mainViewModel;
     private LoginInfo l;
 
     /**
@@ -31,9 +30,9 @@ public class CameraConnectUtil {
     /**
      * 获取CrashHandler实例
      */
-    public static synchronized CameraConnectUtil getInstance() {
-        if (null == mInstance) {
-            mInstance = new CameraConnectUtil();
+    public static CameraConnectUtil getInstance() {
+        if (null == mInstance) synchronized (CameraConnectUtil.class) {
+            if (null == mInstance) mInstance = new CameraConnectUtil();
         }
         return mInstance;
     }
@@ -43,9 +42,9 @@ public class CameraConnectUtil {
      *
      * @param context 上下文信息
      */
-    public void init(Context context, ConnectViewModel vm) {
+    public void init(Context context, MainViewModel vm) {
         mContext = context.getApplicationContext();
-        connectViewModel = vm;
+        mainViewModel = vm;
         l = vm.getLoginInfo().getValue();
     }
 
@@ -72,8 +71,8 @@ public class CameraConnectUtil {
         public void onReceive(Context arg0, Intent arg1) {
             l.setIPCamera(arg1.getStringExtra("IP"));
             l.setPureCameraIP(arg1.getStringExtra("pureip"));
-            connectViewModel.getLoginInfo().setValue(l);
-            connectViewModel.getLoginState().setValue(arg1.getStringExtra("loginState"));
+            mainViewModel.getLoginInfo().setValue(l);
+            mainViewModel.getLoginState().setValue(arg1.getStringExtra("loginState"));
             Log.e("camera ip::", "***" + l.getIPCamera() + "***");
 
             // 如果是串口配置在这里提前启动摄像头驱动，否则是WiFi的话到下个界面再连接
@@ -115,7 +114,7 @@ public class CameraConnectUtil {
         try {
             mContext.unregisterReceiver(myBroadcastReceiver);
         } catch (Exception e) {
-            Log.e(A_S,"unregisterReceiver fail!");
+            Log.e(A_S, "unregisterReceiver fail!");
         }
     }
 }

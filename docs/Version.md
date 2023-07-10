@@ -2,6 +2,23 @@ EmbeddedCar
 ===
 原创嵌入式智能小车Android控制终端
 
+## 版本号: 2.7.0
+
+### 2023/7/10
+
+    #正式废弃ABaseFragment,已替换为AbstractFragment来对Fragment进行初始化
+
+## 版本号: 2.7.0 - Alpha
+
+### 2023/5/26
+
+    #重新规范化ViewModel中的部分与引用数据
+    #基于Kotlin编写的AbstractFragment作为基类
+
+### 2023/7/6
+
+    #单例对象的小型优化,现在使用双重检查锁获取单例对象
+
 ## 版本号: 2.6.3
 
 ### 2023/5/4

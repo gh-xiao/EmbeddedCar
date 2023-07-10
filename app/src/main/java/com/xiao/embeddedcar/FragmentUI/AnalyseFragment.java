@@ -2,15 +2,11 @@ package com.xiao.embeddedcar.FragmentUI;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.SeekBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.github.gzuliyujiang.wheelview.contract.OnWheelChangedListener;
 import com.github.gzuliyujiang.wheelview.widget.WheelView;
@@ -27,22 +23,22 @@ import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
-public class AnalyseFragment extends ABaseFragment {
+public class AnalyseFragment extends AbstractFragment<FragmentAnalyseBinding, AnalyseViewModel> {
     FragmentAnalyseBinding binding;
     AnalyseViewModel analyseViewModel;
 
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        analyseViewModel = new ViewModelProvider(this).get(AnalyseViewModel.class);
-        binding = FragmentAnalyseBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
-        init();
-        observerDataStateUpdateAction();
-        return root;
+    public AnalyseFragment() {
+        super(FragmentAnalyseBinding::inflate, AnalyseViewModel.class, false);
     }
 
     @Override
-    void init() {
+    public void initFragment(@NonNull FragmentAnalyseBinding binding, @Nullable AnalyseViewModel viewModel, @Nullable Bundle savedInstanceState) {
+        this.binding = binding;
+        this.analyseViewModel = viewModel;
+    }
+
+    @Override
+    public void init() {
         /* HSV参数设置 */
         exportHSV();
         /* 图片列表设置 */
@@ -265,7 +261,7 @@ public class AnalyseFragment extends ABaseFragment {
     }
 
     @Override
-    void observerDataStateUpdateAction() {
+    public void observerDataStateUpdateAction() {
         analyseViewModel.getDetectBitmap().observe(getViewLifecycleOwner(), b -> {
             if (b != null) binding.imgShow.setImageBitmap(b);
         });
