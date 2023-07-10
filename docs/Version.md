@@ -12,7 +12,7 @@ EmbeddedCar
 
 ### 2023/5/26
 
-    #重新规范化ViewModel中的部分与引用数据
+    #重新规范化ViewModel中的部分引用数据
     #基于Kotlin编写的AbstractFragment作为基类
 
 ### 2023/7/6
