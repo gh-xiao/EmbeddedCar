@@ -20,6 +20,22 @@ public class CameraConnectUtil {
     private Context mContext;
     private MainViewModel mainViewModel;
     private LoginInfo l;
+    //自定义广播接收器 - 来自CameraSearchService的广播
+    public BroadcastReceiver myBroadcastReceiver = new BroadcastReceiver() {
+
+        public void onReceive(Context arg0, Intent arg1) {
+            l.setIPCamera(arg1.getStringExtra("IP"));
+            l.setPureCameraIP(arg1.getStringExtra("pureIP"));
+            mainViewModel.getLoginInfo().setValue(l);
+            mainViewModel.getLoginState().setValue(arg1.getStringExtra("loginState"));
+            Log.e("camera ip::", "***" + l.getIPCamera() + "***");
+
+            // 如果是串口配置在这里提前启动摄像头驱动，否则是WiFi的话到下个界面再连接
+            if (XcApplication.isSerial != XcApplication.Mode.SOCKET) useUartCamera();
+
+            mContext.unregisterReceiver(this);
+        }
+    };
 
     /**
      * 私有无参构造器
@@ -65,23 +81,6 @@ public class CameraConnectUtil {
         mContext.registerReceiver(myBroadcastReceiver, intentFilter);
     }
 
-    //自定义广播接收器 - 来自CameraSearchService的广播
-    public BroadcastReceiver myBroadcastReceiver = new BroadcastReceiver() {
-
-        public void onReceive(Context arg0, Intent arg1) {
-            l.setIPCamera(arg1.getStringExtra("IP"));
-            l.setPureCameraIP(arg1.getStringExtra("pureip"));
-            mainViewModel.getLoginInfo().setValue(l);
-            mainViewModel.getLoginState().setValue(arg1.getStringExtra("loginState"));
-            Log.e("camera ip::", "***" + l.getIPCamera() + "***");
-
-            // 如果是串口配置在这里提前启动摄像头驱动，否则是WiFi的话到下个界面再连接
-            if (XcApplication.isSerial != XcApplication.Mode.SOCKET) useUartCamera();
-
-            mContext.unregisterReceiver(this);
-        }
-    };
-
     /**
      * 启动摄像头
      */
@@ -90,7 +89,7 @@ public class CameraConnectUtil {
         //ComponentName的参数1:目标app的包名,参数2:目标app的Service完整类名
         ipIntent.setComponent(new ComponentName("com.android.settings", "com.android.settings.ethernet.CameraInitService"));
         //设置要传送的数据
-        ipIntent.putExtra("pureCamerAIP", l.getPureCameraIP());
+        ipIntent.putExtra("pureCameraIP", l.getPureCameraIP());
         mContext.startService(ipIntent);   //摄像头设为静态192.168.16.20时，可以不用发送
     }
 

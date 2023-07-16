@@ -14,6 +14,7 @@ import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 
 public class CameraSearchService extends IntentService {
@@ -28,37 +29,22 @@ public class CameraSearchService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         Intent mIntent = new Intent(CameraConnectUtil.getaS());
-//        for (int i = 0; i < 3 && IP == null; i++) {
-//            searchCameraUtil = new SearchCameraUtil();
-////            IP = searchCameraUtil !=null ? searchCameraUtil.send(): null;
-//            IP = searchCameraUtil.send();
-//            //线程休眠
-//            try {
-//                Thread.sleep(1000);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//        }
-
-        Timer getServerIPTimer = new Timer();
-        getServerIPTimer.schedule(new TimerTask() {
-            private int reGet = 0;
-
-            @Override
-            public void run() {
-                this.reGet++;
-                if (reGet >= 3) {
-                    this.cancel();
-                    this.reGet = 0;
-                }
-                IP = new SearchCameraUtil().send();
+        /* 使用阻塞方式等待获取到正确IP */
+        for (int reGet = 0; reGet < 3 && IP == null; reGet++) {
+            SearchCameraUtil searchCameraUtil = new SearchCameraUtil();
+            IP = searchCameraUtil.send();
+            //线程休眠
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-        }, 0, 1000);
+        }
 
         if (IP == null) mIntent.putExtra("loginState", "Fail");
         else mIntent.putExtra("loginState", "Success");
         mIntent.putExtra("IP", IP + ":81");
-        mIntent.putExtra("pureip", IP);
+        mIntent.putExtra("pureIP", IP);
         //广播发送器 - 发送给CameraSearchService的广播
         sendBroadcast(mIntent);
     }

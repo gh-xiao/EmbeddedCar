@@ -42,7 +42,7 @@ public class XcApplication extends Application {
         //ComponentName的参数1:目标app的包名,参数2:目标app的Service完整类名
         ipIntent.setComponent(new ComponentName("com.android.settings", "com.android.settings.ethernet.CameraInitService"));
         //设置要传送的数据
-        ipIntent.putExtra("pureCamerAIP", "0.0.0.0");
+        ipIntent.putExtra("pureCameraIP", "0.0.0.0");
         startService(ipIntent);   //摄像头设为静态192.168.16.20时，可以不用发送
     }
 }

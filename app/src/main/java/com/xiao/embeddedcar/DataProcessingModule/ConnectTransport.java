@@ -186,6 +186,7 @@ public class ConnectTransport {
             socket = new Socket(IP, port);
             bInputStream = new DataInputStream(socket.getInputStream());
             bOutputStream = new DataOutputStream(socket.getOutputStream());
+            /* 启动核心通讯线程 */
             if (!inputDataState) reThread();
         } catch (SocketException e) {
             Log.e(TAG, "WiFi通讯建立失败!");

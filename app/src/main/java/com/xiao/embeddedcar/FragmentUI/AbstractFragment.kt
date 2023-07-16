@@ -42,15 +42,6 @@ abstract class AbstractFragment<VB : ViewBinding, VM : ViewModel>(
     }
 
     /**
-     * 初始化Fragment
-     */
-    abstract fun initFragment(
-        binding: VB,
-        viewModel: VM?,
-        savedInstanceState: Bundle?
-    )
-
-    /**
      * Fragment视图创建
      */
     override fun onCreateView(
@@ -64,6 +55,15 @@ abstract class AbstractFragment<VB : ViewBinding, VM : ViewModel>(
         observerDataStateUpdateAction()
         return binding.root
     }
+
+    /**
+     * Fragment属性获取
+     */
+    abstract fun initFragment(
+        binding: VB,
+        viewModel: VM?,
+        savedInstanceState: Bundle?
+    )
 
     /**
      * 控件动作初始化

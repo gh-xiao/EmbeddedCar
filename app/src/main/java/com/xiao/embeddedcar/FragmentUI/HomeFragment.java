@@ -66,6 +66,7 @@ public class HomeFragment extends AbstractFragment<FragmentHomeBinding, HomeView
         binding.commandData.setMovementMethod(ScrollingMovementMethod.getInstance());
         //清空重置按钮监听事件
         binding.clearDebugArea.setOnClickListener(view -> {
+            homeViewModel.getDebugArea().setValue("Debug显示\n");
             binding.Debug.setText("Debug显示\n");
             mainViewModel.getShowImg().setValue(null);
             mainViewModel.getModuleImgShow().setValue(null);
@@ -76,8 +77,6 @@ public class HomeFragment extends AbstractFragment<FragmentHomeBinding, HomeView
             binding.mpData.setText(R.string.mp_data);
             binding.angleData.setText(R.string.line_data);
             binding.speedData.setText(R.string.angle_data);
-
-
         });
         //刷新连接操作
         binding.refreshBtn.setOnClickListener(view -> {
@@ -240,9 +239,7 @@ public class HomeFragment extends AbstractFragment<FragmentHomeBinding, HomeView
             }
         });
         //
-        mainViewModel.getModuleInfoTV().observe(getViewLifecycleOwner(), s -> {
-            if (s != null) binding.Debug.append(s + "\n");
-        });
+        mainViewModel.getModuleInfoTV().observe(getViewLifecycleOwner(), s -> homeViewModel.getDebugArea().setValue(s));
     }
 
 
