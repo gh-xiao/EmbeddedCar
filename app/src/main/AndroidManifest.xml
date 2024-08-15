@@ -11,7 +11,6 @@
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
     <!--    程序可以读取设备外部存储空间-->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <!--    允许程序写入外部存储,如SD卡上写文件-->
@@ -26,6 +25,7 @@
     <!--    tools:replace="android:icon, android:theme"-->
     <!--    android:requestLegacyExternalStorage="true"-->
     <application
+        android:name=".MainApplication"
         android:allowBackup="true"
         android:configChanges="orientation|screenSize|keyboardHidden"
         android:icon="@mipmap/bkrckj_logo"
@@ -37,7 +37,7 @@
         tools:node="replace"
         tools:targetApi="n">
         <activity
-            android:name=".Activity.SplashActivity"
+            android:name=".ui.activity.SplashActivity"
             android:exported="true"
             android:noHistory="true"
             android:screenOrientation="sensorLandscape"
@@ -49,15 +49,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Activity.MainActivity"
+            android:name=".ui.activity.MainActivity"
             android:exported="true"
             android:screenOrientation="sensorLandscape"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
         <activity
             android:name="com.luck.picture.lib.basic.PictureSelectorTransparentActivity"
             android:exported="true" />
+
         <service
-            android:name=".Utils.CameraUtil.CameraSearchService"
+            android:name=".utils.CameraUtil.CameraSearchService"
             android:exported="false" />
     </application>
 

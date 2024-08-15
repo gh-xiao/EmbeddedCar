@@ -1,6 +1,6 @@
 package com.xiao.embeddedcar.DataProcessingModule;
 
-import static com.xiao.embeddedcar.Utils.PaddleOCR.PlateDetector.completion;
+import static com.xiao.embeddedcar.utils.PaddleOCR.PlateDetector.completion;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -15,22 +15,23 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.xiao.baiduocr.TestInferOcrTask;
-import com.xiao.embeddedcar.Activity.MainActivity;
-import com.xiao.embeddedcar.Utils.CameraUtil.XcApplication;
-import com.xiao.embeddedcar.Utils.Network.SerialPort;
-import com.xiao.embeddedcar.Utils.Network.USBToSerialUtil;
-import com.xiao.embeddedcar.Utils.PaddleOCR.DetectPlateColor;
-import com.xiao.embeddedcar.Utils.PaddleOCR.PlateDetector;
-import com.xiao.embeddedcar.Utils.PublicMethods.BitmapProcess;
-import com.xiao.embeddedcar.Utils.PublicMethods.TFTAutoCutter;
-import com.xiao.embeddedcar.Utils.QRcode.GetCode;
-import com.xiao.embeddedcar.Utils.QRcode.QRBitmapCutter;
-import com.xiao.embeddedcar.Utils.QRcode.WeChatQRCodeDetector;
-import com.xiao.embeddedcar.Utils.Shape.ShapeDetector;
-import com.xiao.embeddedcar.Utils.TrafficLight.ColorProcess;
-import com.xiao.embeddedcar.Utils.TrafficLight.TrafficLightByLocation;
-import com.xiao.embeddedcar.ViewModel.HomeViewModel;
-import com.xiao.embeddedcar.ViewModel.MainViewModel;
+import com.xiao.embeddedcar.ui.activity.MainActivity;
+import com.xiao.embeddedcar.MainApplication;
+import com.xiao.embeddedcar.utils.Network.SerialPort;
+import com.xiao.embeddedcar.utils.Network.USBToSerialUtil;
+import com.xiao.embeddedcar.utils.PaddleOCR.DetectPlateColor;
+import com.xiao.embeddedcar.utils.PaddleOCR.PlateDetector;
+import com.xiao.embeddedcar.utils.PublicMethods.BitmapProcess;
+import com.xiao.embeddedcar.utils.PublicMethods.TFTAutoCutter;
+import com.xiao.embeddedcar.utils.QRcode.GetCode;
+import com.xiao.embeddedcar.utils.QRcode.QRBitmapCutter;
+import com.xiao.embeddedcar.utils.QRcode.WeChatQRCodeDetector;
+import com.xiao.embeddedcar.utils.Shape.ShapeDetector;
+import com.xiao.embeddedcar.utils.TrafficLight.ColorProcess;
+import com.xiao.embeddedcar.utils.TrafficLight.TrafficLightByLocation;
+import com.xiao.embeddedcar.data.ViewModel.HomeViewModel;
+import com.xiao.embeddedcar.data.ViewModel.MainViewModel;
+import com.xiao.embeddedcar.ui.fragmentUI.ModuleFragment;
 
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
@@ -215,7 +216,7 @@ public class ConnectTransport {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        XcApplication.cachedThreadPool.execute(new SerialRunnable());
+        MainApplication.cachedThreadPool.execute(new SerialRunnable());
     }
 
     /**
@@ -341,8 +342,8 @@ public class ConnectTransport {
         short CHECKSUM = (short) ((MAJOR + FIRST + SECOND + THIRD) % 256);
         // 发送数据字节数组
         final byte[] sByte = {0x55, (byte) TYPE, (byte) MAJOR, (byte) FIRST, (byte) SECOND, (byte) THIRD, (byte) CHECKSUM, (byte) 0xBB};
-        if (XcApplication.isSerial == XcApplication.Mode.SOCKET) {
-            XcApplication.cachedThreadPool.execute(() -> {
+        if (MainApplication.isSerial == MainApplication.Mode.SOCKET) {
+            MainApplication.cachedThreadPool.execute(() -> {
                 try {
                     if (socket != null && !socket.isClosed()) {
                         bOutputStream.write(sByte, 0, sByte.length);
@@ -352,8 +353,8 @@ public class ConnectTransport {
                     e.printStackTrace();
                 }
             });
-        } else if (XcApplication.isSerial == XcApplication.Mode.SERIAL) {
-            XcApplication.cachedThreadPool.execute(() -> {
+        } else if (MainApplication.isSerial == MainApplication.Mode.SERIAL) {
+            MainApplication.cachedThreadPool.execute(() -> {
                 try {
                     SerialOutputStream.write(sByte, 0, sByte.length);
                     SerialOutputStream.flush();
@@ -361,7 +362,7 @@ public class ConnectTransport {
                     e.printStackTrace();
                 }
             });
-        } else if (XcApplication.isSerial == XcApplication.Mode.USB_SERIAL)
+        } else if (MainApplication.isSerial == MainApplication.Mode.USB_SERIAL)
             try {
                 USBToSerialUtil.sPort.write(sByte, 5000);
             } catch (IOException e) {
@@ -385,8 +386,8 @@ public class ConnectTransport {
         short CHECKSUM = (short) ((MAJOR + FIRST + SECOND + THIRD) % 256);
         // 发送数据字节数组
         final byte[] sByte = {0x55, (byte) TYPE1, (byte) MAJOR, (byte) FIRST, (byte) SECOND, (byte) THIRD, (byte) CHECKSUM, (byte) 0xBB};
-        if (XcApplication.isSerial == XcApplication.Mode.SOCKET) {
-            XcApplication.cachedThreadPool.execute(() -> {
+        if (MainApplication.isSerial == MainApplication.Mode.SOCKET) {
+            MainApplication.cachedThreadPool.execute(() -> {
                 try {
                     if (socket != null && !socket.isClosed()) {
                         bOutputStream.write(sByte, 0, sByte.length);
@@ -396,8 +397,8 @@ public class ConnectTransport {
                     e.printStackTrace();
                 }
             });
-        } else if (XcApplication.isSerial == XcApplication.Mode.SERIAL) {
-            XcApplication.cachedThreadPool.execute(() -> {
+        } else if (MainApplication.isSerial == MainApplication.Mode.SERIAL) {
+            MainApplication.cachedThreadPool.execute(() -> {
                 try {
                     SerialOutputStream.write(sByte, 0, sByte.length);
                     SerialOutputStream.flush();
@@ -405,7 +406,7 @@ public class ConnectTransport {
                     e.printStackTrace();
                 }
             });
-        } else if (XcApplication.isSerial == XcApplication.Mode.USB_SERIAL) {
+        } else if (MainApplication.isSerial == MainApplication.Mode.USB_SERIAL) {
             try {
                 USBToSerialUtil.sPort.write(sByte, 5000);
             } catch (IOException e) {
@@ -424,8 +425,8 @@ public class ConnectTransport {
      * @param textByte -
      */
     public void send_voice(final byte[] textByte) {
-        if (XcApplication.isSerial == XcApplication.Mode.SOCKET) {
-            XcApplication.cachedThreadPool.execute(() -> {
+        if (MainApplication.isSerial == MainApplication.Mode.SOCKET) {
+            MainApplication.cachedThreadPool.execute(() -> {
                 try {
                     if (socket != null && !socket.isClosed()) {
                         bOutputStream.write(textByte, 0, textByte.length);
@@ -435,8 +436,8 @@ public class ConnectTransport {
                     e.printStackTrace();
                 }
             });
-        } else if (XcApplication.isSerial == XcApplication.Mode.SERIAL) {
-            XcApplication.cachedThreadPool.execute(() -> {
+        } else if (MainApplication.isSerial == MainApplication.Mode.SERIAL) {
+            MainApplication.cachedThreadPool.execute(() -> {
                 try {
                     SerialOutputStream.write(textByte, 0, textByte.length);
                     SerialOutputStream.flush();
@@ -444,7 +445,7 @@ public class ConnectTransport {
                     e.printStackTrace();
                 }
             });
-        } else if (XcApplication.isSerial == XcApplication.Mode.USB_SERIAL)
+        } else if (MainApplication.isSerial == MainApplication.Mode.USB_SERIAL)
             try {
                 USBToSerialUtil.sPort.write(textByte, 5000);
             } catch (IOException e) {
@@ -855,7 +856,7 @@ public class ConnectTransport {
 
     /**
      * <p>程序自动执行</p>
-     * <p>(也可以从这里修改需要启动的自动驾驶方案或需要测试的模块) - 当前已经不建议这样做,你可以选择从{@link com.xiao.embeddedcar.FragmentUI.ModuleFragment}中的module_select()方法添加并测试相应模块</p>
+     * <p>(也可以从这里修改需要启动的自动驾驶方案或需要测试的模块) - 当前已经不建议这样做,你可以选择从{@link ModuleFragment}中的module_select()方法添加并测试相应模块</p>
      */
     public void autoDrive() {
         /* 通讯测试 */

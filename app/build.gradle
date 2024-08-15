@@ -18,12 +18,12 @@ android {
         minSdk 21
         //表示在Android12.0(32)版本上已经进行过充分的测试
         //noinspection ExpiredTargetSdkVersion - 表示忽略Google提示的建议
-        //noinspection OldTargetApi
+        //noinspection ExpiredTargetSdkVersion
         targetSdk 32
         //项目版本号
         versionCode 1
         //版本名
-        versionName "2.7.0"
+        versionName "2.8.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         //设置支持的so库架构(开发者可以根据需要，选择一个或多个平台的so)
         ndk {
@@ -42,11 +42,10 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     buildFeatures {
-        dataBinding true
         viewBinding true
     }
     sourceSets {
@@ -59,7 +58,7 @@ android {
 
 dependencies {
     implementation 'androidx.core:core:1.9.0'
-    implementation 'androidx.activity:activity:1.6.1'
+    implementation 'androidx.activity:activity:1.7.2'
     implementation 'androidx.appcompat:appcompat:1.4.2'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
@@ -94,7 +93,7 @@ dependencies {
     //Gson
     implementation 'com.google.code.gson:gson:2.10.1'
     //风格化设计 - 玻璃拟物化
-    implementation 'com.github.fornewid:neumorphism:0.3.2'
+//    implementation 'com.github.fornewid:neumorphism:0.3.2'
 
     //本地依赖声明：将本地的jar包、目录添加依赖关系，添加到项目的构建路径当中
     implementation fileTree(include: ['*.jar'], dir: 'libs')

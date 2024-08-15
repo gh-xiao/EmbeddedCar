@@ -7,13 +7,13 @@
 
     <fragment
         android:id="@+id/nav_home"
-        android:name="com.xiao.embeddedcar.FragmentUI.HomeFragment"
+        android:name="com.xiao.embeddedcar.ui.fragmentUI.HomeFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/nav_connect"
-        android:name="com.xiao.embeddedcar.FragmentUI.ConnectFragment"
+        android:name="com.xiao.embeddedcar.ui.fragmentUI.ConnectFragment"
         android:label="@string/menu_connect"
         tools:layout="@layout/fragment_connect">
         <action
@@ -27,37 +27,37 @@
 
     <fragment
         android:id="@+id/nav_control"
-        android:name="com.xiao.embeddedcar.FragmentUI.ControlFragment"
+        android:name="com.xiao.embeddedcar.ui.fragmentUI.ControlFragment"
         android:label="@string/menu_control"
         tools:layout="@layout/fragment_control" />
 
     <fragment
         android:id="@+id/nav_other"
-        android:name="com.xiao.embeddedcar.FragmentUI.OtherFragment"
+        android:name="com.xiao.embeddedcar.ui.fragmentUI.OtherFragment"
         android:label="@string/menu_other"
         tools:layout="@layout/fragment_other" />
 
     <fragment
         android:id="@+id/nav_module"
-        android:name="com.xiao.embeddedcar.FragmentUI.ModuleFragment"
+        android:name="com.xiao.embeddedcar.ui.fragmentUI.ModuleFragment"
         android:label="@string/menu_module"
         tools:layout="@layout/fragment_module" />
 
     <fragment
         android:id="@+id/nav_analyse"
-        android:name="com.xiao.embeddedcar.FragmentUI.AnalyseFragment"
+        android:name="com.xiao.embeddedcar.ui.fragmentUI.AnalyseFragment"
         android:label="@string/menu_analyse"
         tools:layout="@layout/fragment_analyse" />
 
     <fragment
         android:id="@+id/nav_config"
-        android:name="com.xiao.embeddedcar.FragmentUI.ConfigFragment"
+        android:name="com.xiao.embeddedcar.ui.fragmentUI.ConfigFragment"
         android:label="@string/menu_config"
         tools:layout="@layout/fragment_config" />
 
     <fragment
         android:id="@+id/nav_test"
-        android:name="com.xiao.embeddedcar.FragmentUI.testFragment"
+        android:name="com.xiao.embeddedcar.ui.fragmentUI.testFragment"
         android:label="@string/menu_test"
         tools:layout="@layout/fragment_test" />
 
